@@ -137,7 +137,7 @@
     <main>
 <h1>10.2. Authorization — RBAC, ACL, ABAC</h1>
 <p><strong>Authentication</strong> answers <em>who are you?</em> (see
-<a href="https://github.com/remideboer/pys/tree/main/examples/patterns/authentication"><code>examples/patterns/authentication/</code></a>).
+<a href="https://github.com/remideboer/typhon/tree/main/examples/patterns/authentication"><code>examples/patterns/authentication/</code></a>).
 <strong>Authorization</strong> answers <em>what may you do?</em></p>
 <figure class="concept-diagram" role="img" aria-label="Fork: AuthN proves identity then AuthZ decides allowed actions">
   <div class="diagram-flow" style="min-width:28rem">
@@ -171,7 +171,7 @@
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/authorization/rbac.typhon"><code>rbac.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/authorization/rbac.typhon"><code>rbac.typhon</code></a></p>
 <pre><code class="language-text">python -m transpiler run examples/patterns/authorization/rbac.typhon
 </code></pre>
 <p><strong>Output:</strong></p>
@@ -202,7 +202,7 @@ Authorize with <code>allows(username, permission)</code>.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/authorization/acl.typhon"><code>acl.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/authorization/acl.typhon"><code>acl.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">True
 False
@@ -226,7 +226,7 @@ False
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/authorization/abac.typhon"><code>abac.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/authorization/abac.typhon"><code>abac.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">True
 False

@@ -13,7 +13,7 @@ from typhon_highlight import highlight_html_document
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT
 OUT = ROOT / "html"
-REPOSITORY_URL = "https://github.com/remideboer/pys"
+REPOSITORY_URL = "https://github.com/remideboer/typhon"
 
 CSS = """\
 :root {

@@ -36,14 +36,14 @@ def test_summary_link_rewrites_to_generated_index() -> None:
 
 def test_repo_file_link_rewrites_to_github_blob() -> None:
     assert _rewrite("../docs/LANGUAGE.md") == (
-        'href="https://github.com/remideboer/pys/blob/main/docs/LANGUAGE.md"'
+        'href="https://github.com/remideboer/typhon/blob/main/docs/LANGUAGE.md"'
     )
 
 
 def test_repo_directory_link_rewrites_to_github_tree() -> None:
     assert _rewrite("../examples/source_roots/") == (
         "href="
-        '"https://github.com/remideboer/pys/tree/main/examples/source_roots"'
+        '"https://github.com/remideboer/typhon/tree/main/examples/source_roots"'
     )
 
 

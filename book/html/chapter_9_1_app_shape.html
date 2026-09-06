@@ -275,11 +275,11 @@ order’s rules (totals, status, stock) need the whole cluster.</p>
 <li><code>save(order)</code> / <code>findById(id)</code> mean load or persist the <strong>whole</strong> cluster your
   rules need.</li>
 <li>A teaching demo may show a single-entity Aggregate for brevity
-  (<a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/repository.typhon"><code>repository.typhon</code></a>); living
-  shops under <a href="https://github.com/remideboer/pys/tree/main/examples/rest-api/shop"><code>examples/rest-api/shop/</code></a> model
+  (<a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/persistence/repository.typhon"><code>repository.typhon</code></a>); living
+  shops under <a href="https://github.com/remideboer/typhon/tree/main/examples/rest-api/shop"><code>examples/rest-api/shop/</code></a> model
   orders and lines — use Aggregate vocabulary even when the demo is thin.
   The JavaScript Express twin lives under
-  <a href="https://github.com/remideboer/pys/tree/main/examples/by-target/javascript/rest-api/express"><code>examples/by-target/javascript/rest-api/express/</code></a>.</li>
+  <a href="https://github.com/remideboer/typhon/tree/main/examples/by-target/javascript/rest-api/express"><code>examples/by-target/javascript/rest-api/express/</code></a>.</li>
 </ul>
 <h3>Non-golden note</h3>
 <p>Updating a line item <strong>in isolation</strong> while totals or status live on the order
@@ -327,7 +327,7 @@ code depends on the interface; an adapter talks to memory or MySQL.</p>
     <span class="tok-ident">save</span>(<span class="tok-typename">Order</span> <span class="tok-ident">order</span>)
     <span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-typename">Order</span><span class="tok-op">&gt;</span> <span class="tok-ident">findById</span>(<span class="tok-type">string</span> <span class="tok-ident">orderId</span>)
 }</code></pre>
-<p>Full demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/repository.typhon"><code>examples/patterns/persistence/repository.typhon</code></a>.</p>
+<p>Full demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/persistence/repository.typhon"><code>examples/patterns/persistence/repository.typhon</code></a>.</p>
 <pre><code class="language-text">python -m transpiler run examples/patterns/persistence/repository.typhon
 </code></pre>
 <p><strong>Output:</strong></p>
@@ -363,7 +363,7 @@ use-case takes the repository in its constructor.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/unit_of_work.typhon"><code>unit_of_work.typhon</code></a>.</p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/persistence/unit_of_work.typhon"><code>unit_of_work.typhon</code></a>.</p>
 <p><strong>Output (concept):</strong> first product visible after commit; second missing after
 rollback.</p>
 <pre><code class="language-text">True
@@ -389,7 +389,7 @@ ports, return a result, no HTTP/SQL.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/service_layer.typhon"><code>service_layer.typhon</code></a>.</p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/application/service_layer.typhon"><code>service_layer.typhon</code></a>.</p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">created:O-9@2026-08-08T12:00:00Z
 </code></pre>
@@ -418,7 +418,7 @@ ports, return a result, no HTTP/SQL.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/dto_acl.typhon"><code>dto_acl.typhon</code></a>.</p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/application/dto_acl.typhon"><code>dto_acl.typhon</code></a>.</p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">BG-001
 4599 EUR

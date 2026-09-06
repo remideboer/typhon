@@ -149,9 +149,9 @@ The most common form in teaching and industry talk is <strong>three-tier</strong
 <li>Application / business logic</li>
 <li>Data (persistence)</li>
 </ol>
-<p>Your living shop examples under <a href="https://github.com/remideboer/pys/tree/main/examples/rest-api/shop"><code>examples/rest-api/shop/</code></a>
+<p>Your living shop examples under <a href="https://github.com/remideboer/typhon/tree/main/examples/rest-api/shop"><code>examples/rest-api/shop/</code></a>
 (and the Express JS track under
-<a href="https://github.com/remideboer/pys/tree/main/examples/by-target/javascript/rest-api/express"><code>examples/by-target/javascript/rest-api/express/</code></a>)
+<a href="https://github.com/remideboer/typhon/tree/main/examples/by-target/javascript/rest-api/express"><code>examples/by-target/javascript/rest-api/express/</code></a>)
 often use this stack — sometimes combined with ports (hexagonal).</p>
 <h2>Layer ≠ tier (the key distinction)</h2>
 <table>
@@ -315,7 +315,7 @@ honest and runnable.</p>
 </tbody>
 </table>
 <p>Shops often <strong>combine</strong> both: multitier bands <em>and</em> a Repository port at the
-data edge (<a href="https://github.com/remideboer/pys/blob/main/examples/patterns/architectural/hexagonal.typhon"><code>hexagonal.typhon</code></a>).</p>
+data edge (<a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/architectural/hexagonal.typhon"><code>hexagonal.typhon</code></a>).</p>
 <figure class="concept-diagram" role="img" aria-label="Stack of layers versus core with ports and outside adapters">
   <div class="diagram-grid-2">
     <div class="diagram-box">
@@ -340,10 +340,10 @@ Remember <strong>layer ≠ tier</strong> — one process is fine for the teachin
 <p><strong>Not this:</strong> “Put SQL and <code>print</code> in the same handler.” · “Three-tier means
 three Docker containers” (that is deploy tiers, not the logical lesson).</p>
 <p><strong>Confusion to avoid:</strong> Multitier ≠ Hexagonal · Layer ≠ tier · Layered demo
-(<a href="https://github.com/remideboer/pys/blob/main/examples/patterns/architectural/layered.typhon"><code>layered.typhon</code></a>) is the short
+(<a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/architectural/layered.typhon"><code>layered.typhon</code></a>) is the short
 sibling of Multitier.</p>
 <h2>Runnable demo</h2>
-<p><a href="https://github.com/remideboer/pys/blob/main/examples/patterns/architectural/multitier.typhon"><code>examples/patterns/architectural/multitier.typhon</code></a></p>
+<p><a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/architectural/multitier.typhon"><code>examples/patterns/architectural/multitier.typhon</code></a></p>
 <pre><code class="language-text">python -m transpiler run examples/patterns/architectural/multitier.typhon
 </code></pre>
 <p><strong>Output:</strong></p>
@@ -353,7 +353,7 @@ status:new
 <p><code>OrderConsoleUi</code> (presentation) → <code>OrderApplication</code> (application) →
 <code>OrderStore</code> / <code>InMemoryOrderStore</code> (data access). Domain <code>Order</code> stays free of
 UI and SQL.</p>
-<p>Living shops (same idea at scale): <a href="https://github.com/remideboer/pys/tree/main/examples/rest-api/shop"><code>examples/rest-api/shop/</code></a>.</p>
+<p>Living shops (same idea at scale): <a href="https://github.com/remideboer/typhon/tree/main/examples/rest-api/shop"><code>examples/rest-api/shop/</code></a>.</p>
 <h3>Exercise</h3>
 <blockquote>
 <p>A classmate says “three-tier means we must run three servers.” What do you

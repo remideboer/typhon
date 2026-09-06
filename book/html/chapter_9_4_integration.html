@@ -136,8 +136,8 @@
     </nav>
     <main>
 <h1>10.4. Integration — events, outbox, saga, request–reply</h1>
-<p>You already saw <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/messaging/cqrs.typhon">CQRS</a> and
-<a href="https://github.com/remideboer/pys/blob/main/examples/patterns/messaging/publish_subscribe.typhon">publish–subscribe</a>.
+<p>You already saw <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/messaging/cqrs.typhon">CQRS</a> and
+<a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/messaging/publish_subscribe.typhon">publish–subscribe</a>.
 These add the names engineers use for <strong>distributed workflows</strong>.</p>
 <h2>Event sourcing</h2>
 <p>Append <strong>events</strong>; fold them to state. Often paired with CQRS — not the same
@@ -157,7 +157,7 @@ thing.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/messaging/event_sourcing.typhon"><code>event_sourcing.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/messaging/event_sourcing.typhon"><code>event_sourcing.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">shipped
 True
@@ -180,7 +180,7 @@ True
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/messaging/outbox.typhon"><code>outbox.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/messaging/outbox.typhon"><code>outbox.typhon</code></a></p>
 <p><strong>Output (shape):</strong></p>
 <pre><code class="language-text">True
 publish:orders:O-7
@@ -204,7 +204,7 @@ True
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/messaging/saga.typhon"><code>saga.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/messaging/saga.typhon"><code>saga.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">reserve:ok
 charge:ok
@@ -232,7 +232,7 @@ aborted:charge
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/messaging/request_reply.typhon"><code>request_reply.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/messaging/request_reply.typhon"><code>request_reply.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">echo:ping
 True

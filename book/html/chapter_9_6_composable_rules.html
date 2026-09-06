@@ -160,7 +160,7 @@ Responsibility.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/pipeline_middleware.typhon"><code>pipeline_middleware.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/application/pipeline_middleware.typhon"><code>pipeline_middleware.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">log:GET /x
 ok:GET /x
@@ -185,7 +185,7 @@ deny
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/specification.typhon"><code>specification.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/application/specification.typhon"><code>specification.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">True
 False
@@ -203,7 +203,7 @@ False
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/null_object.typhon"><code>null_object.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/application/null_object.typhon"><code>null_object.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">notify:done:O-1
 checkout:O-1
@@ -227,13 +227,13 @@ checkout:O-2
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/plugin.typhon"><code>plugin.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/application/plugin.typhon"><code>plugin.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">sales=sales:42
 inventory=inventory:7
 </code></pre>
 <h2>Anti-pattern: Service Locator</h2>
-<p>Hidden global lookup. Prefer <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/general/dependency_injection.typhon">Dependency Injection</a>.</p>
+<p>Hidden global lookup. Prefer <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/general/dependency_injection.typhon">Dependency Injection</a>.</p>
 <figure class="concept-diagram" role="img" aria-label="Hidden registry lookup versus constructor injection">
   <div class="diagram-grid-2">
     <div class="diagram-box" style="border:2px solid #8a6d3b;background:#f5ecd8;padding:0.7rem;border-radius:6px;text-align:center">
@@ -250,7 +250,7 @@ inventory=inventory:7
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/general/service_locator_antipattern.typhon"><code>service_locator_antipattern.typhon</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/typhon/blob/main/examples/patterns/general/service_locator_antipattern.typhon"><code>service_locator_antipattern.typhon</code></a></p>
 <h3>Prompt dialogue</h3>
 <blockquote>
 <p><strong>You:</strong> Add logging and auth middleware around the HTTP handler. Prefer
