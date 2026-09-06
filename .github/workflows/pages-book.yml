@@ -1,6 +1,6 @@
 # Publish the beginner book (book/html) to GitHub Pages.
 # Repo setting: Settings → Pages → Source = GitHub Actions
-# Site URL (project pages): https://remideboer.github.io/pys/
+# Site URL (project pages): https://remideboer.github.io/typhon/
 
 name: Pages — beginner book
 
@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - "book/**"
+      - "docs/language-railroad.html"
       - ".github/workflows/pages-book.yml"
   workflow_dispatch:
 

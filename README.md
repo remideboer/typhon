@@ -159,11 +159,13 @@ Plain `T` is non-null; absence is `nullable<T>`. Recoverable errors use
 ## Language examples
 
 Formal grammar (EBNF): [`docs/language.ebnf`](docs/language.ebnf) · overview
-[`docs/LANGUAGE.md`](docs/LANGUAGE.md) · visuals
-[`docs/language-railroad.html`](docs/language-railroad.html) · architecture
+[`docs/LANGUAGE.md`](docs/LANGUAGE.md) · interactive railroad
+[diagrams (HTML)](https://remideboer.github.io/typhon/language-railroad.html)
+([source](docs/language-railroad.html)) · architecture
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · code evolution
 [`docs/evolution/`](docs/evolution/README.md) · ADRs
 [`docs/adr/`](docs/adr/README.md).
+See also [Grammar railroad (excerpt)](#grammar-railroad-excerpt) below.
 
 **Curriculum:** [`tutorials/`](tutorials/) — whole-task classes with scaffolding and JIT cards.  
 **Showcase:** [`examples/main.typhon`](examples/main.typhon) (dense reference, not lesson 1).  
@@ -705,3 +707,88 @@ the deprecated `typhon.mainFile` setting.
 
 <a id="ref-7"></a>[7] M. Kölling and B. Quig, "The BlueJ system and its pedagogy," Comput. Sci.
     Educ., vol. 13, no. 4, pp. 249–268, 2003, doi: [10.1076/csed.13.4.249.17496](https://doi.org/10.1076/csed.13.4.249.17496).
+
+## Grammar railroad (excerpt)
+
+Full interactive EBNF railroad diagrams (every production):
+**[open the HTML viewer](https://remideboer.github.io/typhon/language-railroad.html)**
+([source](docs/language-railroad.html) · [EBNF](docs/language.ebnf)).
+
+GitHub’s Mermaid build does not yet render Mermaid’s native `railroad-ebnf`
+diagram type, so the shapes below are **flowchart approximations** of a few
+core rules (terminal = rounded, non-terminal = rectangle). Use the HTML viewer
+for the real railroad tracks.
+
+### `program` / `top_level`
+
+```mermaid
+flowchart LR
+  start((start)) --> TL[top_level]
+  TL --> more{more top_level?}
+  more -->|yes| TL
+  more -->|no| stop((end))
+```
+
+```mermaid
+flowchart TB
+  TL[top_level] --> I[import_stmt]
+  TL --> D[declaration]
+  TL --> S[statement]
+```
+
+### `import_stmt`
+
+```mermaid
+flowchart LR
+  start((start)) --> Imp(["import"])
+  Imp --> A{form}
+  A -->|module| M[module_ref]
+  A -->|alias| M2[module_ref] --> As(["as"]) --> Id[identifier]
+  A -->|all from| All(["all"]) --> From1(["from"]) --> M3[module_ref]
+  A -->|names from| Id2[identifier] --> From2(["from"]) --> M4[module_ref]
+  M --> stop((end))
+  Id --> stop
+  M3 --> stop
+  M4 --> stop
+```
+
+### `var_decl`
+
+```mermaid
+flowchart LR
+  start((start)) --> V{kind}
+  V -->|typed| T[type_name] --> N1[identifier] --> Eq1(["="]) --> E1[expression]
+  V -->|infer| Var(["var"]) --> N2[identifier] --> Eq2(["="]) --> E2[expression]
+  E1 --> stop((end))
+  E2 --> stop
+```
+
+### `if_stmt`
+
+```mermaid
+flowchart LR
+  start((start)) --> If(["if"]) --> P1(["("]) --> Cond1[expression] --> C1([")"]) --> B1[block]
+  B1 --> Elif{else if?}
+  Elif -->|yes| ElseIf(["else"]) --> If2(["if"]) --> P2(["("]) --> Cond2[expression] --> C2([")"]) --> B2[block] --> Elif
+  Elif -->|no| Else{else?}
+  Else -->|yes| ElseK(["else"]) --> B3[block] --> stop((end))
+  Else -->|no| stop
+```
+
+### `function_decl` (core shape)
+
+```mermaid
+flowchart LR
+  start((start)) --> Vis{visibility?}
+  Vis -->|opt| VisN[top_visibility]
+  Vis -->|skip| Fn
+  VisN --> Fn(["function"])
+  Fn --> Ret{return type?}
+  Ret -->|opt| RT[return_type]
+  Ret -->|skip| Name
+  RT --> Name[identifier]
+  Name --> LP(["("]) --> Params{params?}
+  Params -->|opt| PL[parameter_list]
+  Params -->|skip| RP
+  PL --> RP([")"]) --> Body[block] --> stop((end))
+```
