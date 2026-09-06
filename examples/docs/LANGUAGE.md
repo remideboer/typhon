@@ -28,7 +28,7 @@ from `{ }`, but sibling members and nested bodies must stay on a consistent
 
 ## 1. Program structure (procedural)
 
-A `.typhon` file is a sequence of top-level items. **All imports must appear
+A `.typhon` file (alias **`.tpn`**) is a sequence of top-level items. **All imports must appear
 first** (blank lines and comments may sit among them). After the first
 declaration or statement, a later `import` / `from … import` is a parse
 error — not a style warning. See [Enforced member ordering](#enforced-member-ordering).

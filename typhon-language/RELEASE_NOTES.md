@@ -1,12 +1,11 @@
-# Typhon Language Support 0.0.108
+# Typhon Language Support 0.0.109
 
-## Rename: PYS → Typhon
+## `.tpn` alias
 
-- Language brand is now **Typhon** (anagram of Python; T = typed).
-- Sources use **`.typhon`**; projects use **`typhon.toml`** / **`typhon.lock`**.
-- Extension id is **`remideboer.typhon-language`** (new Marketplace identity —
-  uninstall the old **PYS Language Support** / `pys-language` extension).
-- Env / cache: `TYPHON_WORKSPACE_ROOT`, `~/.typhon` (old `~/.pys` is not migrated).
+- **`.tpn`** is accepted as a full alias of **`.typhon`** (highlighting, Run,
+  menus, project `main`, debug maps).
+- Canonical teaching / scaffolding extension remains **`.typhon`**. When both
+  `foo.typhon` and `foo.tpn` exist, the toolchain prefers **`.typhon`**.
 
 ## Install
 

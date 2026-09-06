@@ -2,7 +2,7 @@
 
 > The programming language with eyes 👁👁!
 
-Write `.typhon` programs with explicit types and brace blocks; run them through an
+Write `.typhon` programs (alias **`.tpn`** also accepted) with explicit types and brace blocks; run them through an
 on-demand transpile step to standard Python. Designed for classroom use with an
 IDE run/debug path and a **didactic tutorial track** (not a keyword tour).
 

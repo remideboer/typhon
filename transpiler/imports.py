@@ -23,7 +23,7 @@ from .ast_nodes import (
     StructDef,
     TraitDef,
 )
-from .brand import SOURCE_EXT
+from .brand import SOURCE_EXTS, ends_with_source_ext, is_source_path
 from .workspace import resolve_workspace_path, workspace_root_from_env
 
 
@@ -524,17 +524,51 @@ class ImportResolver:
             "/" in ref
             or "\\" in ref
             or ref.startswith(".")
-            or path.suffix.lower() == SOURCE_EXT
+            or is_source_path(path)
         )
         if not pathish and "." in ref:
-            # Dotted Python-style names are not .typhon file paths.
+            # Dotted Python-style names are not Typhon file paths.
             return None
-        if path.suffix.lower() != SOURCE_EXT:
-            path = path.with_suffix(SOURCE_EXT)
         if not path.is_absolute():
             base = self.source_path.parent if self.source_path is not None else Path.cwd()
-            candidate = (base / path)
+            joined = base / path
+            candidates = (
+                [joined]
+                if is_source_path(path)
+                else [joined.with_suffix(ext) for ext in SOURCE_EXTS]
+            )
             workspace_root = workspace_root_from_env()
+            for candidate in candidates:
+                if workspace_root is not None:
+                    resolved = resolve_workspace_path(candidate, workspace_root)
+                    if resolved is not None:
+                        return resolved
+                else:
+                    try:
+                        return candidate.resolve(strict=True)
+                    except OSError:
+                        pass
+            # Bare module (e.g. `config`): resolve among same-package peers under
+            # typhon.toml [source_roots] so tests/ can import src/ without relative paths.
+            if self.source_path is not None and not (
+                "/" in ref or "\\" in ref or ref.startswith(".")
+            ):
+                from .project_manifest import package_peer_files
+
+                stem = path.stem if is_source_path(path) else path.name
+                here = self.source_path.resolve()
+                for peer in package_peer_files(here):
+                    if peer.stem == stem and peer != here:
+                        return peer
+            return None
+
+        candidates = (
+            [path]
+            if is_source_path(path)
+            else [path.with_suffix(ext) for ext in SOURCE_EXTS]
+        )
+        workspace_root = workspace_root_from_env()
+        for candidate in candidates:
             if workspace_root is not None:
                 resolved = resolve_workspace_path(candidate, workspace_root)
                 if resolved is not None:
@@ -544,28 +578,7 @@ class ImportResolver:
                     return candidate.resolve(strict=True)
                 except OSError:
                     pass
-            # Bare module (e.g. `config`): resolve among same-package peers under
-            # typhon.toml [source_roots] so tests/ can import src/ without relative paths.
-            if self.source_path is not None and not (
-                "/" in ref or "\\" in ref or ref.startswith(".")
-            ):
-                from .project_manifest import package_peer_files
-
-                stem = path.stem
-                here = self.source_path.resolve()
-                for peer in package_peer_files(here):
-                    if peer.stem == stem and peer != here:
-                        return peer
-            return None
-
-        workspace_root = workspace_root_from_env()
-        if workspace_root is not None:
-            return resolve_workspace_path(path, workspace_root)
-        try:
-            path = path.resolve(strict=True)
-        except OSError:
-            return None
-        return path
+        return None
 
     def _same_package(self, other: Path) -> bool:
         # source_path / ModuleInfo.path are already resolved; re-resolve here was
@@ -710,7 +723,7 @@ class ImportResolver:
         from .deps import is_external_python_module, lock_declares_module
 
         ref = module_ref.strip().strip("\"'")
-        if ref.lower().endswith(SOURCE_EXT):
+        if ends_with_source_ext(ref):
             return None
         present = is_external_python_module(ref, self._deps_paths())
         if (

@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
+from .brand import is_source_path, iter_source_files
+
 MANIFEST_NAME = "typhon.toml"
 
 _ROOT_ASSIGN = re.compile(
@@ -84,7 +86,7 @@ def _manifest_error(
         suggested_fix=suggested_fix,
         tips=tips
         if tips is not None
-        else ["Set `[project].main` to a contained `.typhon` file."],
+        else ["Set `[project].main` to a contained `.typhon` or `.tpn` file."],
     )
 
 
@@ -232,9 +234,9 @@ def _load_project_main_cached(manifest_path: str, text: str) -> Path | None:
             manifest=manifest,
             code="typhon.entrypoint-outside",
         )
-    if candidate.suffix.lower() != ".typhon":
+    if not is_source_path(candidate):
         _manifest_error(
-            f"`[project].main` must name a `.typhon` file: {raw}",
+            f"`[project].main` must name a `.typhon` or `.tpn` file: {raw}",
             manifest=manifest,
             code="typhon.entrypoint-suffix",
         )
@@ -276,11 +278,11 @@ def resolve_entrypoint(selected: Path) -> Path:
     if configured is not None:
         if choice.is_file() and choice != configured:
             if _is_declared_test_source(choice):
-                if choice.suffix.lower() != ".typhon":
+                if not is_source_path(choice):
                     from .transpiler import TranspileError
 
                     raise TranspileError(
-                        f"Entrypoint must be a `.typhon` file: {choice}",
+                        f"Entrypoint must be a `.typhon` or `.tpn` file: {choice}",
                         source_file=choice,
                         code="typhon.entrypoint-suffix",
                     )
@@ -300,11 +302,11 @@ def resolve_entrypoint(selected: Path) -> Path:
             )
         return configured
     if choice.is_file():
-        if choice.suffix.lower() != ".typhon":
+        if not is_source_path(choice):
             from .transpiler import TranspileError
 
             raise TranspileError(
-                f"Entrypoint must be a `.typhon` file: {choice}",
+                f"Entrypoint must be a `.typhon` or `.tpn` file: {choice}",
                 source_file=choice,
                 code="typhon.entrypoint-suffix",
             )
@@ -411,19 +413,19 @@ def package_identity(file_path: Path, roots: SourceRoots | None = None) -> Packa
 
 
 def package_peer_files(file_path: Path) -> list[Path]:
-    """All ``.typhon`` files in the same package (across source roots, or same folder)."""
+    """All Typhon sources (``.typhon`` / ``.tpn``) in the same package."""
     path = file_path.resolve()
     roots = source_roots_for(path)
     if roots is None:
-        return sorted(p.resolve() for p in path.parent.glob("*.typhon"))
+        return sorted(p.resolve() for p in iter_source_files(path.parent))
     ident = package_identity(path, roots)
     if ident is None:
-        return sorted(p.resolve() for p in path.parent.glob("*.typhon"))
+        return sorted(p.resolve() for p in iter_source_files(path.parent))
     peers: list[Path] = []
     for _name, root in roots.roots:
         pkg_dir = root / ident.rel_dir if ident.rel_dir else root
         if pkg_dir.is_dir():
-            peers.extend(pkg_dir.glob("*.typhon"))
+            peers.extend(iter_source_files(pkg_dir))
     return sorted({p.resolve() for p in peers})
 
 

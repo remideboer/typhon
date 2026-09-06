@@ -2,7 +2,7 @@
   "name": "typhon-language",
   "displayName": "Typhon Language Support",
   "description": "Syntax highlighting, snippets, and Run for the Typhon teaching language (transpiler bundled; typhon.toml for libraries).",
-  "version": "0.0.108",
+  "version": "0.0.109",
   "publisher": "remideboer",
   "license": "MIT",
   "repository": {
@@ -410,7 +410,8 @@
           "typhon"
         ],
         "extensions": [
-          ".typhon"
+          ".typhon",
+          ".tpn"
         ],
         "configuration": "./language-configuration.json",
         "icon": {
@@ -696,12 +697,12 @@
       "editor/title/run": [
         {
           "command": "typhon.runFile",
-          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && !isInDiffEditor",
           "group": "navigation@0"
         },
         {
           "command": "typhon.debugFile",
-          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && !isInDiffEditor",
           "group": "navigation@1"
         },
         {
@@ -728,34 +729,34 @@
         },
         {
           "command": "typhon.debugFile",
-          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && !isInDiffEditor",
           "group": "navigation@100"
         },
         {
           "command": "typhon.runFile",
-          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && !isInDiffEditor",
           "group": "navigation@101"
         },
         {
           "command": "typhon.clearAllBreakpoints",
-          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && !isInDiffEditor",
           "group": "navigation@102"
         }
       ],
       "editor/title/context": [
         {
           "command": "typhon.clearAllBreakpoints",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "debug@1"
         },
         {
           "command": "typhon.debugFile",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "debug@2"
         },
         {
           "command": "typhon.debugTranspiledFile",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "debug@3"
         }
       ],
@@ -772,72 +773,72 @@
         },
         {
           "command": "typhon.runFile",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "0_run@1"
         },
         {
           "command": "typhon.debugFile",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "0_run@2"
         },
         {
           "command": "typhon.formatDocument",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "1_modification@1"
         },
         {
           "command": "typhon.refactor.rename",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "1_typhon_refactor@1"
         },
         {
           "command": "typhon.refactor.extractFunction",
-          "when": "resourceExtname == .typhon && !typhon.inClassBody",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && !typhon.inClassBody",
           "group": "1_typhon_refactor@2"
         },
         {
           "command": "typhon.refactor.extractMethod",
-          "when": "resourceExtname == .typhon && typhon.inClassBody",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && typhon.inClassBody",
           "group": "1_typhon_refactor@2"
         },
         {
           "submenu": "typhon.refactor.more",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "1_typhon_refactor@3"
         },
         {
           "command": "typhon.findUsages",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "navigation@50"
         },
         {
           "submenu": "typhon.generate",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "z_typhon_generate@1"
         },
         {
           "command": "revealFileInOS",
-          "when": "resourceExtname == .typhon && resourceScheme == file",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) && resourceScheme == file",
           "group": "z_typhon_reveal@1"
         },
         {
           "command": "typhon.debugTranspiledFile",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "z_typhon_extra@1"
         },
         {
           "command": "typhon.addLogpoint",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "z_typhon_extra@2"
         },
         {
           "command": "typhon.clearAllBreakpoints",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "z_typhon_extra@3"
         },
         {
           "command": "typhon.setAsEntrypoint",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "z_typhon_extra@4"
         }
       ],
@@ -892,17 +893,17 @@
       "editor/lineNumber/context": [
         {
           "command": "typhon.addLogpoint",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "debug@1"
         },
         {
           "command": "typhon.clearAllBreakpoints",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "debug@2"
         },
         {
           "command": "typhon.debugFile",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "debug@3"
         }
       ],
@@ -919,12 +920,12 @@
         },
         {
           "command": "typhon.runFile",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "navigation@1"
         },
         {
           "command": "typhon.setAsEntrypoint",
-          "when": "resourceExtname == .typhon",
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn)",
           "group": "navigation@2"
         }
       ],
@@ -942,7 +943,7 @@
         },
         {
           "command": "typhon.debugTranspiledFile",
-          "when": "resourceExtname == .typhon || editorLangId == pys"
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) || editorLangId == typhon"
         },
         {
           "command": "typhon.runMain",
@@ -954,11 +955,11 @@
         },
         {
           "command": "typhon.addLogpoint",
-          "when": "resourceExtname == .typhon || editorLangId == pys"
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) || editorLangId == typhon"
         },
         {
           "command": "typhon.clearAllBreakpoints",
-          "when": "resourceExtname == .typhon || editorLangId == pys"
+          "when": "(resourceExtname == .typhon || resourceExtname == .tpn) || editorLangId == typhon"
         },
         {
           "command": "typhon.customizeSyntaxColors"
@@ -969,17 +970,17 @@
       {
         "command": "typhon.runFile",
         "key": "ctrl+shift+r",
-        "when": "resourceExtname == .typhon"
+        "when": "(resourceExtname == .typhon || resourceExtname == .tpn)"
       },
       {
         "command": "typhon.debugFile",
         "key": "ctrl+shift+d",
-        "when": "resourceExtname == .typhon"
+        "when": "(resourceExtname == .typhon || resourceExtname == .tpn)"
       },
       {
         "command": "typhon.refactor.rename",
         "key": "f2",
-        "when": "editorTextFocus && editorLangId == pys && !editorReadonly"
+        "when": "editorTextFocus && editorLangId == typhon && !editorReadonly"
       },
       {
         "command": "typhon.runMain",

@@ -27,7 +27,7 @@ from .brand import (
     LOCK_MARKER,
     MANIFEST_FILENAME,
     REPO_ROOT_ENV,
-    SOURCE_EXT,
+    ends_with_source_ext,
 )
 from .workspace import WORKSPACE_ROOT_ENV
 
@@ -1123,7 +1123,7 @@ def clear_filesystem_caches() -> None:
 def is_external_python_module(module_ref: str, site_paths: Iterable[Path] | None = None) -> bool:
     """True if module_ref is importable from deps site paths or the stdlib."""
     ref = module_ref.strip().strip("\"'")
-    if not ref or "/" in ref or "\\" in ref or ref.lower().endswith(SOURCE_EXT):
+    if not ref or "/" in ref or "\\" in ref or ends_with_source_ext(ref):
         return False
     paths = list(site_paths or [])
     if paths and module_present_on_paths(ref, paths):

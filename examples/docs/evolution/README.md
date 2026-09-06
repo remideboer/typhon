@@ -99,6 +99,7 @@ Each record then uses:
 | [CER-062](CER-062-document-formatter.md) | Whole-file Reformat Code in File | IDE |
 | [CER-063](CER-063-reuse-run-terminal.md) | Reuse Run Typhon terminal on Run File/Project | IDE |
 | [CER-064](CER-064-rename-to-typhon.md) | Rename PYS → Typhon (full surface) | Brand / IDE |
+| [CER-065](CER-065-tpn-alias.md) | `.tpn` alias for `.typhon` | Brand / IDE |
 
 Related architecture overview: [`../ARCHITECTURE.md`](../ARCHITECTURE.md).
 

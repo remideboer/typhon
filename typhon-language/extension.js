@@ -22,6 +22,7 @@ const {
   filterInlineValueSitesByScope,
 } = require('./debug-map');
 const { createTyphonProjectScaffold } = require('./create-project');
+const { isTyphonSourcePath } = require('./is-typhon-source');
 const {
   installPlan,
   probeNode,
@@ -207,7 +208,7 @@ function isTyphonSourceDocument(document) {
   if (document.languageId === 'typhon') {
     return true;
   }
-  return document.uri.fsPath.toLowerCase().endsWith('.typhon');
+  return isTyphonSourcePath(document.uri.fsPath);
 }
 
 function workspaceFolderForDocument(document) {
@@ -1753,7 +1754,7 @@ function activate(context) {
     let filePath = resolveFilePath(file);
     if (!filePath && vscode.window.activeTextEditor) {
       const active = vscode.window.activeTextEditor.document;
-      if (active.languageId === 'typhon' || active.uri.fsPath.toLowerCase().endsWith('.typhon')) {
+      if (active.languageId === 'typhon' || isTyphonSourcePath(active.uri.fsPath)) {
         filePath = active.uri.fsPath;
       }
     }
@@ -2335,7 +2336,7 @@ function activate(context) {
         }
         if (message.command === 'setBreakpoints' && message.arguments) {
           const src = message.arguments.source && message.arguments.source.path;
-          if (src && String(src).toLowerCase().endsWith('.typhon')) {
+          if (src && isTyphonSourcePath(src)) {
             entry.bpReqTyphonBySeq.set(message.seq, src);
           }
           message.arguments = remapSetBreakpointsArgs(
@@ -2701,7 +2702,7 @@ function activate(context) {
     }
     const pysBps = all.filter((bp) => {
       if (bp instanceof vscode.SourceBreakpoint) {
-        return bp.location.uri.fsPath.toLowerCase().endsWith('.typhon');
+        return isTyphonSourcePath(bp.location.uri.fsPath);
       }
       return false;
     });
@@ -2771,8 +2772,8 @@ function activate(context) {
     if (!filePath && vscode.window.activeTextEditor) {
       filePath = vscode.window.activeTextEditor.document.uri.fsPath;
     }
-    if (!filePath || !filePath.toLowerCase().endsWith('.typhon')) {
-      vscode.window.showErrorMessage('Select a .typhon file to set as entrypoint.');
+    if (!filePath || !isTyphonSourcePath(filePath)) {
+      vscode.window.showErrorMessage('Select a .typhon or .tpn file to set as entrypoint.');
       return;
     }
     if (!vscode.workspace.isTrusted) {

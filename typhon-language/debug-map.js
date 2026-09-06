@@ -8,6 +8,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { isTyphonSourcePath } = require('./is-typhon-source');
 
 const DEFAULT_HIDE_PREFIXES = ['_typhon_', '__typhon_'];
 
@@ -193,7 +194,7 @@ function remapSetBreakpointsArgs(registry, args) {
     return args;
   }
   const src = args.source.path;
-  if (!src.toLowerCase().endsWith('.typhon')) {
+  if (!isTyphonSourcePath(src)) {
     return args;
   }
   const record = registry.byTyphon.get(normalizePathKey(src));

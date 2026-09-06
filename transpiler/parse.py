@@ -1002,8 +1002,8 @@ def _parse_dotted_name(p: _Tok) -> str:
         if p.at(TokenKind.DOT):
             p.eat(TokenKind.DOT)
             nxt = p.eat(TokenKind.IDENT, TokenKind.KEYWORD).text
-            if nxt == "typhon":
-                parts.append(".typhon")
+            if nxt in ("typhon", "tpn"):
+                parts.append(f".{nxt}")
                 break
             parts.append(".")
             parts.append(nxt)

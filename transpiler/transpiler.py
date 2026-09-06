@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .concurrency import CONCURRENCY_PREAMBLE
 from .imports import ModuleInfo
+from .brand import is_source_path
 
 # Back-compat alias for callers that still import the private name.
 _CONCURRENCY_PREAMBLE = CONCURRENCY_PREAMBLE
@@ -193,11 +194,11 @@ def transpile_path(
 ) -> None:
     """Transpile a file and write the output (plus imported modules)."""
     source_path = source_path.resolve()
-    if source_path.is_dir() or source_path.suffix == ".typhon":
+    if source_path.is_dir() or is_source_path(source_path):
         from .project_manifest import resolve_entrypoint
 
         source_path = resolve_entrypoint(source_path)
-    if source_path.suffix == ".typhon":
+    if is_source_path(source_path):
         modules = transpile_with_modules(source_path, target=target)
         ext = ".mjs" if target == "javascript" else ".py"
         target_path.parent.mkdir(parents=True, exist_ok=True)
@@ -297,7 +298,7 @@ def run_source(source_path: Path, *, target: str | None = None) -> int:
     except DepsError as exc:
         raise TranspileError(str(exc), source_file=source_path) from exc
 
-    if source_path.suffix == ".typhon":
+    if is_source_path(source_path):
         modules = transpile_with_modules(
             source_path,
             allow_runtime_introspection=True,

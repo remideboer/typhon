@@ -1,6 +1,7 @@
 'use strict';
 
 const { normalizePathKey } = require('./debug-map');
+const { isTyphonSourcePath } = require('./is-typhon-source');
 
 const STEP_COMMANDS = new Set(['next', 'stepIn', 'stepOut']);
 const CANCEL_COMMANDS = new Set([
@@ -18,7 +19,7 @@ function typhonLocationFromFrame(frame) {
   const line = frame && frame.line;
   if (
     typeof sourcePath !== 'string' ||
-    !sourcePath.toLowerCase().endsWith('.typhon') ||
+    !isTyphonSourcePath(sourcePath) ||
     typeof line !== 'number'
   ) {
     return null;

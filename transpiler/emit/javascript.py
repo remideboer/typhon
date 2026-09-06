@@ -795,8 +795,10 @@ class _JsEmitter:
     def _sibling_export_names(self, module: str) -> list[str]:
         if self.source_path is None:
             return []
-        path = self.source_path.parent / f"{module}.typhon"
-        if not path.is_file():
+        from ..brand import resolve_source_candidate
+
+        path = resolve_source_candidate(self.source_path.parent / module)
+        if path is None:
             return []
         from ..imports import _parse_module
 

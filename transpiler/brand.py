@@ -5,8 +5,66 @@ from pathlib import Path
 
 LANGUAGE_NAME = "Typhon"
 LANGUAGE_ID = "typhon"
-SOURCE_EXT = ".typhon"
+SOURCE_EXT = ".typhon"  # canonical
+SOURCE_EXT_ALIAS = ".tpn"
+SOURCE_EXTS = (SOURCE_EXT, SOURCE_EXT_ALIAS)
 SOURCE_SUFFIX = "typhon"  # without dot; for fence / messages
+
+
+def is_source_path(path: Path | str) -> bool:
+    """True when ``path`` ends with a Typhon source extension (``.typhon`` or ``.tpn``)."""
+    suffix = Path(path).suffix.lower() if not isinstance(path, Path) else path.suffix.lower()
+    return suffix in SOURCE_EXTS
+
+
+def ensure_source_suffix(path: Path) -> Path:
+    """Append canonical ``SOURCE_EXT`` when ``path`` has no Typhon source suffix."""
+    if is_source_path(path):
+        return path
+    return path.with_suffix(SOURCE_EXT)
+
+
+def resolve_source_candidate(base: Path) -> Path | None:
+    """Prefer ``base.typhon`` over ``base.tpn`` when resolving a stem without suffix.
+
+    ``base`` may already include a source suffix; otherwise try each of ``SOURCE_EXTS``.
+    """
+    if is_source_path(base):
+        return base if base.is_file() else None
+    for ext in SOURCE_EXTS:
+        candidate = base.with_suffix(ext)
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def source_globs() -> tuple[str, ...]:
+    """Glob patterns for Typhon sources (canonical first)."""
+    return tuple(f"*{ext}" for ext in SOURCE_EXTS)
+
+
+def ends_with_source_ext(ref: str) -> bool:
+    """True when ``ref`` ends with any Typhon source extension (case-insensitive)."""
+    lowered = ref.lower()
+    return any(lowered.endswith(ext) for ext in SOURCE_EXTS)
+
+
+def strip_source_ext(name: str) -> str:
+    """Remove a trailing Typhon source extension if present (case-insensitive)."""
+    lowered = name.lower()
+    for ext in SOURCE_EXTS:
+        if lowered.endswith(ext):
+            return name[: -len(ext)]
+    return name
+
+
+def iter_source_files(directory: Path) -> list[Path]:
+    """List Typhon sources in ``directory`` (``.typhon`` and ``.tpn``)."""
+    found: list[Path] = []
+    for pattern in source_globs():
+        found.extend(directory.glob(pattern))
+    return found
+
 
 DEPS_FILENAME = "typhon.deps"
 MANIFEST_FILENAME = "typhon.toml"

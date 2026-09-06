@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ..brand import is_source_path, strip_source_ext
 from ..ast_nodes import (
     ArrayDecl,
     AssignStmt,
@@ -963,7 +964,7 @@ def build_index(entry: Path, *, entry_source: str | None = None) -> RefIndex:
     except Exception:
         imported = {}
     for ipath in imported:
-        if isinstance(ipath, Path) and str(ipath).endswith(".typhon"):
+        if isinstance(ipath, Path) and is_source_path(ipath):
             load(Path(ipath))
 
     # Same-package peers (folder siblings, or mirrored dirs under typhon.toml source_roots).
@@ -982,7 +983,7 @@ def build_index(entry: Path, *, entry_source: str | None = None) -> RefIndex:
         for stmt in mod.body:
             if not isinstance(stmt, ImportStmt):
                 continue
-            mod_ref = (stmt.module or "").replace(".typhon", "").split("/")[-1].split(".")[-1]
+            mod_ref = strip_source_ext(stmt.module or "").split("/")[-1].split(".")[-1]
             exports = export_by_module_stem.get(mod_ref, {})
             for n, decl in exports.items():
                 index.export_bindings[(stmt.module, n)] = decl  # type: ignore[attr-defined]

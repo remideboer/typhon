@@ -471,8 +471,10 @@ def _translate_step(step: str) -> str:
 
 
 def _normalize_module_ref(module: str) -> str:
+    from .brand import strip_source_ext
+
     module = module.strip()
-    module = re.sub(r"\.typhon$", "", module)
+    module = strip_source_ext(module)
     module = module.replace("\\", "/").replace("/", ".")
     return module
 

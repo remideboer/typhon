@@ -55,6 +55,23 @@ test('normalizedRelativeMain rejects paths outside the project', () => {
   assert.throws(() => normalizedRelativeMain(root, outside), /inside the project/);
 });
 
+test('normalizedRelativeMain accepts .tpn alias', () => {
+  const root = process.platform === 'win32' ? 'C:\\project' : '/project';
+  const nested = process.platform === 'win32'
+    ? 'C:\\project\\src\\app.tpn'
+    : '/project/src/app.tpn';
+  assert.equal(normalizedRelativeMain(root, nested), 'src/app.tpn');
+});
+
+test('languages.extensions lists .typhon and .tpn', () => {
+  const extensionRoot = path.resolve(__dirname, '..');
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(extensionRoot, 'package.json'), 'utf8'),
+  );
+  const lang = manifest.contributes.languages.find((l) => l.id === 'typhon');
+  assert.deepEqual(lang.extensions, ['.typhon', '.tpn']);
+});
+
 test('extension manifest exposes entrypoint command and result language support', () => {
   const extensionRoot = path.resolve(__dirname, '..');
   const manifest = JSON.parse(

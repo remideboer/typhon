@@ -2,16 +2,17 @@
 
 const fs = require('fs');
 const path = require('path');
+const { isTyphonSourceExt } = require('./is-typhon-source');
 
 function normalizedRelativeMain(projectRoot, filePath) {
   const root = path.resolve(projectRoot);
   const file = path.resolve(filePath);
   const relative = path.relative(root, file);
   if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
-    throw new Error('Entrypoint must be a .typhon file inside the project.');
+    throw new Error('Entrypoint must be a .typhon or .tpn file inside the project.');
   }
-  if (path.extname(relative).toLowerCase() !== '.typhon') {
-    throw new Error('Entrypoint must be a .typhon file.');
+  if (!isTyphonSourceExt(path.extname(relative))) {
+    throw new Error('Entrypoint must be a .typhon or .tpn file.');
   }
   return relative.replace(/\\/g, '/');
 }
