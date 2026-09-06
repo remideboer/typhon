@@ -2,16 +2,16 @@
 
 ## Import package
 
-```pys
+```typhon
 import mysql.connector
 import tkinter as tk
 ```
 
-Declare packages in project `pys.deps` when they are not stdlib.
+Declare packages in project `typhon.deps` when they are not stdlib.
 
 ## Restate weak returns
 
-```pys
+```typhon
 list<tuple<int, string>> rows = cursor.fetchall()
 loop (tuple<int, string> row in rows) {
     print("#i{row[0]} #s{row[1]}")

@@ -1,7 +1,7 @@
 # Double-checked locking
 
 **Category:** Concurrency  
-**Demo:** [double_checked_locking.pys](double_checked_locking.pys)  
+**Demo:** [double_checked_locking.typhon](double_checked_locking.typhon)  
 **Wikipedia:** [Double-checked locking](https://en.wikipedia.org/wiki/Double-checked_locking) · [Concurrency pattern](https://en.wikipedia.org/wiki/Concurrency_pattern)
 
 ## Intent
@@ -10,7 +10,7 @@ Reduce locking overhead for lazy initialization by checking a flag before and af
 
 ## Explanation
 
-Classic DCL uses a mutex on the slow path. PYS has **no lock**; this demo uses `atomic int` with a fast `get()` path and `compareAndSet(-1, computed)` so only one initializer wins. Losers re-read the published value. Prefer DI / eager init in application code; this is literacy for the classic pattern.
+Classic DCL uses a mutex on the slow path. Typhon has **no lock**; this demo uses `atomic int` with a fast `get()` path and `compareAndSet(-1, computed)` so only one initializer wins. Losers re-read the published value. Prefer DI / eager init in application code; this is literacy for the classic pattern.
 
 ## Classic structure (UML)
 
@@ -47,5 +47,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/concurrency/double_checked_locking.pys
+python -m transpiler run examples/patterns/concurrency/double_checked_locking.typhon
 ```

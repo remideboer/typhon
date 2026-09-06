@@ -15,7 +15,7 @@ EX = ROOT / "examples" / "webserver-templates"
 
 
 def test_webserver_templates_main_transpiles() -> None:
-    modules = transpile_with_modules(EX / "src" / "main.pys")
+    modules = transpile_with_modules(EX / "src" / "main.typhon")
     assert "main" in modules
     for text in modules.values():
         ast.parse(text)
@@ -23,5 +23,5 @@ def test_webserver_templates_main_transpiles() -> None:
 
 def test_webserver_templates_engine_runs(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(EX))
-    monkeypatch.setenv("PYS_TEMPLATES_DIR", str(EX / "templates"))
-    assert run_source(EX / "tests" / "test_templates.pys") == 0
+    monkeypatch.setenv("TYPHON_TEMPLATES_DIR", str(EX / "templates"))
+    assert run_source(EX / "tests" / "test_templates.typhon") == 0

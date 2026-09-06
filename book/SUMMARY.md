@@ -87,7 +87,7 @@
 
 - [Session 6 — Tests you can trust](chapter_7_session_tests.md)
   - [9.1. Writing a first test](chapter_7_1_first_test.md)
-  - [9.2. Better PYS with TDD](chapter_7_2_tdd.md)
+  - [9.2. Better Typhon with TDD](chapter_7_2_tdd.md)
   - [9.3. Packages and source roots](chapter_7_3_packages_source_roots.md)
 
 # 10. Session — Patterns you name to build (and to ask an AI)
@@ -104,9 +104,9 @@
   - [10.7. Data paths](chapter_9_7_data_paths.md)
   - [10.8. Prompting an AI](chapter_9_8_prompting_ai.md)
 
-# 11. Session 7 — From PYS to C# and Java
+# 11. Session 7 — From Typhon to C# and Java
 
-- [Session 7 — From PYS to C# and Java](chapter_8_session_csharp_java.md)
+- [Session 7 — From Typhon to C# and Java](chapter_8_session_csharp_java.md)
   - [11.1. Types and declarations](chapter_8_1_types_declarations.md)
   - [11.2. Classes, interfaces, and members](chapter_8_2_classes_interfaces.md)
   - [11.3. Control flow and collections](chapter_8_3_control_flow_collections.md)

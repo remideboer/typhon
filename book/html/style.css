@@ -83,7 +83,7 @@ main pre {
 }
 main pre code { background: transparent; padding: 0; color: inherit; }
 
-/* PYS syntax highlighting (token spans from pys_highlight.py) */
+/* Typhon syntax highlighting (token spans from typhon_highlight.py) */
 .tok-kw { color: #c792ea; font-weight: 600; }
 .tok-mod { color: #82aaff; font-weight: 600; }
 .tok-type { color: #ffcb6b; }

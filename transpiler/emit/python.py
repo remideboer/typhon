@@ -1,4 +1,4 @@
-"""Python emitter for PYS AST."""
+"""Python emitter for Typhon AST."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -66,77 +66,77 @@ from ..ast_nodes import (
     WhileStmt,
 )
 
-_STRUCT_COPY_HELPER = '''def _pys_struct_copy(value):
-    copy = getattr(value, "_pys_copy", None)
+_STRUCT_COPY_HELPER = '''def _typhon_struct_copy(value):
+    copy = getattr(value, "_typhon_copy", None)
     return copy() if callable(copy) else value
 '''
-_FORMAT_HELPER = '''def _pys_format(value):
+_FORMAT_HELPER = '''def _typhon_format(value):
     return "null" if value is None else str(value)
 '''
-_RESULT_PREAMBLE = '''class _PysResult:
-    __slots__ = ("_pys_result_kind", "value", "sites")
+_RESULT_PREAMBLE = '''class _TyphonResult:
+    __slots__ = ("_typhon_result_kind", "value", "sites")
 
     def __init__(self, kind, value, sites=None):
-        self._pys_result_kind = kind
+        self._typhon_result_kind = kind
         self.value = value
         self.sites = list(sites or ())
 
     def __repr__(self):
-        return f"{self._pys_result_kind}({self.value!r})"
+        return f"{self._typhon_result_kind}({self.value!r})"
 
 
-class _PysPropagateSignal(BaseException):
+class _TyphonPropagateSignal(BaseException):
     __slots__ = ("result",)
 
     def __init__(self, result):
         self.result = result
 
 
-def _pys_ok(value=None):
-    return _PysResult("ok", value)
+def _typhon_ok(value=None):
+    return _TyphonResult("ok", value)
 
 
-def _pys_error(value):
-    return _PysResult("error", value)
+def _typhon_error(value):
+    return _TyphonResult("error", value)
 
 
-def _pys_propagate(result, file, line, function):
-    kind = getattr(result, "_pys_result_kind", None)
+def _typhon_propagate(result, file, line, function):
+    kind = getattr(result, "_typhon_result_kind", None)
     if kind == "ok":
         return result.value
     if kind != "error":
-        raise TypeError("propagate expected a PYS result value")
+        raise TypeError("propagate expected a Typhon result value")
     sites = [*result.sites, (file, line, function)]
-    raise _PysPropagateSignal(_PysResult("error", result.value, sites))
+    raise _TyphonPropagateSignal(_TyphonResult("error", result.value, sites))
 
 
-def _pys_panic(result):
-    import sys as _pys_sys
-    print(f"PYS panic: {result.value}", file=_pys_sys.stderr)
+def _typhon_panic(result):
+    import sys as _typhon_sys
+    print(f"Typhon panic: {result.value}", file=_typhon_sys.stderr)
     for file, line, function in result.sites:
-        print(f"  at {file}:{line} in {function}", file=_pys_sys.stderr)
+        print(f"  at {file}:{line} in {function}", file=_typhon_sys.stderr)
     raise SystemExit(1)
 '''
 
 # Only when parseFloat / parseInt appear (depends on _RESULT_PREAMBLE helpers).
 _PARSE_HELPERS = '''
-def _pys_parse_float(text):
+def _typhon_parse_float(text):
     try:
-        return _pys_ok(float(text))
+        return _typhon_ok(float(text))
     except ValueError as exc:
-        return _pys_error(str(exc))
+        return _typhon_error(str(exc))
 
 
-def _pys_parse_int(text):
+def _typhon_parse_int(text):
     try:
-        return _pys_ok(int(text))
+        return _typhon_ok(int(text))
     except ValueError as exc:
-        return _pys_error(str(exc))
+        return _typhon_error(str(exc))
 '''
 
 # Only when toBin / toHex / toOct appear (ADR-024).
 _BASE_DISPLAY_HELPERS = '''
-def _pys_to_base(value, width, spec, name):
+def _typhon_to_base(value, width, spec, name):
     if isinstance(value, bool) or not isinstance(value, int):
         raise TypeError(f"{name} requires an int-like value")
     if value < 0:
@@ -149,16 +149,16 @@ def _pys_to_base(value, width, spec, name):
     return digits
 
 
-def _pys_to_bin(value, width=None):
-    return _pys_to_base(value, width, "b", "toBin")
+def _typhon_to_bin(value, width=None):
+    return _typhon_to_base(value, width, "b", "toBin")
 
 
-def _pys_to_hex(value, width=None):
-    return _pys_to_base(value, width, "x", "toHex")
+def _typhon_to_hex(value, width=None):
+    return _typhon_to_base(value, width, "x", "toHex")
 
 
-def _pys_to_oct(value, width=None):
-    return _pys_to_base(value, width, "o", "toOct")
+def _typhon_to_oct(value, width=None):
+    return _typhon_to_base(value, width, "o", "toOct")
 '''
 from ..language_spec import _default_value_for_type, _translate_string_literal
 
@@ -216,8 +216,8 @@ def emit_with_map(
 ) -> tuple[str, list[dict[str, int]], dict[str, str]]:
     """Emit Python, a statement-level line map, and debug display names.
 
-    Each map entry is ``{"py": <1-based python line>, "pys": <1-based .pys line>}``.
-    ``names`` maps emitted locals (e.g. ``_c_hits``) → PYS display names (``hits``).
+    Each map entry is ``{"py": <1-based python line>, "typhon": <1-based .typhon line>}``.
+    ``names`` maps emitted locals (e.g. ``_c_hits``) → Typhon display names (``hits``).
     """
     emitter = _Emitter(
         source=module.source,
@@ -246,7 +246,7 @@ def _transfer_line_origins(
     if len(old_lines) == len(new_lines):
         for i, orig in enumerate(origins):
             if orig is not None:
-                entries.append({"py": i + 1, "pys": orig})
+                entries.append({"py": i + 1, "typhon": orig})
         return entries
     j = 0
     for i, nl in enumerate(new_lines):
@@ -256,12 +256,12 @@ def _transfer_line_origins(
             break
         orig = origins[j] if j < len(origins) else None
         if orig is not None:
-            entries.append({"py": i + 1, "pys": orig})
+            entries.append({"py": i + 1, "typhon": orig})
         j += 1
     return entries
 
 
-def _pys_import_line(stmt: ImportStmt) -> str:
+def _typhon_import_line(stmt: ImportStmt) -> str:
     if stmt.kind == "module":
         return f"import {stmt.module}"
     if stmt.kind == "as":
@@ -316,7 +316,7 @@ class _Emitter:
         self.atomic_vars: set[str] = set()
         self.tg_name: str | None = None
         self.var_kinds: dict[str, str] = {}  # name -> "string"|"number"|...
-        self.var_types: dict[str, str] = {}  # name -> PYS type (for struct copy)
+        self.var_types: dict[str, str] = {}  # name -> Typhon type (for struct copy)
         self.array_meta: dict[str, tuple[str, int]] = {}  # name -> (elem_type, rank)
         self.fn_return_types: dict[str, str] = {}
         self.struct_names: set[str] = set()
@@ -333,9 +333,9 @@ class _Emitter:
         self._brace_depth = 0
         self._trait_requires_remap: dict[str, str] = {}
         self._scope_serial = 0
-        self._current_pys_line: int | None = None
+        self._current_typhon_line: int | None = None
         self.line_origins: list[int | None] = []
-        self.debug_names: dict[str, str] = {}  # emitted local -> PYS display name
+        self.debug_names: dict[str, str] = {}  # emitted local -> Typhon display name
         self._import_resolver = None
         if source_path is not None:
             from .. import imports as imports_mod
@@ -415,8 +415,8 @@ class _Emitter:
                     self._stmt(stmt, 1)
             else:
                 self._emit(1, "pass")
-            self._emit(0, "except _PysPropagateSignal as _pys_signal:")
-            self._emit(1, "_pys_panic(_pys_signal.result)")
+            self._emit(0, "except _TyphonPropagateSignal as _typhon_signal:")
+            self._emit(1, "_typhon_panic(_typhon_signal.result)")
         else:
             for stmt in module.body:
                 self._stmt(stmt, 0)
@@ -449,7 +449,7 @@ class _Emitter:
 
     def _append_raw(self, text: str, *, pys_line: int | None | object = ...) -> None:
         if pys_line is ...:
-            pys_line = self._current_pys_line
+            pys_line = self._current_typhon_line
         self.lines.append(text)
         self.line_origins.append(pys_line)  # type: ignore[arg-type]
 
@@ -458,14 +458,14 @@ class _Emitter:
 
     def _stmt(self, stmt, indent: int) -> None:
         prev_indent = self._expr_indent
-        prev_line = self._current_pys_line
+        prev_line = self._current_typhon_line
         self._expr_indent = indent
-        self._current_pys_line = stmt.span.line if getattr(stmt, "span", None) else None
+        self._current_typhon_line = stmt.span.line if getattr(stmt, "span", None) else None
         try:
             self._stmt_inner(stmt, indent)
         finally:
             self._expr_indent = prev_indent
-            self._current_pys_line = prev_line
+            self._current_typhon_line = prev_line
 
     def _stmt_inner(self, stmt, indent: int) -> None:
         if isinstance(stmt, BlankStmt):
@@ -475,7 +475,7 @@ class _Emitter:
             self._append_raw(stmt.text)
         elif isinstance(stmt, PrintStmt):
             self.needs_format = True
-            self._emit(indent, f"print(_pys_format({self._expr(stmt.value)}))")
+            self._emit(indent, f"print(_typhon_format({self._expr(stmt.value)}))")
         elif isinstance(stmt, AssignStmt):
             self._assign(stmt, indent)
         elif isinstance(stmt, ArrayDecl):
@@ -524,14 +524,14 @@ class _Emitter:
             name = stmt.name
             if self._brace_depth > 0:
                 name = self._bind_brace_local(stmt.name)
-            self._emit(indent, f"{name} = _PysShared({self._expr(stmt.value)})")
+            self._emit(indent, f"{name} = _TyphonShared({self._expr(stmt.value)})")
         elif isinstance(stmt, AtomicDecl):
             self.needs_concurrency = True
             self.atomic_vars.add(stmt.name)
             name = stmt.name
             if self._brace_depth > 0:
                 name = self._bind_brace_local(stmt.name)
-            self._emit(indent, f"{name} = _PysAtomic({self._expr(stmt.value)})")
+            self._emit(indent, f"{name} = _TyphonAtomic({self._expr(stmt.value)})")
         elif isinstance(stmt, TasksBlock):
             self._tasks(stmt, indent)
         elif isinstance(stmt, ReturnStmt):
@@ -593,8 +593,8 @@ class _Emitter:
                 self.needs_result = True
                 self._emit(indent + 1, "try:")
                 self._block(stmt.body, indent + 2)
-                self._emit(indent + 1, "except _PysPropagateSignal as _pys_signal:")
-                self._emit(indent + 2, "return _pys_signal.result")
+                self._emit(indent + 1, "except _TyphonPropagateSignal as _typhon_signal:")
+                self._emit(indent + 2, "return _typhon_signal.result")
             else:
                 self._block(stmt.body, indent + 1)
             self._current_function = prev_function
@@ -623,12 +623,12 @@ class _Emitter:
 
     def _tasks(self, stmt: TasksBlock, indent: int) -> None:
         self.needs_concurrency = True
-        tg = f"_pys_tg_{stmt.group_id}"
+        tg = f"_typhon_tg_{stmt.group_id}"
         prev = self.tg_name
         self.tg_name = tg
         self._emit(indent, "if True:")
         inner = indent + 1
-        self._emit(inner, f"{tg} = _PysTaskGroup()")
+        self._emit(inner, f"{tg} = _TyphonTaskGroup()")
         for task in stmt.tasks:
             self._task_def(task, inner, tg)
         self._emit(inner, f"{tg}.run()")
@@ -636,12 +636,12 @@ class _Emitter:
 
     def _task_def(self, task: TaskDef, indent: int, tg: str) -> None:
         params = ", ".join(task.params)
-        self._emit(indent, f"def __pys_task_{task.name}({params}):")
+        self._emit(indent, f"def __typhon_task_{task.name}({params}):")
         self._block(task.body, indent + 1)
         if task.is_template:
-            self._emit(indent, f"{tg}.add_template({task.name!r}, __pys_task_{task.name})")
+            self._emit(indent, f"{tg}.add_template({task.name!r}, __typhon_task_{task.name})")
         else:
-            self._emit(indent, f"{tg}.add_auto({task.name!r}, __pys_task_{task.name})")
+            self._emit(indent, f"{tg}.add_auto({task.name!r}, __typhon_task_{task.name})")
 
     def _assign(self, stmt: AssignStmt, indent: int) -> None:
         kind = self._infer_kind(stmt.value)
@@ -796,7 +796,7 @@ class _Emitter:
         code = self._expr(expr, expected_type=expected_type)
         if self._expr_is_struct_value(expr):
             self.needs_struct_copy = True
-            return f"_pys_struct_copy({code})"
+            return f"_typhon_struct_copy({code})"
         return code
 
     def _array_decl(self, stmt: ArrayDecl, indent: int) -> None:
@@ -878,7 +878,7 @@ class _Emitter:
         if self._import_resolver is not None:
             from .. import imports as imports_mod
 
-            line = _pys_import_line(stmt)
+            line = _typhon_import_line(stmt)
             resolved = imports_mod.translate_import(self._import_resolver, line, 1)
             if resolved is not None:
                 self._emit(indent, resolved)
@@ -946,7 +946,7 @@ class _Emitter:
         self._emit(indent, f"class {stmt.name}:")
         if not stmt.fields:
             self._emit(indent + 1, "pass")
-            self._emit(indent + 1, "def _pys_copy(self):")
+            self._emit(indent + 1, "def _typhon_copy(self):")
             self._emit(indent + 2, f"return {stmt.name}()")
             return
         for f in stmt.fields:
@@ -958,20 +958,20 @@ class _Emitter:
             self._emit(indent + 1, "__hash__ = None")
         if partial_fix:
             names = ", ".join(repr(n) for n in sorted(fix_fields))
-            self._emit(indent + 1, f"_pys_fix_fields = frozenset({{{names}}})")
+            self._emit(indent + 1, f"_typhon_fix_fields = frozenset({{{names}}})")
             self._emit(indent + 1, "def __setattr__(self, name, value):")
             self._emit(
                 indent + 2,
-                "if name in type(self)._pys_fix_fields and name in self.__dict__:",
+                "if name in type(self)._typhon_fix_fields and name in self.__dict__:",
             )
             self._emit(
                 indent + 3,
                 "raise AttributeError(f\"Cannot assign to fix field {name!r}\")",
             )
             self._emit(indent + 2, "object.__setattr__(self, name, value)")
-        self._emit(indent + 1, "def _pys_copy(self):")
+        self._emit(indent + 1, "def _typhon_copy(self):")
         copy_args = ", ".join(
-            f"{f.name}=_pys_struct_copy(self.{f.name})" for f in stmt.fields
+            f"{f.name}=_typhon_struct_copy(self.{f.name})" for f in stmt.fields
         )
         self._emit(indent + 2, f"return {stmt.name}({copy_args})")
 
@@ -985,7 +985,7 @@ class _Emitter:
         self._emit(indent, f"class {stmt.name}:")
         if not stmt.fields:
             self._emit(indent + 1, "pass")
-            self._emit(indent + 1, "def _pys_copy(self):")
+            self._emit(indent + 1, "def _typhon_copy(self):")
             self._emit(indent + 2, f"return {stmt.name}()")
             return
         for f in stmt.fields:
@@ -993,9 +993,9 @@ class _Emitter:
                 self._emit(indent + 1, f"{f.name}: object = {self._expr(f.default)}")
             else:
                 self._emit(indent + 1, f"{f.name}: object")
-        self._emit(indent + 1, "def _pys_copy(self):")
+        self._emit(indent + 1, "def _typhon_copy(self):")
         copy_args = ", ".join(
-            f"{f.name}=_pys_struct_copy(self.{f.name})" for f in stmt.fields
+            f"{f.name}=_typhon_struct_copy(self.{f.name})" for f in stmt.fields
         )
         self._emit(indent + 2, f"return {stmt.name}({copy_args})")
 
@@ -1030,11 +1030,11 @@ class _Emitter:
         if local_fix:
             all_fix = self._entity_fix_fields(stmt)
             names = ", ".join(repr(n) for n in sorted(all_fix))
-            self._emit(indent + 1, f"_pys_fix_fields = frozenset({{{names}}})")
+            self._emit(indent + 1, f"_typhon_fix_fields = frozenset({{{names}}})")
             self._emit(indent + 1, "def __setattr__(self, name, value):")
             self._emit(
                 indent + 2,
-                "if name in type(self)._pys_fix_fields and name in self.__dict__:",
+                "if name in type(self)._typhon_fix_fields and name in self.__dict__:",
             )
             self._emit(
                 indent + 3,
@@ -1114,11 +1114,11 @@ class _Emitter:
         frozen = {f.name for f in stmt.fields if f.is_fix or f.is_const}
         if frozen:
             names = ", ".join(repr(n) for n in sorted(frozen))
-            self._emit(indent + 1, f"_pys_fix_fields = frozenset({{{names}}})")
+            self._emit(indent + 1, f"_typhon_fix_fields = frozenset({{{names}}})")
             self._emit(indent + 1, "def __setattr__(self, name, value):")
             self._emit(
                 indent + 2,
-                "if name in type(self)._pys_fix_fields and name in self.__dict__:",
+                "if name in type(self)._typhon_fix_fields and name in self.__dict__:",
             )
             self._emit(
                 indent + 3,
@@ -1221,8 +1221,8 @@ class _Emitter:
             self.needs_result = True
             self._emit(indent + 1, "try:")
             self._block(m.body, indent + 2)
-            self._emit(indent + 1, "except _PysPropagateSignal as _pys_signal:")
-            self._emit(indent + 2, "return _pys_signal.result")
+            self._emit(indent + 1, "except _TyphonPropagateSignal as _typhon_signal:")
+            self._emit(indent + 2, "return _typhon_signal.result")
         else:
             if need_super:
                 self._emit(indent + 1, "super().__init__()")
@@ -1343,7 +1343,7 @@ class _Emitter:
         self.needs_result = True
         serial = self.result_switch_serial
         self.result_switch_serial += 1
-        subject = f"_pys_result_{serial}"
+        subject = f"_typhon_result_{serial}"
         self._emit(indent, f"{subject} = {self._expr(stmt.subject)}")
         patterns = [case for case in stmt.cases if not case.is_default]
         default = next((case for case in stmt.cases if case.is_default), None)
@@ -1353,7 +1353,7 @@ class _Emitter:
             head = "if" if index == 0 else "elif"
             self._emit(
                 indent,
-                f"{head} {subject}._pys_result_kind == {pattern.kind!r}:",
+                f"{head} {subject}._typhon_result_kind == {pattern.kind!r}:",
             )
             self._result_switch_case_body(case, subject, indent + 1)
         if default is not None:
@@ -1395,8 +1395,8 @@ class _Emitter:
         self.needs_result = True
         serial = self.result_switch_serial
         self.result_switch_serial += 1
-        name = f"_pys_result_switch_{serial}"
-        arg = "_pys_result_value"
+        name = f"_typhon_result_switch_{serial}"
+        arg = "_typhon_result_value"
         indent = self._expr_indent
         self._emit(indent, f"def {name}({arg}):")
         patterns = [case for case in expr.cases if not case.is_default]
@@ -1407,7 +1407,7 @@ class _Emitter:
             head = "if" if index == 0 else "elif"
             self._emit(
                 indent + 1,
-                f"{head} {arg}._pys_result_kind == {pattern.kind!r}:",
+                f"{head} {arg}._typhon_result_kind == {pattern.kind!r}:",
             )
             prev_rename = self._lambda_rename
             if pattern.binding:
@@ -1422,13 +1422,13 @@ class _Emitter:
             else:
                 self._emit(indent + 1, f"return {self._expr(default.value)}")
         else:
-            self._emit(indent + 1, "raise RuntimeError('invalid PYS result tag')")
+            self._emit(indent + 1, "raise RuntimeError('invalid Typhon result tag')")
         return f"{name}({self._expr(expr.subject)})"
 
     def _bind_brace_local(self, name: str) -> str:
         """Mangle a name declared inside `{ }` so it cannot leak in Python."""
         self._scope_serial += 1
-        mangled = f"_pys_b{self._scope_serial}_{name}"
+        mangled = f"_typhon_b{self._scope_serial}_{name}"
         self._lambda_rename = {**self._lambda_rename, name: mangled}
         self.debug_names[mangled] = name
         return mangled
@@ -1522,7 +1522,7 @@ class _Emitter:
             self.needs_format = True
             text = re.sub(
                 r"(?<!\{)\{([^{}]+)\}(?!\})",
-                lambda match: "{_pys_format(" + match.group(1) + ")}",
+                lambda match: "{_typhon_format(" + match.group(1) + ")}",
                 text,
             )
             return text
@@ -1556,22 +1556,22 @@ class _Emitter:
         if isinstance(expr, ResultCtor):
             self.needs_result = True
             if expr.kind == "ok" and expr.value is None:
-                return "_pys_ok()"
-            return f"_pys_{expr.kind}({self._expr(expr.value)})"
+                return "_typhon_ok()"
+            return f"_typhon_{expr.kind}({self._expr(expr.value)})"
         if isinstance(expr, PropagateExpr):
             self.needs_result = True
             span = expr.span
             file = str(self.source_path) if self.source_path is not None else "<memory>"
             line = span.line if span else 1
             return (
-                f"_pys_propagate({self._expr(expr.operand)}, {file!r}, "
+                f"_typhon_propagate({self._expr(expr.operand)}, {file!r}, "
                 f"{line}, {self._current_function!r})"
             )
         if isinstance(expr, Call):
             if isinstance(expr.callee, Identifier) and expr.callee.name == "str":
                 self.needs_format = True
                 args = ", ".join(self._call_arg(a) for a in expr.args)
-                return f"_pys_format({args})"
+                return f"_typhon_format({args})"
             if isinstance(expr.callee, Identifier) and expr.callee.name in {
                 "parseFloat",
                 "parseInt",
@@ -1580,9 +1580,9 @@ class _Emitter:
                 self.needs_parse = True
                 args = ", ".join(self._call_arg(a) for a in expr.args)
                 helper = (
-                    "_pys_parse_float"
+                    "_typhon_parse_float"
                     if expr.callee.name == "parseFloat"
-                    else "_pys_parse_int"
+                    else "_typhon_parse_int"
                 )
                 return f"{helper}({args})"
             if isinstance(expr.callee, Identifier) and expr.callee.name in {
@@ -1593,9 +1593,9 @@ class _Emitter:
                 self.needs_base_display = True
                 args = ", ".join(self._call_arg(a) for a in expr.args)
                 helper = {
-                    "toBin": "_pys_to_bin",
-                    "toHex": "_pys_to_hex",
-                    "toOct": "_pys_to_oct",
+                    "toBin": "_typhon_to_bin",
+                    "toHex": "_typhon_to_hex",
+                    "toOct": "_typhon_to_oct",
                 }[expr.callee.name]
                 return f"{helper}({args})"
             # Atomic synthesized accessors: avoid Identifier → .get() on the receiver.
@@ -1868,7 +1868,7 @@ class _Emitter:
     def _lambda(
         self, expr: LambdaExpr, *, expected_type: str | None = None
     ) -> str:
-        name = f"_pys_lam_{self.lambda_serial}"
+        name = f"_typhon_lam_{self.lambda_serial}"
         self.lambda_serial += 1
         frees = self._lambda_free_names(expr)
         rename = {f: f"_c_{f}" for f in frees}
@@ -1898,8 +1898,8 @@ class _Emitter:
                         self._stmt(st, inner_indent)
             else:
                 self._emit(inner_indent, f"return {self._expr(expr.body)}")
-            self._emit(body_indent, "except _PysPropagateSignal as _pys_signal:")
-            self._emit(body_indent + 1, "return _pys_signal.result")
+            self._emit(body_indent, "except _TyphonPropagateSignal as _typhon_signal:")
+            self._emit(body_indent + 1, "return _typhon_signal.result")
         else:
             if isinstance(expr.body, Block):
                 if not expr.body.statements:
@@ -1917,17 +1917,17 @@ class _Emitter:
         return self._maybe_copy_struct(arg)
 
     def _await(self, expr: AwaitExpr) -> str:
-        tg = self.tg_name or "_pys_tg_0"
+        tg = self.tg_name or "_typhon_tg_0"
         target = expr.target
         if isinstance(target, Call) and isinstance(target.callee, Identifier):
             args = ", ".join(self._expr(a) for a in target.args)
             if args:
-                return f"_pys_await({tg}.call({target.callee.name!r}, {args}))"
-            return f"_pys_await({tg}.call({target.callee.name!r}))"
+                return f"_typhon_await({tg}.call({target.callee.name!r}, {args}))"
+            return f"_typhon_await({tg}.call({target.callee.name!r}))"
         if isinstance(target, Identifier):
             # Zero-arg named task → futures; template without call unlikely here.
-            return f"_pys_await({tg}.futures[{target.name!r}])"
-        return f"_pys_await({self._expr(target)})"
+            return f"_typhon_await({tg}.futures[{target.name!r}])"
+        return f"_typhon_await({self._expr(target)})"
 
     def _literal(self, lit: Literal) -> str:
         if lit.kind == "bool":

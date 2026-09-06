@@ -15,7 +15,7 @@ A tiny program that:
 
 Sketch of the in-memory core:
 
-```pys
+```typhon
 list<string> contacts = []
 
 function void showContacts() {

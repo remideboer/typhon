@@ -1,7 +1,7 @@
 # Reactive (teaching push streams)
 
 **Category:** Reactive  
-**Demo:** [reactive.pys](reactive.pys)  
+**Demo:** [reactive.typhon](reactive.typhon)  
 **Wikipedia:** [Reactive programming](https://en.wikipedia.org/wiki/Reactive_programming)
 
 ## Intent
@@ -10,7 +10,7 @@ Push values to subscribers over time (`onNext` / `onComplete`).
 
 ## Explanation
 
-`IntStream` is a tiny Observable stand-in. **Honest note:** PYS has no ReactiveX
+`IntStream` is a tiny Observable stand-in. **Honest note:** Typhon has no ReactiveX
 operators or backpressure; `tasks`/`await` are structured concurrency, not this
 library model. This demo teaches the push-subscription idea only.
 
@@ -46,5 +46,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/reactive/reactive.pys
+python -m transpiler run examples/patterns/reactive/reactive.typhon
 ```

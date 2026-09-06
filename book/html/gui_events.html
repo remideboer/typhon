@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>7.3. Events and callbacks — PYS Development Classes</title>
+  <title>7.3. Events and callbacks — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -147,7 +147,7 @@ now while the window is being built.</p>
 <h2>1. Connecting a button to a function</h2>
 <p>A <code>tk.Button</code> accepts a <code>command</code> argument: a value of type
 <code>lambda&lt;void&gt;</code>, called exactly once per click.</p>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">A working button</span><span class="tok-string">&quot;</span>)
@@ -182,7 +182,7 @@ now while the window is being built.</p>
 </ul>
 <h2>2. Reading an <code>Entry</code> inside a callback</h2>
 <p>Combining this with widgets that hold input:</p>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">Greet me</span><span class="tok-string">&quot;</span>)
@@ -218,7 +218,7 @@ introduced in <a href="basics_null.html">Null and missing values</a>.</p>
 <p>Because the callback <strong>assigns</strong> to that variable, mark it <code>shared</code>
 (captured names are read-only unless <code>shared</code> or <code>atomic</code> — Session 5
 covers this in depth for tasks; the same rule applies to GUI lambdas):</p>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">Last submitted name</span><span class="tok-string">&quot;</span>)
@@ -250,7 +250,7 @@ chapters, showing up again here in a GUI.</p>
 <p><code>command</code> on a button covers clicks specifically. For other kinds of
 events — a key pressed inside an <code>Entry</code>, the mouse entering a widget —
 Tkinter uses <code>.bind()</code> with an event name string:</p>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">Search on Enter</span><span class="tok-string">&quot;</span>)

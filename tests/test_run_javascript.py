@@ -11,7 +11,7 @@ import pytest
 from transpiler.transpiler import run_source
 
 ROOT = Path(__file__).resolve().parents[1]
-SMOKE = ROOT / "examples" / "js_smoke.pys"
+SMOKE = ROOT / "examples" / "js_smoke.typhon"
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not on PATH")

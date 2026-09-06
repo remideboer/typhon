@@ -1,7 +1,7 @@
 # Fallback
 
 **Category:** Resilience  
-**Demo:** [fallback.pys](fallback.pys)  
+**Demo:** [fallback.typhon](fallback.typhon)  
 **Wikipedia / ref:** [Fallback](https://en.wikipedia.org/wiki/Fallback_pattern)
 
 ## Intent
@@ -19,5 +19,5 @@ Use a secondary path when the primary fails.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/resilience/fallback.pys
+python -m transpiler run examples/patterns/resilience/fallback.typhon
 ```

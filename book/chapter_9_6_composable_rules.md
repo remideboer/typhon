@@ -26,7 +26,7 @@ Responsibility.
   </figcaption>
 </figure>
 
-Demo: [`pipeline_middleware.pys`](../examples/patterns/application/pipeline_middleware.pys)
+Demo: [`pipeline_middleware.typhon`](../examples/patterns/application/pipeline_middleware.typhon)
 
 **Output:**
 
@@ -57,7 +57,7 @@ Composable predicates (`and` / `or` / `not`) over a candidate.
   </figcaption>
 </figure>
 
-Demo: [`specification.pys`](../examples/patterns/application/specification.pys)
+Demo: [`specification.typhon`](../examples/patterns/application/specification.typhon)
 
 **Output:**
 
@@ -81,7 +81,7 @@ A do-nothing `Notifier` so callers never branch on null.
   </figcaption>
 </figure>
 
-Demo: [`null_object.pys`](../examples/patterns/application/null_object.pys)
+Demo: [`null_object.typhon`](../examples/patterns/application/null_object.typhon)
 
 **Output:**
 
@@ -111,7 +111,7 @@ Host registers implementations of an interface and runs them.
   </figcaption>
 </figure>
 
-Demo: [`plugin.pys`](../examples/patterns/application/plugin.pys)
+Demo: [`plugin.typhon`](../examples/patterns/application/plugin.typhon)
 
 **Output:**
 
@@ -122,7 +122,7 @@ inventory=inventory:7
 
 ## Anti-pattern: Service Locator
 
-Hidden global lookup. Prefer [Dependency Injection](../examples/patterns/general/dependency_injection.pys).
+Hidden global lookup. Prefer [Dependency Injection](../examples/patterns/general/dependency_injection.typhon).
 
 <figure class="concept-diagram" role="img" aria-label="Hidden registry lookup versus constructor injection">
   <div class="diagram-grid-2">
@@ -140,7 +140,7 @@ Hidden global lookup. Prefer [Dependency Injection](../examples/patterns/general
   </figcaption>
 </figure>
 
-Demo: [`service_locator_antipattern.pys`](../examples/patterns/general/service_locator_antipattern.pys)
+Demo: [`service_locator_antipattern.typhon`](../examples/patterns/general/service_locator_antipattern.typhon)
 
 ### Prompt dialogue
 

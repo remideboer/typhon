@@ -1,7 +1,7 @@
 # Rate limiting
 
 **Category:** Resilience  
-**Demo:** [rate_limiting.pys](rate_limiting.pys)  
+**Demo:** [rate_limiting.typhon](rate_limiting.typhon)  
 **Wikipedia / ref:** [Rate limiting](https://en.wikipedia.org/wiki/Rate_limiting)
 
 ## Intent
@@ -19,5 +19,5 @@ Allow only N actions per window.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/resilience/rate_limiting.pys
+python -m transpiler run examples/patterns/resilience/rate_limiting.typhon
 ```

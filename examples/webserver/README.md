@@ -1,13 +1,13 @@
-# Concurrent webserver (PYS)
+# Concurrent webserver (Typhon)
 
 Project root for the I/O-bound concurrent HTTP server (see
 `concurrent-webserver-spec.md` / `concurrent-webserver-testplan.md`).
 
-Layout uses **`pys.toml` `[source_roots]`** (ADR-017): production under `src/`,
+Layout uses **`typhon.toml` `[source_roots]`** (ADR-017): production under `src/`,
 tests under `tests/` — same package (root-relative `.`), so `package` types stay
 visible to tests without widening modifiers.
 
-## Canonical PYS style
+## Canonical Typhon style
 
 - **OO**: `package class` / `package interface` for domain types.
 - **Least privilege**: `package` exports only (no `global` app API).
@@ -17,26 +17,26 @@ visible to tests without widening modifiers.
 ## Run tests
 
 ```bash
-python -m transpiler run examples/webserver/tests/test_core.pys
-python -m transpiler run examples/webserver/tests/test_integration.pys
-python -m transpiler run examples/webserver/tests/test_faults.pys
-python -m transpiler run examples/webserver/tests/test_inbound_shed.pys
-python -m transpiler run examples/webserver/tests/test_http_e2e.pys
-python -m transpiler run examples/webserver/tests/test_http_keepalive_e2e.pys
-python -m transpiler run examples/webserver/tests/test_timeouts.pys
-python -m transpiler run examples/webserver/tests/test_https_e2e.pys
-python -m transpiler run examples/webserver/tests/test_http2_e2e.pys
+python -m transpiler run examples/webserver/tests/test_core.typhon
+python -m transpiler run examples/webserver/tests/test_integration.typhon
+python -m transpiler run examples/webserver/tests/test_faults.typhon
+python -m transpiler run examples/webserver/tests/test_inbound_shed.typhon
+python -m transpiler run examples/webserver/tests/test_http_e2e.typhon
+python -m transpiler run examples/webserver/tests/test_http_keepalive_e2e.typhon
+python -m transpiler run examples/webserver/tests/test_timeouts.typhon
+python -m transpiler run examples/webserver/tests/test_https_e2e.typhon
+python -m transpiler run examples/webserver/tests/test_http2_e2e.typhon
 python examples/webserver/scripts/check_idempotency.py
 python -m pytest tests/test_webserver_idempotency_gate.py -q
 ```
 
-First HTTP/2 run installs locked `h2` (see `pys.toml` / `pys.lock`). On another
-OS/Python minor, refresh with `python -m transpiler deps lock examples/webserver/pys.toml`.
+First HTTP/2 run installs locked `h2` (see `typhon.toml` / `typhon.lock`). On another
+OS/Python minor, refresh with `python -m transpiler deps lock examples/webserver/typhon.toml`.
 
 ## Run server
 
 ```bash
-python -m transpiler run examples/webserver/src/main.pys
+python -m transpiler run examples/webserver/src/main.typhon
 curl http://127.0.0.1:8080/health
 curl http://127.0.0.1:8080/proxy/data
 curl http://127.0.0.1:8080/proxy/slow
@@ -49,11 +49,11 @@ curl http://127.0.0.1:8080/metrics
 python examples/webserver/scripts/gen_dev_certs.py
 ```
 
-In `src/main.pys`, set `cfg.tlsEnabled = true`. TLS advertises ALPN `h2` and
+In `src/main.typhon`, set `cfg.tlsEnabled = true`. TLS advertises ALPN `h2` and
 `http/1.1`; cleartext stays HTTP/1.1 only.
 
 ```bash
-python -m transpiler run examples/webserver/src/main.pys
+python -m transpiler run examples/webserver/src/main.typhon
 curl -k https://127.0.0.1:8080/health
 curl -k --http2 https://127.0.0.1:8080/health
 ```
@@ -75,9 +75,9 @@ See [`load/README.md`](load/README.md) and [`load/SOAK.md`](load/SOAK.md).
 
 | Path | Role |
 |------|------|
-| `pys.toml` | `[source_roots] main=src test=tests` |
-| `src/*.pys` | Production package (pool, breaker, HTTP, router, main) |
-| `tests/test_*.pys` | Same package — `package` visibility without `public` widening |
+| `typhon.toml` | `[source_roots] main=src test=tests` |
+| `src/*.typhon` | Production package (pool, breaker, HTTP, router, main) |
+| `tests/test_*.typhon` | Same package — `package` visibility without `public` widening |
 | `certs/` | Local TLS PEMs (gitignored; see `certs/README.md`) |
 | `scripts/` | Idempotency gate, cert generation |
 | `load/k6/` | Load scenarios |

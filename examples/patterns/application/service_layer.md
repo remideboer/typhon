@@ -1,7 +1,7 @@
 # Service layer
 
 **Category:** Application  
-**Demo:** [service_layer.pys](service_layer.pys)  
+**Demo:** [service_layer.typhon](service_layer.typhon)  
 **Related:** [repository](../persistence/repository.md) · [Dependency Injection](../general/dependency_injection.md)
 
 ## Intent
@@ -27,5 +27,5 @@ business data/rules; the service coordinates a use-case).
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/application/service_layer.pys
+python -m transpiler run examples/patterns/application/service_layer.typhon
 ```

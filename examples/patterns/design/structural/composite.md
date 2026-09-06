@@ -1,7 +1,7 @@
 # Composite
 
 **Category:** Structural  
-**Demo:** [composite.pys](composite.pys)  
+**Demo:** [composite.typhon](composite.typhon)  
 **Wikipedia:** [Composite pattern](https://en.wikipedia.org/wiki/Composite_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -51,5 +51,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/structural/composite.pys
+python -m transpiler run examples/patterns/design/structural/composite.typhon
 ```

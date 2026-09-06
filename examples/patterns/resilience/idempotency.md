@@ -1,7 +1,7 @@
 # Idempotency
 
 **Category:** Resilience  
-**Demo:** [idempotency.pys](idempotency.pys)  
+**Demo:** [idempotency.typhon](idempotency.typhon)  
 **Wikipedia / ref:** [Idempotency](https://en.wikipedia.org/wiki/Idempotence)
 
 ## Intent
@@ -19,5 +19,5 @@ Same idempotency key returns the same result; duplicate work is not redone.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/resilience/idempotency.pys
+python -m transpiler run examples/patterns/resilience/idempotency.typhon
 ```

@@ -1,0 +1,623 @@
+(*
+  Typhon - Extended Backus-Naur Form (EBNF)
+  ========================================
+  Teaching / production language that compiles via lex → parse → AST → emit.
+  The reference emitter is Python (`transpiler/emit/python.py`); other backends
+  may plug in at the emit layer later.
+
+  Notation (ISO/IEC 14977-style, with common extensions):
+    =       definition
+    ,       concatenation
+    |       alternation
+    [ ... ]   optional
+    { ... }   zero or more repetitions
+    ( ... )   grouping
+    "..."     terminal string
+    (* ... *) comment
+
+  Lexical conventions:
+    - Source uses UTF-8; statements end at newline (no ";").
+    - Indentation is 4 spaces when not using braces; tabs are illegal.
+    - Brace mode is active when the file contains "{" or "}".
+    - Identifiers are case-sensitive.
+
+  This grammar describes the *intended* modern surface (brace style + typed
+  declarations + structured concurrency). A short "Legacy" appendix lists older
+  indent-style forms that the transpiler still accepts.
+
+  Concurrency guide (semantics): docs/CONCURRENCY.md
+*)
+
+(* ------------------------- Lexical ------------------------- *)
+
+letter           = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+                 | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+                 | "U" | "V" | "W" | "X" | "Y" | "Z"
+                 | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
+                 | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
+                 | "u" | "v" | "w" | "x" | "y" | "z" | "_" ;
+digit            = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+identifier       = letter , { letter | digit } ;
+
+(* Optional `_` digit separators (not leading/trailing; not consecutive). *)
+integer          = decimal_integer | binary_integer | hex_integer ;
+decimal_integer  = digit , { [ "_" ] , digit } ;
+binary_integer   = "0" , ( "b" | "B" ) , bin_digit , { [ "_" ] , bin_digit } ;
+hex_integer      = "0" , ( "x" | "X" ) , hex_digit , { [ "_" ] , hex_digit } ;
+bin_digit        = "0" | "1" ;
+hex_digit        = digit | "A" | "B" | "C" | "D" | "E" | "F"
+                 | "a" | "b" | "c" | "d" | "e" | "f" ;
+float            = digit , { digit } , "." , digit , { digit } ;
+boolean          = "true" | "false" ;
+null_lit         = "null" ;
+
+char_lit         = "'" , character , "'" ;
+string_lit       = '"' , { string_char } , '"'
+                 | "'" , { string_char } , "'" ;
+
+line_comment     = "#" , { character } ;
+block_comment    = "##" , { character } , "/#" ;
+
+(* ------------------------- Program ------------------------- *)
+
+program          = { import_stmt } , { top_level } ;
+
+(* Imports must occupy a prefix of the file (blank/comment lines may
+   appear among them). After the first declaration or statement, further
+   import_stmt is a FatalParseError (educational diagnostic). *)
+
+top_level        = declaration
+                 | statement ;
+
+(* ------------------------- Imports ------------------------- *)
+
+import_stmt      = "import" , module_ref
+                 | "import" , module_ref , "as" , identifier
+                 | "import" , "all" , "from" , module_ref
+                 | "import" , identifier , { "," , identifier } , "from" , module_ref ;
+
+module_ref       = module_name , [ ".typhon" ] ;
+module_name      = identifier , { ( "." | "/" ) , identifier } ;
+
+(* External Python packages from typhon.deps / stdlib use the same import forms,
+   e.g. import mysql.connector , import tkinter as tk *)
+
+(* ------------------------- Visibility ------------------------- *)
+
+top_visibility   = "global" | "package" | "module" ;
+(* Omit -> module-private for top-level exports *)
+
+member_access    = "public" | "private" | "protected" | "module" ;
+
+(* ------------------------- Types ------------------------- *)
+
+primitive_type   = "int" | "float" | "char" | "string" | "bool" | "object"
+                 | "byte" | "nibble" | "int16" | "int32" | "int64" | "dword" ;
+(* Width aliases are unsigned ranges on int (see LANGUAGE.md); emit as Python int.
+   `object` is the opaque foreign-value type (ADR-025). `var` is NOT a type. *)
+
+array_type       = primitive_type , "[" , [ integer ] , "]" ;
+
+named_type       = identifier ;   (* class, interface, or library type *)
+
+type_args        = "<" , type_expr , { "," , type_expr } , ">" ;
+
+type_expr        = primitive_type
+                 | collection_type , [ type_args ]
+                 | named_type , [ type_args ]
+                 | array_type
+                 | lambda_type
+                 | result_type
+                 | nullable_type ;
+
+collection_type  = "list" | "dict" | "tuple" | "set" ;
+
+lambda_type      = "lambda" , "<" , lambda_type_inner , ">" ;
+lambda_type_inner = type_expr
+                  | [ type_expr , { "," , type_expr } ] , "->" , type_expr ;
+(* Sugar `lambda<R>` = zero parameters returning R.
+   Explicit zero-param: `lambda<-> R>`.
+   With params: `lambda<int -> bool>`, `lambda<int, int -> int>`.
+   Comma-only multi-arg forms (old last-is-return) are illegal. *)
+
+result_type      = "result" , "<" , result_value_type , "," , type_expr , ">" ;
+result_value_type = type_expr | "void" ;
+(* Exactly two arguments: success type T and error type E. *)
+
+nullable_type    = "nullable" , "<" , type_expr , ">" ;
+(* Exactly one underlying type T. T cannot be void or already nullable. *)
+
+type_name        = type_expr ;
+
+(* ------------------------- Declarations ------------------------- *)
+
+declaration      = var_decl
+                 | const_decl
+                 | fix_decl
+                 | shared_decl
+                 | atomic_decl
+                 | function_decl
+                 | class_decl
+                 | struct_decl
+                 | data_decl
+                 | entity_decl
+                 | enum_decl
+                 | interface_decl
+                 | trait_decl ;
+
+var_decl         = type_name , identifier , "=" , expression
+                 | "var" , identifier , "=" , expression
+                 | array_type , identifier , "=" , array_literal ;
+(* One declaration binds one identifier. Comma-separated declarators and
+   shared/multi-target initializers are intentionally not part of Typhon. *)
+
+const_decl       = [ top_visibility ] , "const" , primitive_type ,
+                   identifier , "=" , expression ;
+
+fix_decl         = [ top_visibility ] , "fix" , ( primitive_type | named_type ) ,
+                   identifier , "=" , expression ;
+
+(* shared: cross-task mutable binding (Policy B). See docs/CONCURRENCY.md *)
+shared_decl      = "shared" , type_name , identifier , "=" , expression ;
+
+(* atomic: implies shared; indivisible +=/-=/++/-- plus get/compareAndSet *)
+atomic_decl      = "atomic" , atomic_primitive , identifier , "=" , expression ;
+atomic_primitive = "int" | "int16" | "int32" | "int64" | "dword" | "bool" ;
+
+(* ------------------------- Functions ------------------------- *)
+
+decorator        = "@" , expression ;
+(* Library decorator application (ADR-026). Stacked decorators allowed.
+   Not a substitute for missing language constructs (no @alias / @Data). *)
+
+function_decl    = { decorator } , [ top_visibility ] , "function" , [ return_type ] ,
+                   identifier , "(" , [ parameter_list ] , ")" , block
+                 | { decorator } , "func" , identifier , "(" , [ parameter_list ] , ")" , block ;
+
+(* Return type is required when the body contains `return expr`.
+   Form:  global function AppStore openStore()
+*)
+
+return_type      = type_name | "void" ;
+(* void: method must not return a value (bare `return` / fall-off OK). *)
+
+parameter_list   = parameter , { "," , parameter } ;
+parameter        = [ type_name ] , identifier ;
+(* Parameter types may be omitted at foreign boundaries. `var` is not a type
+   (ADR-025); use `object` or omit the type. *)
+
+(* ------------------------- Classes ------------------------- *)
+
+class_decl       = { decorator } , [ top_visibility ] , [ "closed" | "abstract" ] , "class" , identifier ,
+                   [ type_params ] ,
+                   [ ( "inherits" | "super" ) , identifier ] ,
+                   [ "uses" , trait_use , { "," , trait_use } ] ,
+                   [ "implements" , identifier , { "," , identifier } ] ,
+                   class_body ;
+(* closed and abstract are mutually exclusive.
+   Resolution order: base class, then trait composition, then interface check.
+   Each trait_use may remap requires names onto host members (opt-in). *)
+
+trait_use         = identifier , [ trait_remap ] ;
+trait_remap       = "(" , remap_entry , { "," , remap_entry } , ")" ;
+remap_entry       = identifier , ":" , identifier ;
+(* Left: name as declared in the trait's requires. Right: host member.
+   Remapping applies only to requires — never to the trait's own methods. *)
+
+type_params      = "<" , identifier , { "," , identifier } , ">" ;
+
+class_body       = "{" ,
+                   { const_field_decl } ,
+                   { fix_field_decl } ,
+                   { field_decl } ,
+                   { constructor_decl } ,
+                   { method_decl | abstract_method_decl } ,
+                   "}" ;
+
+(* Kind order is grammar-level (parse FatalParseError). Visibility is
+   unordered within a section. See ADR-015 / LANGUAGE § Enforced member ordering. *)
+
+const_field_decl = [ member_access ] , [ "static" ] , "const" , primitive_type , identifier ,
+                   "=" , expression ;
+fix_field_decl   = [ member_access ] , [ "static" ] , "fix" , type_name , identifier ,
+                   [ "=" , expression ] ;
+field_decl       = [ member_access ] , [ "static" ] , type_name , identifier ,
+                   [ "=" , expression ] ;
+(* field_decl is mutable only; const / fix occupy earlier sections.
+   Optional static = class-wide storage (ADR-029); static const is allowed but redundant.
+   Omitted member_access defaults to module (CER-058). *)
+
+method_decl      = { decorator } , [ member_access ] , [ "static" ] ,
+                   [ method_extension_modifier ] ,
+                   [ return_type ] , identifier ,
+                   "(" , [ parameter_list ] , ")" , block ;
+(* static methods have no this; static cannot combine with open/override (ADR-029).
+   Omitted member_access defaults to module (CER-058). *)
+
+method_extension_modifier = "open"
+                          | "override" , [ "closed" ]
+                          | "closed" ;
+(* No modifier / standalone closed -> not overridable (ADR-028).
+   open -> subclass may override; override -> plugs into open/abstract/root;
+   override closed -> plugs in and seals the chain. *)
+
+abstract_method_decl = [ member_access ] , [ "open" ] , "abstract" , return_type , identifier ,
+                       "(" , [ parameter_list ] , ")" ;
+(* No block. Only legal inside an abstract class. Implicitly an open socket;
+   redundant open is allowed; closed/override on abstract is an error.
+   Abstract methods share the method section (after constructors).
+   Omitted member_access defaults to module (CER-058). *)
+
+constructor_decl = { decorator } , [ member_access ] , "constructor" ,
+                   "(" , [ parameter_list ] , ")" , block ;
+(* Omitted member_access defaults to module (same-file teaching boundary). *)
+
+(* Class/entity members may omit member_access (⇒ module). "function" / "func"
+   inside a class is illegal. Constructors use the explicit `constructor`
+   keyword (ADR-027), not the type name. *)
+
+(* ------------------------- Structs ------------------------- *)
+
+struct_decl      = [ top_visibility ] , [ "fix" ] , "struct" , identifier ,
+                   [ type_params ] , struct_body ;
+
+(* No "sealed", no "inherits"/"super", no "implements" — structs are
+   identity-free value types with an implicit canonical constructor
+   `Name(args)` / `Name(field = expr, …)` (same call_suffix as classes). *)
+
+struct_body      = "{" ,
+                   { fix_struct_field_decl } ,
+                   { struct_field_decl } ,
+                   "}" ;
+
+(* Fields are always public; top_visibility on struct_decl controls import access.
+   Fix fields must precede mutable fields (same kind-order rule as classes). *)
+fix_struct_field_decl = "fix" , type_name , identifier ,
+                         [ "=" , expression ] ;
+struct_field_decl      = type_name , identifier ,
+                         [ "=" , expression ] ;
+
+(* ------------------------- Data types (Value Objects) ------------------------- *)
+
+data_decl         = [ top_visibility ] , "data" , identifier , data_body ;
+(* Structural equality/hashCode/toString auto-generated over ALL fields.
+   All fields implicitly fix. No inherits / uses / implements / methods. *)
+
+data_body         = "{" , { data_field_decl } , "}" ;
+data_field_decl   = type_name , identifier , [ "=" , expression ] ;
+
+(* ------------------------- Entities ------------------------- *)
+
+entity_decl       = [ top_visibility ] , "entity" , identifier ,
+                    [ "inherits" , identifier ] ,
+                    [ "identity" , "(" , identifier , { "," , identifier } , ")" ] ,
+                    entity_body ;
+(* Root entity: identity(...) mandatory. Derived: identity optional; when
+   present, fields append after parent keys. No uses / implements. *)
+
+entity_body       = "{" ,
+                    { identity_field_decl } ,
+                    { fix_field_decl } ,
+                    { field_decl } ,
+                    { constructor_decl } ,
+                    { method_decl } ,
+                    "}" ;
+(* Identity fields = those named in this entity's identity(...) clause;
+   they must lead. Other fix fields, then mutable, then constructors, then
+   methods. Visibility is unordered within a section. *)
+
+identity_field_decl = [ member_access ] , "fix" , type_name , identifier ;
+(* Omitted member_access defaults to module (CER-058). *)
+
+(* ------------------------- Enums ------------------------- *)
+
+enum_decl        = [ top_visibility ] , "enum" , identifier ,
+                   "{" , enum_member_list , "}" ;
+(* Non-empty body required. All-or-nothing: every member has "=" or none do.
+   Explicit values are homogeneous (all INT or all STRING) and unique.
+   Members are comma-delimited; an optional trailing comma is allowed.
+   Layout (one line / wrapped / one-per-line) carries no semantic meaning. *)
+
+enum_member_list = enum_member , { "," , enum_member } , [ "," ] ;
+
+enum_member      = identifier , [ "=" , ( integer | string_literal ) ] ;
+
+(* ------------------------- Interfaces ------------------------- *)
+
+interface_decl   = [ top_visibility ] , "interface" , identifier ,
+                   "{" , { interface_method } , "}" ;
+
+interface_method = [ return_type ] , identifier ,
+                   "(" , [ parameter_list ] , ")" ;
+(* Always public and abstract — no member_access, no body, no fields.
+   Implementing classes must provide matching public methods. *)
+
+(* ------------------------- Traits ------------------------- *)
+
+trait_decl       = [ top_visibility ] , "trait" , identifier ,
+                   "{" , { trait_requires } , { trait_method_decl } , "}" ;
+(* requires before methods — host dependencies visible first. *)
+
+trait_method_decl = [ return_type ] , identifier ,
+                    "(" , [ parameter_list ] , ")" , block ;
+(* Always public; body accesses host state via `this`. *)
+
+trait_requires   = "requires" , ( type_name , identifier
+                                 | return_type , identifier ,
+                                   "(" , [ parameter_list ] , ")" ) ;
+(* Host must supply matching field or method. No body here. *)
+
+(* ------------------------- Blocks & statements ------------------------- *)
+
+block            = "{" , { statement } , "}" ;
+
+statement_terminator = ";" ;
+
+statement        = ( declaration_stmt
+                 | assignment
+                 | expression_stmt
+                 | if_stmt
+                 | unless_stmt
+                 | switch_stmt
+                 | loop_stmt
+                 | tasks_stmt
+                 | await_stmt
+                 | return_stmt
+                 | print_stmt
+                 | "break"
+                 | "continue"
+                 | "pass" ) ,
+                 [ statement_terminator ] ;
+(* A newline still ends a statement. ";" is optional when a statement is alone
+   on its line; it is mandatory between two statements on the same physical line.
+   A trailing ";" after the last statement on a line is always permitted. *)
+(* task_stmt is not a free statement — only via tasks_item inside tasks_block. *)
+
+declaration_stmt = var_decl | const_decl | fix_decl | shared_decl | atomic_decl ;
+
+assignment       = lvalue , "=" , expression
+                 | lvalue , ( "+=" | "-=" | "*=" | "/=" | "%=" ) , expression
+                 | lvalue , ( "++" | "--" ) ;
+
+lvalue           = identifier
+                 | "this" , "." , identifier
+                 | identifier , "." , identifier
+                 | postfix_expr , "[" , expression , "]" ;
+
+expression_stmt  = expression ;
+
+return_stmt      = "return" , [ expression ] ;
+
+print_stmt       = "print" , expression
+                 | "print" , "(" , expression , ")" ;
+
+(* ------------------------- Control flow ------------------------- *)
+
+if_stmt          = "if" , [ "not" ] , "(" , expression , ")" , block ,
+                   { "else" , "if" , [ "not" ] , "(" , expression , ")" , block } ,
+                   [ "else" , block ] ;
+(* "if not (…)" is the same as unless; "else if not (…)" → elif not (…) *)
+
+unless_stmt      = "unless" , "(" , expression , ")" , block ;
+(* Transpiles to: if not (expression) *)
+
+(* Switch: no implicit fall-through; trailing `continue` falls through.
+   Statement and expression arms both allow comma-separated multi-labels.
+   Statement arms may use a bare statement sequence or an explicit block;
+   an explicit block introduces nested lexical scope (like other blocks).
+   Mix of `:` and `=>` in one switch is illegal. *)
+switch_stmt      = "switch" , "(" , expression , ")" , "{" , switch_stmt_arm , { switch_stmt_arm } , "}" ;
+switch_stmt_arm  = "case" , case_label , { "," , case_label } , ":" , switch_stmt_body
+                 | "default" , ":" , switch_stmt_body ;
+switch_stmt_body = block
+                 | { statement } ;
+
+switch_expr      = "switch" , "(" , expression , ")" , "{" , switch_expr_arm , { switch_expr_arm } , "}" ;
+switch_expr_arm  = "case" , case_label , { "," , case_label } , "=>" , expression
+                 | "default" , "=>" , expression ;
+
+case_label       = result_pattern
+                 | identifier
+                 | identifier , "." , identifier
+                 | integer | string_lit | char_lit | boolean | null_lit ;
+
+result_pattern   = "ok" , "(" , [ identifier ] , ")"
+                 | "error" , "(" , identifier , ")" ;
+(* Only for a result-typed switch. Both ok and error are required unless
+   default is present. ok() is the result<void,E> success pattern.
+   Bindings cannot be named ok or error. *)
+
+loop_stmt        = c_for_loop | while_loop | foreach_loop ;
+
+c_for_loop       = "loop" , "(" , for_init , ";" , for_cond , ";" , for_step , ")" , block ;
+
+for_init         = [ primitive_type ] , identifier , "=" , expression ;
+for_cond         = identifier , rel_op , expression ;
+for_step         = identifier , ( "++" | "--" )
+                 | identifier , ( "+=" | "-=" ) , expression ;
+(* Init, condition, and step must refer to the same loop variable.
+   That variable is immutable inside the loop body. Multiple changing values
+   use while_loop, where initialization and every mutation stay explicit. *)
+
+while_loop       = "loop" , "(" , expression , ")" , block ;
+
+(* Binder type is required and must match the iterable element type (CER-054). *)
+foreach_loop     = "loop" , "(" , type_name , identifier , "in" , expression , ")" , block ;
+
+rel_op           = "<" | "<=" | ">" | ">=" | "==" | "!=" | "<>" ;
+
+(* ------------------------- Concurrency ------------------------- *)
+
+(* Structured concurrency (Policy B). Guide: docs/CONCURRENCY.md
+   - tasks { … } owns child task lifetimes; exit waits for all
+   - task must appear inside tasks
+   - Inputs: task name(type p, ...) { } then await name(args)
+   - Outputs: return expr then await name / await name(args)
+   - await only inside a task body (statement or expression)
+   - await edges within a tasks group must form a DAG (cycles rejected)
+   - outer captures are read-only unless declared shared
+     (prefer parameters over captures for inputs)
+*)
+
+tasks_stmt       = "tasks" , tasks_block ;
+tasks_block      = "{" , { tasks_item } , "}" ;
+tasks_item       = task_stmt | statement ;
+(* Includes nested tasks_stmt via statement; task_stmt only appears here. *)
+
+task_stmt        = "task" , [ identifier , [ "(" , [ parameter_list ] , ")" ] ] , block ;
+(* Forms:
+     task { ... }                  anonymous auto-started unit
+     task name { ... }             named auto-started; await name
+     task name(type p, ...) { ... }  template; await name(args)
+   Static constraint: task_stmt only legal inside tasks_block.
+   Prefer parameters for inputs; avoid capture-based inputs.
+*)
+
+await_stmt       = "await" , expression ;
+(* Standalone wait; also embeddable via await_expr in expressions. *)
+
+(* ------------------------- Expressions ------------------------- *)
+
+expression       = or_expr ;
+
+or_expr          = and_expr , { ( "||" | "or" ) , and_expr } ;
+and_expr         = not_expr , { ( "&&" | "and" ) , not_expr } ;
+not_expr         = [ "!" | "not" ] , cmp_expr ;
+(* "and" / "or" / "not" are logical (short-circuit), never bitwise. *)
+cmp_expr         = bit_or_expr , [ rel_op , bit_or_expr ] ;
+bit_or_expr      = bit_xor_expr , { "|" , bit_xor_expr } ;
+bit_xor_expr     = bit_and_expr , { ( "^" | "xor" ) , bit_and_expr } ;
+bit_and_expr     = shift_expr , { "&" , shift_expr } ;
+shift_expr       = add_expr , { ( "<<" | ">>" | "shift" , "left" | "shift" , "right" ) , add_expr } ;
+(* Rotate `<<<` / `>>>` / "rotate …" deferred — rejected with a clear error. *)
+add_expr         = mul_expr , { ( "+" | "-" ) , mul_expr } ;
+mul_expr         = power_expr , { ( "*" | "/" | "%" | "//" ) , power_expr } ;
+power_expr       = unary_expr , [ "**" , power_expr ] ;  (* right-associative *)
+
+unary_expr       = [ "+" | "-" | "~" ] , cast_expr
+                 | await_expr ;
+
+await_expr       = "await" , cast_expr ;
+(* Static constraint: await_expr / await_stmt only legal inside task_stmt body. *)
+
+cast_expr        = [ "(" , type_name , ")" ] , postfix_expr ;
+
+postfix_expr     = primary ,
+                   { "." , identifier , [ call_suffix ]
+                   | "[" , slice_or_index , "]"
+                   | call_suffix
+                   | "++"
+                   | "--"
+                   | "propagate" } ;
+
+call_suffix      = "(" , [ arg_list ] , ")" ;
+
+primary          = identifier
+                 | "this"
+                 | "super"
+                 | literal
+                 | array_literal
+                 | dict_literal
+                 | brace_elements
+                 | tuple_literal
+                 | "(" , expression , ")"
+                 | constructor_call
+                 | result_ctor_call
+                 | switch_expr
+                 | lambda_expr ;
+
+result_ctor_call = ( "ok" | "error" ) , "(" , [ expression ] , ")" ;
+(* Contextually typed. ok() requires result<void,E>; error always has a payload. *)
+
+(* ------------------------- Lambdas ------------------------- *)
+
+lambda_expr       = lambda_params , "=>" , ( expression | block ) ;
+
+lambda_params     = "(" , [ lambda_param_list ] , ")"
+                   | identifier ;
+
+lambda_param_list = lambda_param , { "," , lambda_param } ;
+lambda_param      = [ type_name ] , identifier ;
+
+constructor_call = named_type , [ type_args ] , "(" , [ arg_list ] , ")" ;
+
+arg_list         = argument , { "," , argument } ;
+argument         = [ identifier , "=" ] , expression ;
+(* Call style is all-positional or all-named — never mixed — for Typhon functions,
+   methods, class/entity constructors, and struct/data construction (CER-048).
+   Library calls may still pass mixed kwargs through to Python. *)
+
+literal          = integer | float | boolean | null_lit | char_lit | string_lit ;
+
+array_literal    = "[" , [ expression , { "," , expression } ] , "]" ;
+
+(* Keyed dict — always a dict. Empty / unkeyed braces are brace_elements and
+   resolve by expected type: dict / set / list / T[] (see ADR-018). *)
+dict_literal     = "{" , dict_entry , { "," , dict_entry } , [ "," ] , "}" ;
+dict_entry       = expression , ":" , expression ;
+
+brace_elements   = "{" , [ expression , { "," , expression } , [ "," ] ] , "}" ;
+
+(* Tuple: empty, singleton with trailing comma, or two+ elements.
+   A single parenthesized expression without a comma remains grouping. *)
+tuple_literal    = "(" , ")"
+                 | "(" , expression , "," , [ expression , { "," , expression } ] , [ "," ] , ")" ;
+
+slice_or_index   = expression
+                 | [ expression ] , ":" , [ expression ] , [ ":" , expression ] ;
+(* Array slices use inclusive end indices in Typhon (adjusted when transpiling). *)
+
+(* Special forms rewritten by the transpiler:
+     this(args)          -> constructor chaining
+     super(args)         -> super().__init__(args)
+     super.name(args)    -> super().name(args)
+     (subclass ctor without super/this gets implicit super().__init__())
+     name.loop(fn)       -> list(map(fn, name))
+*)
+
+(* ------------------------- Strings & interpolation ------------------------- *)
+
+(* Inside string_lit:
+     { expression }              plain interpolation
+     #s{ expression }            must be string
+     #i{ expression }            must be int
+     #f{ expression }            must be float
+     #c{ expression }            must be char
+     #b{ expression }            must be bool
+     #o{ expression }            must be a non-primitive object
+     \#                          literal '#'
+*)
+
+(* ------------------------- Appendix A: Legacy indent style ------------------------- *)
+
+(* Still accepted when the file does not use braces: *)
+
+legacy_if        = "if" , expression , "then" , ":"
+                 , { "elif" , expression , "then" , ":" }
+                 , [ "else" , ":" ] ;
+
+legacy_for       = "for" , expression , "do" , ":" ;
+legacy_while     = "while" , expression , "do" , ":" ;
+legacy_repeat    = "repeat" , integer , "times" , ":" ;
+legacy_func      = "func" , identifier , "(" , [ parameter_list ] , ")" , ":" ;
+
+(* Bodies follow as indented blocks (4 spaces). "let" is rejected; use "var".
+   Semicolons are illegal. *)
+
+(* ------------------------- Appendix B: Keywords ------------------------- *)
+
+(*
+  Reserved / significant words:
+
+  if else unless loop while for repeat times then do elif
+  function func return class struct data entity identity enum interface implements inherits super closed open override abstract constructor static
+  trait uses requires void lambda
+  import from all var const fix print pass break continue switch case default
+  this and or not xor shift
+  public private protected global package module
+  int float char string bool byte nibble int16 int32 int64 dword
+  list dict tuple set
+  true false null
+  tasks task await shared atomic
+  result nullable ok error propagate
+*)

@@ -1,7 +1,7 @@
 # State
 
 **Category:** Behavioral  
-**Demo:** [state.pys](state.pys)  
+**Demo:** [state.typhon](state.typhon)  
 **Wikipedia:** [State pattern](https://en.wikipedia.org/wiki/State_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -53,5 +53,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/state.pys
+python -m transpiler run examples/patterns/design/behavioral/state.typhon
 ```

@@ -1,7 +1,7 @@
 # Plugin
 
 **Category:** Application  
-**Demo:** [plugin.pys](plugin.pys)  
+**Demo:** [plugin.typhon](plugin.typhon)  
 **Wikipedia / ref:** [Plugin](https://en.wikipedia.org/wiki/Plugin)
 
 ## Intent
@@ -19,5 +19,5 @@ Host registers extensions by interface and runs them.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/application/plugin.pys
+python -m transpiler run examples/patterns/application/plugin.typhon
 ```

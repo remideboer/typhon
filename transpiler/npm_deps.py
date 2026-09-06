@@ -1,8 +1,8 @@
 """Central npm dependency cache for the JavaScript emit target.
 
-Declares npm packages in ``pys.toml`` ``[dependencies.npm]`` (preferred) or
+Declares npm packages in ``typhon.toml`` ``[dependencies.npm]`` (preferred) or
 legacy ``package.json``. **Run** installs into
-``~/.pys/repository/npm/<fingerprint>/`` (ADR-001 explicit Run may network).
+``~/.typhon/repository/npm/<fingerprint>/`` (ADR-001 explicit Run may network).
 Projects do not need a local ``npm install`` / ``node_modules``.
 """
 
@@ -25,7 +25,7 @@ from .deps import (
 )
 
 PACKAGE_JSON = "package.json"
-NPM_READY_MARKER = ".pys_npm_ready"
+NPM_READY_MARKER = ".typhon_npm_ready"
 _LEGACY_PKG_WARNED: set[str] = set()
 
 
@@ -44,7 +44,7 @@ class NpmDepsConfig:
 
 
 def default_npm_repo_root() -> Path:
-    """``$PYS_REPO/npm`` or ``~/.pys/repository/npm``."""
+    """``$TYPHON_REPO/npm`` or ``~/.typhon/repository/npm``."""
     return default_repo_root() / "npm"
 
 
@@ -93,7 +93,7 @@ def package_json_fingerprint(package_json: Path) -> str:
 
 
 def parse_npm_from_toml(text: str, *, source_path: Path | None = None) -> NpmDepsConfig | None:
-    """Parse ``[dependencies.npm]`` from pys.toml; None if absent."""
+    """Parse ``[dependencies.npm]`` from typhon.toml; None if absent."""
     label = str(source_path) if source_path else MANIFEST_FILENAME
     data = _load_tomllib_data(text, label=label)
     deps_table = data.get("dependencies")
@@ -151,7 +151,7 @@ def parse_npm_from_package_json(
 
 
 def find_package_json(start: Path, *, stop_at: Path | None = None) -> Path | None:
-    """Walk upward for legacy ``package.json`` (same bounds as pys.deps)."""
+    """Walk upward for legacy ``package.json`` (same bounds as typhon.deps)."""
     try:
         current = start.resolve()
     except OSError:
@@ -176,7 +176,7 @@ def find_package_json(start: Path, *, stop_at: Path | None = None) -> Path | Non
 
 
 def find_npm_deps_source(start: Path, *, stop_at: Path | None = None) -> Path | None:
-    """Prefer ``pys.toml`` with ``[dependencies.npm]``, else legacy ``package.json``."""
+    """Prefer ``typhon.toml`` with ``[dependencies.npm]``, else legacy ``package.json``."""
     try:
         current = start.resolve()
     except OSError:
@@ -216,7 +216,7 @@ def find_npm_deps_source(start: Path, *, stop_at: Path | None = None) -> Path | 
 
 
 def load_npm_deps(start: Path, *, stop_at: Path | None = None) -> NpmDepsConfig | None:
-    """Load npm deps from ``pys.toml`` or legacy ``package.json``."""
+    """Load npm deps from ``typhon.toml`` or legacy ``package.json``."""
     start = start.expanduser()
     try:
         start = start.resolve()
@@ -285,7 +285,7 @@ def ensure_npm_environment(
 ) -> Path:
     """Return central env dir with ``node_modules`` for this npm declaration.
 
-    ``source`` may be an ``NpmDepsConfig``, a ``pys.toml``, or legacy
+    ``source`` may be an ``NpmDepsConfig``, a ``typhon.toml``, or legacy
     ``package.json``. When ``install`` is False (IDE), only return a path that
     is already ready; never run npm.
     """

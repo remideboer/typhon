@@ -1,4 +1,4 @@
-"""examples/classes.pys — general class teaching sample."""
+"""examples/classes.typhon — general class teaching sample."""
 from __future__ import annotations
 
 import ast
@@ -14,9 +14,9 @@ from transpiler.transpiler import run_source, transpile
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "classes.pys"
+EXAMPLE = ROOT / "examples" / "classes.typhon"
 
-os.environ.setdefault("PYS_SUPPRESS_WARNINGS", "1")
+os.environ.setdefault("TYPHON_SUPPRESS_WARNINGS", "1")
 
 
 def test_example_classes_runs(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -1,7 +1,7 @@
 # HTTP Basic authentication
 
 **Category:** Authentication  
-**Demo:** [basic_auth.pys](basic_auth.pys)  
+**Demo:** [basic_auth.typhon](basic_auth.typhon)  
 **Wikipedia:** [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)
 
 ## Intent
@@ -52,5 +52,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/authentication/basic_auth.pys
+python -m transpiler run examples/patterns/authentication/basic_auth.typhon
 ```

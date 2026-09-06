@@ -11,12 +11,12 @@ from transpiler.parse import parse_program_from_tokens
 
 ROOT = Path(__file__).resolve().parent.parent
 CORPUS = [
-    ROOT / "examples" / "main.pys",
-    ROOT / "examples" / "interfaces.pys",
-    ROOT / "examples" / "classes.pys",
-    ROOT / "examples" / "funcs.pys",
-    ROOT / "examples" / "gui" / "pokemontcg" / "main.pys",
-    ROOT / "examples" / "gui" / "PyQt" / "main.pys",
+    ROOT / "examples" / "main.typhon",
+    ROOT / "examples" / "interfaces.typhon",
+    ROOT / "examples" / "classes.typhon",
+    ROOT / "examples" / "funcs.typhon",
+    ROOT / "examples" / "gui" / "pokemontcg" / "main.typhon",
+    ROOT / "examples" / "gui" / "PyQt" / "main.typhon",
 ]
 
 
@@ -39,7 +39,7 @@ def test_peg_matches_rd_on_brace_corpus(path: Path) -> None:
 def test_all_brace_goldens_peg_match_rd() -> None:
     golden = ROOT / "tests" / "golden"
     checked = 0
-    for path in sorted(golden.rglob("*.pys")):
+    for path in sorted(golden.rglob("*.typhon")):
         source = path.read_text(encoding="utf-8")
         try:
             lexed = tokenize_with_flags(source)

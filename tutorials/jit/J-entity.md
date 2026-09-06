@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 entity Customer identity(customerId) {
     private fix int customerId
     public string name
@@ -20,7 +20,7 @@ print(a == b)  # True — same customerId
 
 Shared key (child omits `identity`):
 
-```pys
+```typhon
 entity User inherits Account {
     public string username
     ...
@@ -29,7 +29,7 @@ entity User inherits Account {
 
 Composite key (child appends):
 
-```pys
+```typhon
 entity OrderLine inherits Order identity(lineNumber) {
     private fix int lineNumber
     ...

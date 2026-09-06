@@ -1,9 +1,9 @@
 # Multitier architecture (n-tier / three-tier)
 
 **Category:** Architectural  
-**Demo:** [multitier.pys](multitier.pys)  
+**Demo:** [multitier.typhon](multitier.typhon)  
 **Wikipedia:** [Multitier architecture](https://en.wikipedia.org/wiki/Multitier_architecture)  
-**Related:** [layered.pys](layered.pys) (shorter stack) · [hexagonal.pys](hexagonal.pys) · book §10.1a
+**Related:** [layered.typhon](layered.typhon) (shorter stack) · [hexagonal.typhon](hexagonal.typhon) · book §10.1a
 
 ## Intent
 
@@ -40,5 +40,5 @@ a core — shops often combine both). Layer ≠ tier.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/architectural/multitier.pys
+python -m transpiler run examples/patterns/architectural/multitier.typhon
 ```

@@ -2,7 +2,7 @@
 
 Use `result<T, E>` when the caller can react to failure:
 
-```pys
+```typhon
 function result<int, string> readCount(bool valid) {
     if (valid == false) {
         return error("invalid count")
@@ -13,7 +13,7 @@ function result<int, string> readCount(bool valid) {
 
 Handle both outcomes:
 
-```pys
+```typhon
 result<int, string> outcome = readCount(false)
 switch (outcome) {
     case ok(value):
@@ -31,7 +31,7 @@ invalid count
 
 Or return the same error early from another result function:
 
-```pys
+```typhon
 function result<int, string> addOne(bool valid) {
     int value = readCount(valid) propagate
     return ok(value + 1)
@@ -49,12 +49,12 @@ Rules:
 - Do not propagate through a `task` or from imported top-level code.
 
 At the `[project].main` entrypoint, an unhandled top-level propagation becomes
-a panic: stderr starts with `PYS panic: ...`, PYS sites follow, and exit status
+a panic: stderr starts with `Typhon panic: ...`, Typhon sites follow, and exit status
 is non-zero. There is no `panic(...)` syntax.
 
 Runnable examples:
 
-- [`examples/results.pys`](../../examples/results.pys): success, handled error,
+- [`examples/results.typhon`](../../examples/results.typhon): success, handled error,
   switch expression, propagation, and void success.
 - [`examples/result_panic/`](../../examples/result_panic/): manifest-selected
   entrypoint and terminal panic.

@@ -1,7 +1,7 @@
 # Publish–subscribe
 
 **Category:** Messaging  
-**Demo:** [publish_subscribe.pys](publish_subscribe.pys)  
+**Demo:** [publish_subscribe.typhon](publish_subscribe.typhon)  
 **Wikipedia:** [Publish–subscribe pattern](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern)
 
 ## Intent
@@ -48,5 +48,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/messaging/publish_subscribe.pys
+python -m transpiler run examples/patterns/messaging/publish_subscribe.typhon
 ```

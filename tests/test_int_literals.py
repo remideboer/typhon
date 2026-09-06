@@ -13,7 +13,7 @@ from transpiler.transpiler import TranspileError, run_source, transpile
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "int_literals.pys"
+EXAMPLE = ROOT / "examples" / "int_literals.typhon"
 
 
 def test_example_int_literals_runs(monkeypatch: pytest.MonkeyPatch) -> None:

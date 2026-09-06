@@ -41,7 +41,7 @@ def iter_pys(only: str | None) -> list[Path]:
     for root in roots:
         if not root.is_dir():
             continue
-        files.extend(sorted(root.rglob("*.pys")))
+        files.extend(sorted(root.rglob("*.typhon")))
     if only:
         only_norm = only.replace("\\", "/").strip("/")
         files = [f for f in files if only_norm in str(f.relative_to(GOLDEN)).replace("\\", "/")]
@@ -55,12 +55,12 @@ def main() -> int:
     EXPECTED.mkdir(parents=True, exist_ok=True)
     ok = 0
     fail = 0
-    for pys in iter_pys(args.only):
-        out = expected_path_for(pys)
+    for typhon in iter_pys(args.only):
+        out = expected_path_for(typhon)
         try:
-            text = transpile(pys.read_text(encoding="utf-8"))
+            text = transpile(typhon.read_text(encoding="utf-8"))
         except TranspileError as exc:
-            print(f"SKIP (error) {pys.relative_to(GOLDEN)}: {exc}")
+            print(f"SKIP (error) {typhon.relative_to(GOLDEN)}: {exc}")
             fail += 1
             continue
         out.write_text(text, encoding="utf-8", newline="\n")

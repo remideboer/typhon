@@ -133,7 +133,7 @@ def main() -> None:
                 continue
             if "html" in path.parts and "book" in path.parts:
                 continue
-            if path.suffix not in {".pys", ".md", ".ebnf", ".txt", ".py"}:
+            if path.suffix not in {".typhon", ".md", ".ebnf", ".txt", ".py"}:
                 continue
             original = path.read_text(encoding="utf-8")
             updated = migrate_text(original)

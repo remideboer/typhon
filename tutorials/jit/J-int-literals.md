@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 int i = 0b1010
 byte flags = 0b1011_1101
 nibble n = 0xA

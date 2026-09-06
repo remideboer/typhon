@@ -1,4 +1,4 @@
-"""PYS AST node types (target-neutral). Spans are 1-based line/column."""
+"""Typhon AST node types (target-neutral). Spans are 1-based line/column."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -129,7 +129,7 @@ class Cast(Expr):
 
 @dataclass
 class InterpolatedString(Expr):
-    """String with {expr} / #t{expr} parts; `raw` is original PYS literal text."""
+    """String with {expr} / #t{expr} parts; `raw` is original Typhon literal text."""
 
     raw: str = ""
 

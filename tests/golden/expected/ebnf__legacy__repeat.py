@@ -1,4 +1,4 @@
-def _pys_format(value):
+def _typhon_format(value):
     return "null" if value is None else str(value)
 for _ in range(3):
-    print(_pys_format("hi"))
+    print(_typhon_format("hi"))

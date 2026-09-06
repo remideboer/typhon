@@ -15,7 +15,7 @@ EX = ROOT / "examples" / "webserver-static"
 
 
 def test_webserver_static_main_transpiles() -> None:
-    modules = transpile_with_modules(EX / "src" / "main.pys")
+    modules = transpile_with_modules(EX / "src" / "main.typhon")
     assert "main" in modules
     for stem, text in modules.items():
         ast.parse(text)
@@ -23,5 +23,5 @@ def test_webserver_static_main_transpiles() -> None:
 
 def test_webserver_static_resolve_runs(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(EX))
-    monkeypatch.setenv("PYS_STATIC_WWW", str(EX / "www"))
-    assert run_source(EX / "tests" / "test_static_resolve.pys") == 0
+    monkeypatch.setenv("TYPHON_STATIC_WWW", str(EX / "www"))
+    assert run_source(EX / "tests" / "test_static_resolve.typhon") == 0

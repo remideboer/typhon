@@ -1,7 +1,7 @@
 # Singleton
 
 **Category:** Creational  
-**Demo:** [singleton.pys](singleton.pys)  
+**Demo:** [singleton.typhon](singleton.typhon)  
 **Wikipedia:** [Singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -48,5 +48,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/creational/singleton.pys
+python -m transpiler run examples/patterns/design/creational/singleton.typhon
 ```

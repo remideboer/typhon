@@ -7,13 +7,13 @@ Atomic RMW stays indivisible on the single thread.
 """
 
 JS_CONCURRENCY_PREAMBLE = r"""
-class _PysShared {
+class _TyphonShared {
   constructor(value) { this.value = value; }
   set(value) { this.value = value; return value; }
   iadd(delta) { this.value += delta; return this.value; }
   isub(delta) { this.value -= delta; return this.value; }
 }
-class _PysAtomic {
+class _TyphonAtomic {
   constructor(value) { this._value = value; }
   get() { return this._value; }
   set(value) { this._value = value; return value; }
@@ -24,12 +24,12 @@ class _PysAtomic {
     return false;
   }
 }
-function _pys_await(value) {
+function _typhon_await(value) {
   if (value == null) return value;
   if (typeof value.result === "function") return value.result();
   return value;
 }
-class _PysTaskGroup {
+class _TyphonTaskGroup {
   constructor() {
     this.futures = {};
     this.templates = {};
@@ -72,16 +72,16 @@ class _PysTaskGroup {
 """
 
 JS_VALUE_HELPERS = r"""
-function _pys_struct_copy(value) {
-  if (value != null && typeof value._pys_copy === "function") return value._pys_copy();
+function _typhon_struct_copy(value) {
+  if (value != null && typeof value._typhon_copy === "function") return value._typhon_copy();
   return value;
 }
-function _pys_value_eq(a, b) {
+function _typhon_value_eq(a, b) {
   if (a === b) return true;
   if (a != null && typeof a.equals === "function") return a.equals(b);
   return false;
 }
-function _pys_to_base(value, width, radix, name) {
+function _typhon_to_base(value, width, radix, name) {
   const n = Number(value);
   if (!Number.isFinite(n) || !Number.isInteger(n) || n < 0) {
     throw new Error(name + " requires a non-negative integer");
@@ -96,12 +96,12 @@ function _pys_to_base(value, width, radix, name) {
   }
   return digits;
 }
-function _pys_to_bin(value, width) { return _pys_to_base(value, width, 2, "toBin"); }
-function _pys_to_hex(value, width) { return _pys_to_base(value, width, 16, "toHex"); }
-function _pys_to_oct(value, width) { return _pys_to_base(value, width, 8, "toOct"); }
-function _pys_panic(result) {
+function _typhon_to_bin(value, width) { return _typhon_to_base(value, width, 2, "toBin"); }
+function _typhon_to_hex(value, width) { return _typhon_to_base(value, width, 16, "toHex"); }
+function _typhon_to_oct(value, width) { return _typhon_to_base(value, width, 8, "toOct"); }
+function _typhon_panic(result) {
   const msg = result && result.value !== undefined ? result.value : result;
-  console.error("PYS panic: " + _pys_format(msg));
+  console.error("Typhon panic: " + _typhon_format(msg));
   if (result && Array.isArray(result.sites)) {
     for (const site of result.sites) {
       console.error("  at " + site[0] + ":" + site[1] + " in " + site[2]);

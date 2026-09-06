@@ -1,7 +1,7 @@
 [book]
-title = "PYS Development Classes"
-description = "A beginner programming book for the PYS teaching language"
-authors = ["PYS project"]
+title = "Typhon Development Classes"
+description = "A beginner programming book for the Typhon teaching language"
+authors = ["Typhon project"]
 language = "en"
 src = "book"
 

@@ -4,7 +4,7 @@ Programs often need to pick a path: *if this is true, do A; otherwise do B*.
 
 ## `if` / `else`
 
-```pys
+```typhon
 int temperature = 18
 
 if (temperature < 15) {
@@ -27,7 +27,7 @@ A sweater is enough
 
 Chain more cases with `else if`:
 
-```pys
+```typhon
 int score = 75
 
 if (score >= 90) {
@@ -48,7 +48,7 @@ Pass
 
 ## `unless` — when you think in negatives
 
-```pys
+```typhon
 int lives = 3
 
 unless (lives == 0) {
@@ -66,7 +66,7 @@ Keep playing
 `unless (condition)` means “if the condition is **not** true”. The same
 idea with different words:
 
-```pys
+```typhon
 int lives = 3
 
 if not (lives == 0) {

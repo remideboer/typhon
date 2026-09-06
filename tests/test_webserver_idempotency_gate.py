@@ -27,7 +27,7 @@ def test_idempotency_gate_passes_on_project() -> None:
 
 def test_idempotency_gate_detects_missing_table_row(tmp_path: Path) -> None:
     gate = _load_gate()
-    (tmp_path / "router.pys").write_text(
+    (tmp_path / "router.typhon").write_text(
         'if (req.method == "GET" && req.path == "/new") {\n}\n',
         encoding="utf-8",
     )
@@ -35,7 +35,7 @@ def test_idempotency_gate_detects_missing_table_row(tmp_path: Path) -> None:
         "| Endpoint | x |\n|---|---|\n| `GET /health` | Yes |\n",
         encoding="utf-8",
     )
-    (tmp_path / "idempotency.pys").write_text(
+    (tmp_path / "idempotency.typhon").write_text(
         'if (key == "GET /health") {\n}\n',
         encoding="utf-8",
     )

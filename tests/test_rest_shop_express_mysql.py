@@ -11,7 +11,7 @@ from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
 MYSQL = ROOT / "examples" / "by-target" / "javascript" / "rest-api" / "express" / "mysql"
-MAIN = MYSQL / "src" / "main.pys"
+MAIN = MYSQL / "src" / "main.typhon"
 
 
 def test_express_mysql_main_transpiles(monkeypatch: pytest.MonkeyPatch) -> None:

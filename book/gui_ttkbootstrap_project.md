@@ -16,7 +16,7 @@ constructors differ below.
 
 **After (ttkbootstrap):**
 
-```pys
+```typhon
 import ttkbootstrap as ttkb
 
 function result<float, string> parseCelsius(string input) {

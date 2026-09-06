@@ -1,7 +1,7 @@
 # Transactional outbox
 
 **Category:** Messaging  
-**Demo:** [outbox.pys](outbox.pys)  
+**Demo:** [outbox.typhon](outbox.typhon)  
 **Wikipedia / ref:** [Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html)
 
 ## Intent
@@ -19,5 +19,5 @@ Write domain change and outbox message together; relay publishes later.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/messaging/outbox.pys
+python -m transpiler run examples/patterns/messaging/outbox.typhon
 ```

@@ -1,7 +1,7 @@
 # Template Method
 
 **Category:** Behavioral  
-**Demo:** [template_method.pys](template_method.pys)  
+**Demo:** [template_method.typhon](template_method.typhon)  
 **Wikipedia:** [Template Method pattern](https://en.wikipedia.org/wiki/Template_method_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -54,5 +54,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/template_method.pys
+python -m transpiler run examples/patterns/design/behavioral/template_method.typhon
 ```

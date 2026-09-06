@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>1.1. Getting ready — PYS Development Classes</title>
+  <title>1.1. Getting ready — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -138,42 +138,42 @@
 <h1>1.1. Getting ready</h1>
 <p>Before you write programs, you need two things on your computer:</p>
 <ol>
-<li>A <strong>compiler</strong> — here, the PYS toolchain that turns <code>.pys</code> text into
+<li>A <strong>compiler</strong> — here, the Typhon toolchain that turns <code>.typhon</code> text into
    Python and runs it.</li>
 <li>An <strong>editor</strong> — <a href="https://cursor.com/">Cursor</a> or <a href="https://code.visualstudio.com/">VS Code</a>
-   with the <strong>PYS Language Support</strong> extension.</li>
+   with the <strong>Typhon Language Support</strong> extension.</li>
 </ol>
 <h2>Install the editor extension</h2>
 <ol>
 <li>Open this repository in Cursor or VS Code.</li>
-<li>Install the PYS extension (from the VSIX in <code>pys-language/</code>, or via
+<li>Install the Typhon extension (from the VSIX in <code>typhon-language/</code>, or via
    <code>python -m transpiler install extension</code> from the repo root).</li>
 <li>Reload the window when prompted.</li>
 </ol>
-<p><code>.pys</code> files should get syntax highlighting. The extension bundles the
+<p><code>.typhon</code> files should get syntax highlighting. The extension bundles the
 transpiler so you can Run and see diagnostics without a separate global
 install for day-to-day editing.</p>
 <h2>Check the command line</h2>
 <p>Open a terminal in the repository root and run:</p>
 <pre><code class="language-shell">python -m transpiler --help
 </code></pre>
-<p>You should see PYS commands (<code>run</code>, <code>transpile</code>, and others). If Python
+<p>You should see Typhon commands (<code>run</code>, <code>transpile</code>, and others). If Python
 cannot find the module, make sure your working directory is the
 <code>python-transpiler</code> repo and that you are using the project’s Python
 environment.</p>
 <h2>Your first run</h2>
-<p>Create a file <code>hello.pys</code> anywhere convenient (for example under a
+<p>Create a file <code>hello.typhon</code> anywhere convenient (for example under a
 personal scratch folder) with:</p>
-<pre><code class="language-pys"><span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, world!</span><span class="tok-string">&quot;</span>)</code></pre>
+<pre><code class="language-typhon"><span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, world!</span><span class="tok-string">&quot;</span>)</code></pre>
 <p>Output:</p>
 <pre><code class="language-text">Hello, world!
 </code></pre>
 <p>Run it:</p>
-<pre><code class="language-shell">python -m transpiler run hello.pys
+<pre><code class="language-shell">python -m transpiler run hello.typhon
 </code></pre>
 <p>You should see <code>Hello, world!</code> on the screen.</p>
 <blockquote>
-<p>PYS runs <strong>top-level</strong> statements in the file from top to bottom. You do
+<p>Typhon runs <strong>top-level</strong> statements in the file from top to bottom. You do
 not need a special <code>main</code> function for a program to start — unlike C#
 or Java. We will meet functions soon; calling one is always explicit.</p>
 </blockquote>
@@ -184,11 +184,11 @@ or Java. We will meet functions soon; calling one is always explicit.</p>
 <li><strong>Red squiggles in the editor</strong> — read the message; early errors are
   usually missing braces, typos in keywords, or a type mismatch.</li>
 <li><strong>Extension not active</strong> — check that the language mode for the file is
-  <code>pys</code> (see the status bar).</li>
+  <code>typhon</code> (see the status bar).</li>
 </ul>
 <h3>Exercise</h3>
 <blockquote>
-<p>Create <code>hello.pys</code>, change the text inside the quotes to your own name,
+<p>Create <code>hello.typhon</code>, change the text inside the quotes to your own name,
 run it, and confirm the terminal shows exactly what you typed.</p>
 </blockquote>
 <hr />

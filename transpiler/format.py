@@ -1,4 +1,4 @@
-"""Whole-file PYS AST pretty-printer (brace mode).
+"""Whole-file Typhon AST pretty-printer (brace mode).
 
 Formats already-parsed modules into canonical layout. Does not repair illegal
 kind order or tabs (those fail lex/parse before format — CER-062).

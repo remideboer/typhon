@@ -1,7 +1,7 @@
 # Timeout
 
 **Category:** Resilience  
-**Demo:** [timeout.pys](timeout.pys)  
+**Demo:** [timeout.typhon](timeout.typhon)  
 **Wikipedia / ref:** [Timeout](https://en.wikipedia.org/wiki/Timeout_(computing))
 
 ## Intent
@@ -19,5 +19,5 @@ Fail when a logical step budget is exceeded (teaching form; not OS threads).
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/resilience/timeout.pys
+python -m transpiler run examples/patterns/resilience/timeout.typhon
 ```

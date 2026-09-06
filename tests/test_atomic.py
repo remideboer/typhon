@@ -13,7 +13,7 @@ from transpiler.transpiler import TranspileError, transpile, run_source
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "atomic.pys"
+EXAMPLE = ROOT / "examples" / "atomic.typhon"
 
 
 def test_example_atomic_runs(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -25,7 +25,7 @@ def test_example_atomic_runs(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_example_atomic_emit_is_valid_python() -> None:
     py = transpile(EXAMPLE.read_text(encoding="utf-8"))
     ast.parse(py)
-    assert "_PysAtomic(" in py
+    assert "_TyphonAtomic(" in py
     assert ".iadd(" in py
     assert ".compareAndSet(" in py
     assert ".get()" in py
@@ -148,7 +148,7 @@ def test_atomic_sa_rejects(source: str, match: str) -> None:
 def test_run_source_workspace_isolated(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    src = tmp_path / "a.pys"
+    src = tmp_path / "a.typhon"
     src.write_text("atomic int x = 1\nprint(x)\n", encoding="utf-8")
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(tmp_path))
     assert run_source(src) == 0

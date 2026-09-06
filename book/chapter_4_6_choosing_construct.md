@@ -36,7 +36,7 @@ Use this as a pocket card:
 > immutable, equality over every field, no methods/inheritance. Choosing
 > `struct` skips that contract — useful for a simple bag of fields; choose
 > `data` when you *want* those VO rules. Frameworks in other languages often
-> leave entity identity to annotations (`@Id`, `[Key]`); PYS makes
+> leave entity identity to annotations (`@Id`, `[Key]`); Typhon makes
 > `identity(...)` a checked language fact instead — see
 > [`docs/DATA_ENTITY.md`](../docs/DATA_ENTITY.md) when you want the longer story.
 
@@ -66,7 +66,7 @@ empty constructor — that is an interface. Prefer:
   </figcaption>
 </figure>
 
-```pys
+```typhon
 interface Loadable {
     load(int weight)
     int capacity()

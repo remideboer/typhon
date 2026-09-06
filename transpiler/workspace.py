@@ -4,7 +4,9 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-WORKSPACE_ROOT_ENV = "PYS_WORKSPACE_ROOT"
+from .brand import WORKSPACE_ROOT_ENV
+
+__all__ = ["WORKSPACE_ROOT_ENV", "workspace_root_from_env", "resolve_workspace_path"]
 
 
 def workspace_root_from_env() -> Path | None:

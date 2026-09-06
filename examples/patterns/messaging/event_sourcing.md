@@ -1,7 +1,7 @@
 # Event sourcing
 
 **Category:** Messaging  
-**Demo:** [event_sourcing.pys](event_sourcing.pys)  
+**Demo:** [event_sourcing.typhon](event_sourcing.typhon)  
 **Wikipedia / ref:** [Event sourcing](https://en.wikipedia.org/wiki/Event_sourcing)
 
 ## Intent
@@ -19,5 +19,5 @@ Append domain events; fold them to current state.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/messaging/event_sourcing.pys
+python -m transpiler run examples/patterns/messaging/event_sourcing.typhon
 ```

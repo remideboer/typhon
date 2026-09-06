@@ -926,7 +926,7 @@ def _collect_exports(path: Path, mod: Module) -> dict[str, DeclKey]:
 
 
 def build_index(entry: Path, *, entry_source: str | None = None) -> RefIndex:
-    """Build binding-aware index for ``entry`` and its resolved .pys import graph.
+    """Build binding-aware index for ``entry`` and its resolved .typhon import graph.
 
     When ``entry_source`` is set (IDE ``--stdin`` live buffer), that text is used
     for ``entry`` instead of reading the file from disk.
@@ -957,16 +957,16 @@ def build_index(entry: Path, *, entry_source: str | None = None) -> RefIndex:
         return mod
 
     load(entry)
-    # Discover imported .pys modules from entry (and transitively via resolver paths).
+    # Discover imported .typhon modules from entry (and transitively via resolver paths).
     try:
         imported = discover_imported_modules(entry)
     except Exception:
         imported = {}
     for ipath in imported:
-        if isinstance(ipath, Path) and str(ipath).endswith(".pys"):
+        if isinstance(ipath, Path) and str(ipath).endswith(".typhon"):
             load(Path(ipath))
 
-    # Same-package peers (folder siblings, or mirrored dirs under pys.toml source_roots).
+    # Same-package peers (folder siblings, or mirrored dirs under typhon.toml source_roots).
     from ..project_manifest import package_peer_files
 
     for sib in package_peer_files(entry):
@@ -982,7 +982,7 @@ def build_index(entry: Path, *, entry_source: str | None = None) -> RefIndex:
         for stmt in mod.body:
             if not isinstance(stmt, ImportStmt):
                 continue
-            mod_ref = (stmt.module or "").replace(".pys", "").split("/")[-1].split(".")[-1]
+            mod_ref = (stmt.module or "").replace(".typhon", "").split("/")[-1].split(".")[-1]
             exports = export_by_module_stem.get(mod_ref, {})
             for n, decl in exports.items():
                 index.export_bindings[(stmt.module, n)] = decl  # type: ignore[attr-defined]

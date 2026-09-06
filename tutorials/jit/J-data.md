@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 data Money {
     int amountCents
     string currency

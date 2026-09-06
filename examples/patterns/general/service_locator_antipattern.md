@@ -1,7 +1,7 @@
 # Service Locator (anti-pattern)
 
 **Category:** General  
-**Demo:** [service_locator_antipattern.pys](service_locator_antipattern.pys)  
+**Demo:** [service_locator_antipattern.typhon](service_locator_antipattern.typhon)  
 **Wikipedia / ref:** [Service Locator (anti-pattern)](https://en.wikipedia.org/wiki/Service_locator_pattern)
 
 ## Intent
@@ -19,5 +19,5 @@ Hidden global lookup — contrast with constructor DI. Prefer DI.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/general/service_locator_antipattern.pys
+python -m transpiler run examples/patterns/general/service_locator_antipattern.typhon
 ```

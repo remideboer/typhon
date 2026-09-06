@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>3.2. Variables: var, fix, and const — PYS Development Classes</title>
+  <title>3.2. Variables: var, fix, and const — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -137,7 +137,7 @@
     <main>
 <h1>3.2. Variables: var, fix, and const</h1>
 <p>Three declaration styles you will use constantly:</p>
-<pre><code class="language-pys"><span class="tok-type">int</span> <span class="tok-ident">count</span> <span class="tok-op">=</span> <span class="tok-number">0</span>              <span class="tok-comment"># typed, reassignable</span>
+<pre><code class="language-typhon"><span class="tok-type">int</span> <span class="tok-ident">count</span> <span class="tok-op">=</span> <span class="tok-number">0</span>              <span class="tok-comment"># typed, reassignable</span>
 <span class="tok-mod">var</span> <span class="tok-ident">inferred</span> <span class="tok-op">=</span> <span class="tok-ident">count</span> <span class="tok-op">+</span> <span class="tok-number">1</span>   <span class="tok-comment"># type taken from the initializer</span>
 <span class="tok-mod">fix</span> <span class="tok-type">int</span> <span class="tok-ident">locked</span> <span class="tok-op">=</span> <span class="tok-ident">count</span>    <span class="tok-comment"># assign once, then locked</span>
 <span class="tok-mod">const</span> <span class="tok-type">int</span> <span class="tok-typename">MAX</span> <span class="tok-op">=</span> <span class="tok-number">100</span>        <span class="tok-comment"># compile-time constant</span></code></pre>
@@ -176,10 +176,10 @@ cannot write it as a return type, parameter type, field type, or inside
 <code>list&lt;…&gt;</code>. For foreign or opaque values (for example a socket), use the
 type <code>object</code>, or omit a parameter type at that boundary — see
 <a href="https://github.com/remideboer/pys/blob/main/docs/LANGUAGE.md">LANGUAGE.md</a>.</p>
-<pre><code class="language-pys"><span class="tok-comment"># Illegal — var is not a type here</span>
+<pre><code class="language-typhon"><span class="tok-comment"># Illegal — var is not a type here</span>
 <span class="tok-comment"># public var peek() { return 1 }</span>
 <span class="tok-comment"># function void f(var x) { }</span></code></pre>
-<pre><code class="language-pys"><span class="tok-mod">const</span> <span class="tok-type">int</span> <span class="tok-typename">MAX_RETRIES</span> <span class="tok-op">=</span> <span class="tok-number">3</span>
+<pre><code class="language-typhon"><span class="tok-mod">const</span> <span class="tok-type">int</span> <span class="tok-typename">MAX_RETRIES</span> <span class="tok-op">=</span> <span class="tok-number">3</span>
 <span class="tok-mod">fix</span> <span class="tok-type">string</span> <span class="tok-ident">mode</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">demo</span><span class="tok-string">&quot;</span>
 <span class="tok-mod">var</span> <span class="tok-ident">attempt</span> <span class="tok-op">=</span> <span class="tok-number">0</span>
 <span class="tok-ident">attempt</span> <span class="tok-op">=</span> <span class="tok-ident">attempt</span> <span class="tok-op">+</span> <span class="tok-number">1</span>
@@ -190,23 +190,23 @@ type <code>object</code>, or omit a parameter type at that boundary — see
 <h2>One declaration per name</h2>
 <p>When two variables need the same starting value, write two complete
 declarations:</p>
-<pre><code class="language-pys"><span class="tok-type">int</span> <span class="tok-ident">x</span> <span class="tok-op">=</span> <span class="tok-number">10</span>
+<pre><code class="language-typhon"><span class="tok-type">int</span> <span class="tok-ident">x</span> <span class="tok-op">=</span> <span class="tok-number">10</span>
 <span class="tok-type">int</span> <span class="tok-ident">y</span> <span class="tok-op">=</span> <span class="tok-number">10</span>
 <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-interp">#i{x}</span><span class="tok-string">, </span><span class="tok-interp">#i{y}</span><span class="tok-string">&quot;</span>)</code></pre>
 <p>Output:</p>
 <pre><code class="language-text">10, 10
 </code></pre>
-<p>These compact forms are intentionally <strong>not</strong> PYS:</p>
+<p>These compact forms are intentionally <strong>not</strong> Typhon:</p>
 <pre><code class="language-text">int x, y = 10
 int x = 10, y = 10
 </code></pre>
-<p><em>Both lines are compile errors in PYS.</em></p>
+<p><em>Both lines are compile errors in Typhon.</em></p>
 <p>Why reject even the second, unambiguous form? It saves one line but adds no
-new capability, while every PYS declaration currently introduces exactly one
+new capability, while every Typhon declaration currently introduces exactly one
 name. More importantly, comma declarations teach conflicting habits: in a
 Java or C-style local declaration, <code>int x, y = 10;</code> initializes only <code>y</code>;
 Python&rsquo;s different <code>x, y = 10, 10</code> assignment gives both names a value by
-position. Separate PYS declarations avoid making punctuation carry a
+position. Separate Typhon declarations avoid making punctuation carry a
 language-dependent guess.</p>
 <h3>Exercise</h3>
 <blockquote>

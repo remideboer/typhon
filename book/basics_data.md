@@ -6,7 +6,7 @@ One variable holds one value. Real programs juggle **collections** of values.
 
 A `list` is an ordered row of items of one element type:
 
-```pys
+```typhon
 list<string> names = ["Ada", "Tom", "Lin"]
 print(names[0])
 print(len(names))
@@ -26,7 +26,7 @@ Ada
 
 Growing a list: call `append` to add one item at the end.
 
-```pys
+```typhon
 list<string> names = ["Ada"]
 names.append("Tom")
 print(len(names))
@@ -41,9 +41,9 @@ Output:
 
 ## Arrays
 
-For teaching fixed-element sequences of primitives, PYS also has arrays:
+For teaching fixed-element sequences of primitives, Typhon also has arrays:
 
-```pys
+```typhon
 int[] scores = [10, 20, 30]
 print(scores[1])
 ```
@@ -62,7 +62,7 @@ you want array-shaped teaching examples. Session 2 goes deeper.
 
 Build them with **typed literals** (same forms as in the language overview):
 
-```pys
+```typhon
 tuple<string, int> person = ("Ada", 36)
 print(person[0])
 print(person[1])
@@ -85,7 +85,7 @@ Ada
 > **Sidebar — empty `{}` needs a type**
 >
 > Write `dict<string, int> ages = {}` (or `set<string> tags = {}`). Untyped
-> `var x = {}` is ambiguous between dict, set, and list — PYS asks you to type
+> `var x = {}` is ambiguous between dict, set, and list — Typhon asks you to type
 > the binding. Keyed dicts use `{"Ada": 36}`.
 
 ### Exercise

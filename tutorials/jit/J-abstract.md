@@ -2,7 +2,7 @@
 
 ## Form
 
-```pys
+```typhon
 abstract class Shape {
     public constructor() {}
 
@@ -33,4 +33,4 @@ class Box inherits Shape {
 4. Do not write `Shape()`; construct a concrete subclass (ctors may call `super(...)`)
 5. Abstract classes **are** types: `Shape s = Box(1.0, 2.0)` is allowed
 6. `void` methods must not `return expr`
-7. Full sample: [`examples/abstract_classes.pys`](../../examples/abstract_classes.pys)
+7. Full sample: [`examples/abstract_classes.typhon`](../../examples/abstract_classes.typhon)

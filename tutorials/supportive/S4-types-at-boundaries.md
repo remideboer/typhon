@@ -2,10 +2,10 @@
 
 ## The idea
 
-Python libraries often return **weak** shapes (`list`, bare `tuple`). PYS lets you
+Python libraries often return **weak** shapes (`list`, bare `tuple`). Typhon lets you
 **restate** the shape you believe is true:
 
-```pys
+```typhon
 list<tuple<int, string, string>> rows = mycursor.fetchall()
 ```
 
@@ -23,4 +23,4 @@ Untyped `loop (tuple x in rows)` is a temporary scaffold — finish by naming el
 
 ## Tie-in
 
-JIT: [library boundary](../jit/J-library.md). Showcase patterns live in `examples/main.pys`.
+JIT: [library boundary](../jit/J-library.md). Showcase patterns live in `examples/main.typhon`.

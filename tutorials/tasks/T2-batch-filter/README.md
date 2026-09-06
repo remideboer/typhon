@@ -6,8 +6,8 @@
 
 | Level | File | Your job |
 |-------|------|----------|
-| A Worked | [`1-worked.pys`](1-worked.pys) | Run; explain why the `if` sits *inside* the loop. |
-| B Completion | [`2-completion.pys`](2-completion.pys) | Finish filtering + typed print. |
+| A Worked | [`1-worked.typhon`](1-worked.typhon) | Run; explain why the `if` sits *inside* the loop. |
+| B Completion | [`2-completion.typhon`](2-completion.typhon) | Finish filtering + typed print. |
 | C Conventional | [`3-brief.md`](3-brief.md) | New batch rules — your design. |
 
 ## JIT

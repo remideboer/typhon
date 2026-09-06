@@ -9,5 +9,5 @@ Node **Express** twin of [`examples/rest-api/shop/`](../../../../rest-api/shop/)
 | [`mysql/`](mysql/) | mysql2 persistence | 8191 |
 | [`jwt/`](jwt/) | Bearer on writes | 8192 |
 
-Each silo has `pys.toml` with `target = "javascript"` and `[dependencies.npm]`.
+Each silo has `typhon.toml` with `target = "javascript"` and `[dependencies.npm]`.
 Use **Run Project** on the silo toml.

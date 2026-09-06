@@ -13,11 +13,11 @@ from transpiler.refactor.safe_delete import plan_introduce_parameter, plan_safe_
 
 
 def test_find_usages_same_package(tmp_path: Path) -> None:
-    (tmp_path / "lib.pys").write_text(
+    (tmp_path / "lib.typhon").write_text(
         "package function int bump(int n) {\n    return n + 1\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         'import bump from lib\nint a = bump(1)\nint b = bump(2)\nprint("bump")\n',
         encoding="utf-8",
@@ -27,12 +27,12 @@ def test_find_usages_same_package(tmp_path: Path) -> None:
     by_file = {}
     for h in hits:
         by_file.setdefault(Path(h["file"]).name, []).append(h["line"])
-    assert 1 in by_file.get("lib.pys", [])
-    assert "main.pys" in by_file
+    assert 1 in by_file.get("lib.typhon", [])
+    assert "main.typhon" in by_file
 
 
 def test_find_usages_skips_keywords_and_empty(tmp_path: Path) -> None:
-    src = tmp_path / "x.pys"
+    src = tmp_path / "x.typhon"
     src.write_text("function noop() {\n    return\n}\n", encoding="utf-8")
     assert find_usages(src, "function") == []
     assert find_usages(src, "") == []
@@ -40,7 +40,7 @@ def test_find_usages_skips_keywords_and_empty(tmp_path: Path) -> None:
 
 
 def test_find_usages_shadowed_brace_scope(tmp_path: Path) -> None:
-    src = tmp_path / "s.pys"
+    src = tmp_path / "s.typhon"
     src.write_text(
         "function f() {\n"
         "    int n = 1\n"
@@ -62,7 +62,7 @@ def test_find_usages_shadowed_brace_scope(tmp_path: Path) -> None:
 
 
 def test_find_usages_dotted_enum_member(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text(
         "enum Color {\n    RED = 1,\n    BLUE = 2\n}\nColor c = Color.RED\nprint(Color.RED)\n",
         encoding="utf-8",
@@ -73,16 +73,16 @@ def test_find_usages_dotted_enum_member(tmp_path: Path) -> None:
 
 
 def test_rename_across_import(tmp_path: Path) -> None:
-    (tmp_path / "lib.pys").write_text(
+    (tmp_path / "lib.typhon").write_text(
         "package function int greet() {\n    return 1\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import greet from lib\nint a = greet()\nfunction other() {\n    int greet = 0\n    print(greet)\n}\n",
         encoding="utf-8",
     )
-    lib = tmp_path / "lib.pys"
+    lib = tmp_path / "lib.typhon"
     line = "package function int greet() {"
     col = line.index("greet") + 1
     plan = plan_rename(lib, line=1, column=col, new_name="hello")
@@ -96,7 +96,7 @@ def test_rename_across_import(tmp_path: Path) -> None:
 
 
 def test_rename_field_updates_this_and_not_unrelated(tmp_path: Path) -> None:
-    src = tmp_path / "calc.pys"
+    src = tmp_path / "calc.typhon"
     src.write_text(
         "class Calc {\n"
         "    private fix int getalA\n"
@@ -124,7 +124,7 @@ def test_rename_field_updates_this_and_not_unrelated(tmp_path: Path) -> None:
 
 
 def test_rename_method_updates_call_sites(tmp_path: Path) -> None:
-    src = tmp_path / "calc.pys"
+    src = tmp_path / "calc.typhon"
     src.write_text(
         "class Calc {\n"
         "    public int som() {\n"
@@ -146,7 +146,7 @@ def test_rename_method_updates_call_sites(tmp_path: Path) -> None:
 
 
 def test_rename_class_updates_type_and_ctor(tmp_path: Path) -> None:
-    src = tmp_path / "calc.pys"
+    src = tmp_path / "calc.typhon"
     src.write_text(
         "class Rekenmachine {\n"
         "    public constructor() {}\n"
@@ -165,7 +165,7 @@ def test_rename_class_updates_type_and_ctor(tmp_path: Path) -> None:
 
 
 def test_rename_field_updates_interpolation(tmp_path: Path) -> None:
-    src = tmp_path / "calc.pys"
+    src = tmp_path / "calc.typhon"
     src.write_text(
         "class Calc {\n"
         "    public fix int getalA\n"
@@ -190,7 +190,7 @@ def test_rename_resolves_caret_on_exclusive_end(tmp_path: Path) -> None:
     """VS Code left-to-right selection parks the caret on the exclusive end column."""
     from transpiler.refactor.refs import build_index, resolve_at
 
-    src = tmp_path / "c.pys"
+    src = tmp_path / "c.typhon"
     src.write_text(
         "class Calc {\n"
         "    public fix int getalA\n"
@@ -211,7 +211,7 @@ def test_rename_resolves_caret_on_exclusive_end(tmp_path: Path) -> None:
 
 
 def test_extract_variable(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text("print(1 + 2)\n", encoding="utf-8")
     # select `1 + 2`
     line = "print(1 + 2)"
@@ -234,7 +234,7 @@ def test_extract_variable(tmp_path: Path) -> None:
 
 
 def test_extract_function(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text("print(1)\nprint(2)\n", encoding="utf-8")
     plan = plan_extract_function(src, start_line=1, end_line=2, new_name="show")
     assert plan.ok
@@ -244,7 +244,7 @@ def test_extract_function(tmp_path: Path) -> None:
 
 
 def test_inline_variable(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text("function f() {\n    int x = 3\n    print(x)\n}\n", encoding="utf-8")
     # cursor on x in decl — line 2 column of x
     plan = plan_inline_variable(src, line=2, column=9)
@@ -255,7 +255,7 @@ def test_inline_variable(tmp_path: Path) -> None:
 
 
 def test_inline_function(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text(
         "function int one() {\n    return 1\n}\nint a = one()\n",
         encoding="utf-8",
@@ -268,14 +268,14 @@ def test_inline_function(tmp_path: Path) -> None:
 
 
 def test_safe_delete_unused(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text("function dead() {\n    return\n}\nprint(1)\n", encoding="utf-8")
     plan = plan_safe_delete(src, line=1, column=10)
     assert plan.ok, [c.message for c in plan.conflicts]
 
 
 def test_safe_delete_blocked_when_used(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text("function live() {\n    return\n}\nlive()\n", encoding="utf-8")
     plan = plan_safe_delete(src, line=1, column=10)
     assert not plan.ok
@@ -283,7 +283,7 @@ def test_safe_delete_blocked_when_used(tmp_path: Path) -> None:
 
 
 def test_introduce_parameter(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text(
         "function f() {\n    int n = 1\n    print(n)\n}\nf()\n",
         encoding="utf-8",

@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 print("hello")
 print("n={n}")
 print("n=#i{n}, name=#s{name}")

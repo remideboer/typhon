@@ -2,14 +2,14 @@
 
 Not everything maps 1:1 — and that is fine.
 
-| PYS | Transfer note |
+| Typhon | Transfer note |
 |-----|----------------|
 | Transpile-to-Python runtime | C#/Java have their own VMs; mental model still “compile then run” |
 | `tasks` / `task` / `await` | Closest everyday cousins: `async`/`await`, `Task`/`CompletableFuture`, structured concurrency libraries — learn those deliberately |
 | `shared` / `atomic` | Explicit concurrency primitives / `Interlocked` / `AtomicInteger` |
 | `trait` + `uses` | Prefer interfaces (+ default methods) or composition |
-| `pys.toml` source roots | Test projects / source sets in the IDE |
-| `pys.toml` `[project].main` | C# startup object / top-level project entry; Java `main` class or build-tool main class |
+| `typhon.toml` source roots | Test projects / source sets in the IDE |
+| `typhon.toml` `[project].main` | C# startup object / top-level project entry; Java `main` class or build-tool main class |
 | Top-level statements | C# has top-level statements; Java traditionally wants `main` |
 | `result<T,E>` + `propagate` | C#/Java usually use exceptions; map the intent deliberately, because the control-flow model differs |
 
@@ -19,9 +19,9 @@ the second kind.
 
 ## Transferring recoverable-error code
 
-PYS puts an expected failure in the return type:
+Typhon puts an expected failure in the return type:
 
-```pys
+```typhon
 function result<int, string> readCount(bool valid) {
     if (valid == false) {
         return error("invalid count")
@@ -79,7 +79,7 @@ This is not a spelling-only translation:
 - `int` does not advertise `FormatException` in the C# signature.
 - The exception is not a normal return value.
 - Control jumps up the stack until a matching `catch` is found.
-- An uncaught exception ends the process, roughly the observable role of a PYS
+- An uncaught exception ends the process, roughly the observable role of a Typhon
   panic, but it may come from any throwing operation rather than only an
   unhandled result at the entrypoint.
 
@@ -116,7 +116,7 @@ the signature at all.
 
 ## A transfer checklist
 
-When moving a PYS result API:
+When moving a Typhon result API:
 
 1. Decide which `error(E)` values are expected, recoverable conditions.
 2. In C#/Java, choose a specific exception type or a project-specific result
@@ -127,11 +127,11 @@ When moving a PYS result API:
    Do not add an empty catch merely to silence the compiler.
 5. Put the final handler at the application boundary when the program can
    report the problem usefully. Do not assume every uncaught exception is an
-   intentional equivalent of PYS panic.
+   intentional equivalent of Typhon panic.
 
 ### Exercise
 
-> List three PYS habits you will keep on day one of C# or Java (casing,
+> List three Typhon habits you will keep on day one of C# or Java (casing,
 > member order, preferring immutable locals, …). Keep the list.
 >
 > Then map one `result<int,string>` function to C# or Java. Write down whether

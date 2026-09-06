@@ -1,4 +1,4 @@
-"""Tests for whole-file PYS AST formatter."""
+"""Tests for whole-file Typhon AST formatter."""
 from __future__ import annotations
 
 from transpiler.format import format_source

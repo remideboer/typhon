@@ -1,13 +1,13 @@
-# Pokemon TCG demo (PyQt6 + PYS) — isolated silo
+# Pokemon TCG demo (PyQt6 + Typhon) — isolated silo
 
-Type-safe OO PYS example using **PyQt6** from `pys.toml`: browse a
+Type-safe OO Typhon example using **PyQt6** from `typhon.toml`: browse a
 [TCGdex](https://tcgdex.dev/rest)-extracted card catalog, manage an owned
 collection with per-type stats, and build decks from owned cards.
 
-Self-contained folder (`domain` / `store` / `data` / `pys.toml`).
+Self-contained folder (`domain` / `store` / `data` / `typhon.toml`).
 Tkinter twin: `examples/gui/pokemontcg/`.
 
-`PokemonQtApp inherits QMainWindow` — create `QApplication` in `main.pys` first,
+`PokemonQtApp inherits QMainWindow` — create `QApplication` in `main.typhon` first,
 then construct the window (Qt requires an app before any `QMainWindow`).
 
 Clicking a master-list row updates the detail pane immediately
@@ -16,13 +16,13 @@ Clicking a master-list row updates the detail pane immediately
 ## Run
 
 ```bash
-python -m transpiler run examples/gui/PyQt/main.pys
+python -m transpiler run examples/gui/PyQt/main.typhon
 ```
 
 ## Refresh the catalog (network)
 
 ```bash
-python -m transpiler run examples/gui/PyQt/fetch_catalog.pys
+python -m transpiler run examples/gui/PyQt/fetch_catalog.typhon
 ```
 
 ## Tabs
@@ -37,8 +37,8 @@ python -m transpiler run examples/gui/PyQt/fetch_catalog.pys
 
 | File | Role |
 |------|------|
-| `main.pys` | Entry — `PokemonQtApp` |
-| `ui.pys` | PyQt6 tabs master–detail |
-| `domain.pys` / `store.pys` | Typed domain + JSON I/O |
-| `pys.toml` | `pyqt6` |
+| `main.typhon` | Entry — `PokemonQtApp` |
+| `ui.typhon` | PyQt6 tabs master–detail |
+| `domain.typhon` / `store.typhon` | Typed domain + JSON I/O |
+| `typhon.toml` | `pyqt6` |
 | `data/` | `catalog.json`, `collection.json`, `decks.json` |

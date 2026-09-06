@@ -6,20 +6,20 @@ process memory (lost on restart). No auth (see [`../jwt/`](../jwt/) later).
 ## Run
 
 ```bash
-python -m transpiler run examples/rest-api/shop/memory/src/main.pys
+python -m transpiler run examples/rest-api/shop/memory/src/main.typhon
 ```
 
-Or right-click this folder’s `pys.toml` → **Run Project** (`[project].main`).
+Or right-click this folder’s `typhon.toml` → **Run Project** (`[project].main`).
 
 Listens on `127.0.0.1:8090`. Seeds three board-game products.
 
 ## Tests
 
 ```bash
-set PYS_WORKSPACE_ROOT=examples\rest-api\shop\memory
-python -m transpiler run examples/rest-api/shop/memory/tests/test_repos.pys
-python -m transpiler run examples/rest-api/shop/memory/tests/test_router.pys
-python -m transpiler run examples/rest-api/shop/memory/tests/test_http_e2e.pys
+set TYPHON_WORKSPACE_ROOT=examples\rest-api\shop\memory
+python -m transpiler run examples/rest-api/shop/memory/tests/test_repos.typhon
+python -m transpiler run examples/rest-api/shop/memory/tests/test_router.typhon
+python -m transpiler run examples/rest-api/shop/memory/tests/test_http_e2e.typhon
 ```
 
 ## Curl cookbook (expected shapes)
@@ -94,9 +94,9 @@ Line create snapshots `sku` / `unitPrice` from the product; `lineTotal` = price 
 
 | Path | Role |
 |------|------|
-| `src/main.pys` | Acceptor + 4 workers |
-| `src/router.pys` | Method/path dispatch |
-| `src/api_*.pys` | CRUD handlers |
-| `src/repositories.pys` | `InMemory*` + `ShopStore` |
-| `src/models.pys` | `Product` / `Order` / `OrderLine` |
-| `src/http11.pys` | JSON HTTP/1.1 |
+| `src/main.typhon` | Acceptor + 4 workers |
+| `src/router.typhon` | Method/path dispatch |
+| `src/api_*.typhon` | CRUD handlers |
+| `src/repositories.typhon` | `InMemory*` + `ShopStore` |
+| `src/models.typhon` | `Product` / `Order` / `OrderLine` |
+| `src/http11.typhon` | JSON HTTP/1.1 |

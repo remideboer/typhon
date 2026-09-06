@@ -86,7 +86,7 @@ def test_result_keywords_are_reserved_by_the_lexer() -> None:
 def test_legacy_err_constructor_is_rejected_with_rename_tip() -> None:
     with pytest.raises(TranspileError, match="not a result constructor") as caught:
         parse_program('result<int, string> bad = err("x")\n')
-    assert caught.value.code == "pys.result-err-renamed"
+    assert caught.value.code == "typhon.result-err-renamed"
     assert caught.value.suggested_fix == "error"
     assert any("error(payload)" in tip for tip in caught.value.tips)
 
@@ -102,7 +102,7 @@ def test_legacy_err_pattern_is_rejected_with_rename_tip() -> None:
             "        print(message)\n"
             "}\n"
         )
-    assert caught.value.code == "pys.result-err-renamed"
+    assert caught.value.code == "typhon.result-err-renamed"
     assert caught.value.suggested_fix == "error"
 
 
@@ -126,7 +126,7 @@ def test_result_error_type_cannot_be_void() -> None:
 def test_result_diagnostic_json_has_stable_code_and_actionable_tip(
     tmp_path: Path,
 ) -> None:
-    source = tmp_path / "main.pys"
+    source = tmp_path / "main.typhon"
     source.write_text(
         "function int wrong() {\n"
         "    int value = 1 propagate\n"
@@ -138,7 +138,7 @@ def test_result_diagnostic_json_has_stable_code_and_actionable_tip(
     result = analyze_file(source)
 
     assert result["ok"] is False
-    assert result["error"]["code"] == "pys.propagate-type"
+    assert result["error"]["code"] == "typhon.propagate-type"
     assert "make the expression return `result<T, E>`" in result["error"]["tips"][0]
 
 
@@ -372,8 +372,8 @@ def test_result_constructor_names_cannot_be_redeclared(name: str) -> None:
 
 
 def test_imported_result_function_signature_supports_propagate(tmp_path) -> None:
-    helper = tmp_path / "helper.pys"
-    main = tmp_path / "main.pys"
+    helper = tmp_path / "helper.typhon"
+    main = tmp_path / "main.typhon"
     helper.write_text(
         "global function result<int, string> readNumber() {\n"
         "    return ok(10)\n"
@@ -381,7 +381,7 @@ def test_imported_result_function_signature_supports_propagate(tmp_path) -> None
         encoding="utf-8",
     )
     main.write_text(
-        "import readNumber from helper.pys\n"
+        "import readNumber from helper.typhon\n"
         "function result<int, string> useNumber() {\n"
         "    int value = readNumber() propagate\n"
         "    return ok(value)\n"
@@ -568,7 +568,7 @@ def test_result_switch_expression_emits_payload_binding(capsys) -> None:
 
 
 def test_result_pattern_binding_is_visible_to_find_usages(tmp_path) -> None:
-    source = tmp_path / "main.pys"
+    source = tmp_path / "main.typhon"
     source.write_text(
         "result<int, string> outcome = ok(42)\n"
         "switch (outcome) {\n"
@@ -612,7 +612,7 @@ def test_result_typed_lambda_catches_its_own_propagation(capsys) -> None:
 def test_results_teaching_example_covers_success_handled_error_and_void(
     capsys,
 ) -> None:
-    example = Path(__file__).parents[1] / "examples" / "results.pys"
+    example = Path(__file__).parents[1] / "examples" / "results.typhon"
 
     exec(transpile(example.read_text(encoding="utf-8")), {})
 

@@ -1,7 +1,7 @@
 # Retry
 
 **Category:** Resilience  
-**Demo:** [retry.pys](retry.pys)  
+**Demo:** [retry.typhon](retry.typhon)  
 **Wikipedia / ref:** [Retry](https://en.wikipedia.org/wiki/Retry_pattern)
 
 ## Intent
@@ -19,5 +19,5 @@ Repeat a failing operation up to N times.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/resilience/retry.pys
+python -m transpiler run examples/patterns/resilience/retry.typhon
 ```

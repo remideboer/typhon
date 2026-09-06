@@ -3,7 +3,7 @@
 Book twin for [gui_project.md](../../../book/gui_project.md). Stdlib only.
 
 ```bash
-python -m transpiler run examples/gui/temperature_tk/main.pys
+python -m transpiler run examples/gui/temperature_tk/main.typhon
 ```
 
 Enter a Celsius value and click **Convert**. Invalid text shows an error

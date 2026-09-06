@@ -5,7 +5,7 @@
 > [Session 1](chapter_2_session_types.md).
 
 What if someone would ask me: “Can you teach me how software works — from
-scratch?” This chapter is that answer for **PYS**: small steps, plain
+scratch?” This chapter is that answer for **Typhon**: small steps, plain
 language, and examples you can run yourself.
 
 ## Hello World
@@ -15,9 +15,9 @@ To write software you need:
 1. A **compiler** that turns your text into something the computer can run.
 2. An **editor** to write that text in.
 
-Complete [Getting ready](chapter_1_1_getting_ready.md) first. Then create `main.pys`:
+Complete [Getting ready](chapter_1_1_getting_ready.md) first. Then create `main.typhon`:
 
-```pys
+```typhon
 print("Hello, world!")
 ```
 
@@ -31,19 +31,19 @@ Hello, world!
 Run it:
 
 ```shell
-python -m transpiler run main.pys
+python -m transpiler run main.typhon
 ```
 
 You should see `Hello, world!`.
 
 ### Exploring Hello World
 
-PYS executes the file **from top to bottom**. Each complete line is a
+Typhon executes the file **from top to bottom**. Each complete line is a
 *statement* — one instruction. Here there is only one: `print(...)`.
 
 - `print` — a built-in that sends a value to the screen.
 - `"Hello, world!"` — a *string*: text in double quotes.
-- There is **no** semicolon at the end. In PYS a statement ends at the
+- There is **no** semicolon at the end. In Typhon a statement ends at the
   newline. Braces `{` `}` group blocks later; they are not decoration.
 
 ## Expanding Hello World
@@ -51,7 +51,7 @@ PYS executes the file **from top to bottom**. Each complete line is a
 Introduce a **variable** — a labeled place to keep a value while the
 program runs:
 
-```pys
+```typhon
 var firstName = "Ada"
 print("Hello, " + firstName + "!")
 ```
@@ -117,7 +117,7 @@ the name `firstName`:
    and remembers its type is `string` (text in quotes).
 2. Puts `"Ada"` inside it.
 
-> By convention PYS variables use **camelCase**: no spaces, no
+> By convention Typhon variables use **camelCase**: no spaces, no
 > underscores between words; each new word after the first starts with a
 > capital letter (`firstName`, not `first_name` or `FirstName`). That matches
 > C# and Java, so the habit transfers later.
@@ -127,7 +127,7 @@ Run the program; you should see `Hello, Ada!`.
 
 ### Changing what’s in the drawer
 
-```pys
+```typhon
 var firstName = "Ada"
 print("Hello, " + firstName + "!")
 
@@ -208,10 +208,10 @@ Same drawer number and type, new contents:
 
 Keep building on the same program. `firstName` is still a normal `var`
 drawer (we left it holding `"Tom"`). Add a second drawer that must not
-change later — PYS uses `fix` for that. A year is a whole number, so this
+change later — Typhon uses `fix` for that. A year is a whole number, so this
 drawer’s type is `int`, not `string`:
 
-```pys
+```typhon
 var firstName = "Ada"
 print("Hello, " + firstName + "!")
 
@@ -235,7 +235,7 @@ Tom was born in 1990
 
 *Compile error if the `birthYear = …` line is uncommented.*
 
-When one side of `+` is a string, PYS concatenates and turns the other
+When one side of `+` is a string, Typhon concatenates and turns the other
 side into text for you — no `str(birthYear)` needed here. The drawer
 itself still holds an `int` — look at the type on the right of the address.
 
@@ -299,7 +299,7 @@ Add one more fact — place of birth — without throwing away what you
 already have. Another `fix` drawer opens (a `string` again); more of the
 map lights up:
 
-```pys
+```typhon
 var firstName = "Ada"
 print("Hello, " + firstName + "!")
 
@@ -392,7 +392,7 @@ You will also meet `const` later — a compile-time constant, usually in
 > **Sidebar — one drawer per declaration**
 >
 > Give every variable its own line: `int x = 10`, then `int y = 10`.
-> PYS rejects `int x, y = 10` because it is unclear at a glance whether
+> Typhon rejects `int x, y = 10` because it is unclear at a glance whether
 > `10` belongs to `y` only or to both names. Separate lines keep one label,
 > one drawer, and one starting value together.
 

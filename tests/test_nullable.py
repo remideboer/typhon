@@ -55,13 +55,13 @@ def test_nullable_rejects_invalid_underlying_types(source: str, message: str) ->
 
 def test_plain_type_rejects_null_with_actionable_diagnostic(tmp_path: Path) -> None:
     """Scenario A: ordinary T is non-null by default."""
-    source = tmp_path / "main.pys"
+    source = tmp_path / "main.typhon"
     source.write_text("string name = null\n", encoding="utf-8")
 
     result = analyze_file(source)
 
     assert result["ok"] is False
-    assert result["error"]["code"] == "pys.null-non-nullable"
+    assert result["error"]["code"] == "typhon.null-non-nullable"
     assert result["error"]["suggested_fix"] == "nullable<string> name = null"
     assert "does not allow null" in result["error"]["message"]
 
@@ -79,7 +79,7 @@ def test_nullable_accepts_null_and_present_value() -> None:
     assert "name = None" in py
 
 
-def test_pys_output_formats_absence_as_null_not_python_none(
+def test_typhon_output_formats_absence_as_null_not_python_none(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     py = transpile(
@@ -97,7 +97,7 @@ def test_pys_output_formats_absence_as_null_not_python_none(
 def test_var_cannot_infer_an_underlying_type_from_null() -> None:
     with pytest.raises(TranspileError, match="Cannot infer an underlying type from null") as exc:
         analyze(parse_program("var name = null\n"))
-    assert exc.value.code == "pys.null-infer"
+    assert exc.value.code == "typhon.null-infer"
 
 
 def test_nullable_member_use_requires_proof() -> None:
@@ -108,7 +108,7 @@ def test_nullable_member_use_requires_proof() -> None:
     )
     with pytest.raises(TranspileError, match="may be null") as exc:
         analyze(parse_program(source))
-    assert exc.value.code == "pys.nullable-use-before-check"
+    assert exc.value.code == "typhon.nullable-use-before-check"
 
 
 def test_null_check_narrows_inside_branch_and_guard_survivor() -> None:
@@ -177,7 +177,7 @@ def test_shared_nullable_requires_a_local_snapshot_before_narrowing() -> None:
 def test_atomic_nullable_is_rejected() -> None:
     with pytest.raises(TranspileError, match="atomic nullable") as exc:
         parse_program("atomic nullable<int> counter = null\n")
-    assert exc.value.code == "pys.nullable-atomic"
+    assert exc.value.code == "typhon.nullable-atomic"
 
 
 def test_reassignment_invalidates_nullable_narrowing() -> None:
@@ -205,7 +205,7 @@ def test_nullable_entity_identity_is_rejected() -> None:
     )
     with pytest.raises(TranspileError, match="identity.*non-null") as exc:
         analyze(parse_program(source))
-    assert exc.value.code == "pys.nullable-identity"
+    assert exc.value.code == "typhon.nullable-identity"
 
 
 def test_nested_nullable_position_and_result_absence_remain_distinct() -> None:
@@ -242,7 +242,7 @@ def test_non_null_check_warns_as_redundant() -> None:
     )
 
     assert any(
-        warning.code == "pys.null-redundant-check"
+        warning.code == "typhon.null-redundant-check"
         for warning in module.analysis_warnings
     )
 
@@ -250,7 +250,7 @@ def test_non_null_check_warns_as_redundant() -> None:
 def test_sql_null_and_empty_string_remain_distinct(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Scenarios F/G: SQL NULL ↔ PYS null; empty string stays present."""
+    """Scenarios F/G: SQL NULL ↔ Typhon null; empty string stays present."""
     py = transpile(
         "function nullable<string> cellNullableStr(value) {\n"
         "    if (value == null) {\n"
@@ -288,7 +288,7 @@ def test_shop_database_example_transpiles_with_nullable_contracts(
     from transpiler.transpiler import transpile_with_modules
     from transpiler.workspace import WORKSPACE_ROOT_ENV
 
-    shop = Path("examples/database/shop_app.pys").resolve()
+    shop = Path("examples/database/shop_app.typhon").resolve()
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(shop.parent))
     modules = transpile_with_modules(shop)
     assert "ShopGuiApp" in modules["gui"]
@@ -304,7 +304,7 @@ def test_find_usages_skips_nullable_keyword() -> None:
 
 
 def test_analyze_file_exports_narrowed_types(tmp_path: Path) -> None:
-    source = tmp_path / "main.pys"
+    source = tmp_path / "main.typhon"
     source.write_text(
         "nullable<string> name = \"Ada\"\n"
         "if (name != null) {\n"

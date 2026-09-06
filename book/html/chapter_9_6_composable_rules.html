@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>10.6. Composable rules — pipeline, specification, null object, plugin — PYS Development Classes</title>
+  <title>10.6. Composable rules — pipeline, specification, null object, plugin — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -160,7 +160,7 @@ Responsibility.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/pipeline_middleware.pys"><code>pipeline_middleware.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/pipeline_middleware.typhon"><code>pipeline_middleware.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">log:GET /x
 ok:GET /x
@@ -185,7 +185,7 @@ deny
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/specification.pys"><code>specification.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/specification.typhon"><code>specification.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">True
 False
@@ -203,7 +203,7 @@ False
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/null_object.pys"><code>null_object.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/null_object.typhon"><code>null_object.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">notify:done:O-1
 checkout:O-1
@@ -227,13 +227,13 @@ checkout:O-2
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/plugin.pys"><code>plugin.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/plugin.typhon"><code>plugin.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">sales=sales:42
 inventory=inventory:7
 </code></pre>
 <h2>Anti-pattern: Service Locator</h2>
-<p>Hidden global lookup. Prefer <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/general/dependency_injection.pys">Dependency Injection</a>.</p>
+<p>Hidden global lookup. Prefer <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/general/dependency_injection.typhon">Dependency Injection</a>.</p>
 <figure class="concept-diagram" role="img" aria-label="Hidden registry lookup versus constructor injection">
   <div class="diagram-grid-2">
     <div class="diagram-box" style="border:2px solid #8a6d3b;background:#f5ecd8;padding:0.7rem;border-radius:6px;text-align:center">
@@ -250,7 +250,7 @@ inventory=inventory:7
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/general/service_locator_antipattern.pys"><code>service_locator_antipattern.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/general/service_locator_antipattern.typhon"><code>service_locator_antipattern.typhon</code></a></p>
 <h3>Prompt dialogue</h3>
 <blockquote>
 <p><strong>You:</strong> Add logging and auth middleware around the HTTP handler. Prefer

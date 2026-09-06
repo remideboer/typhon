@@ -39,7 +39,7 @@ def install() -> None:
 
 
 def main() -> int:
-    paths = sorted((ROOT / "examples").rglob("*.pys"), key=lambda p: -p.stat().st_size)
+    paths = sorted((ROOT / "examples").rglob("*.typhon"), key=lambda p: -p.stat().st_size)
     files = []
     for path in paths:
         text = path.read_text(encoding="utf-8")

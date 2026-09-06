@@ -2,8 +2,8 @@
  * Scenario A2 (subset): HTTP/2 multiplexed streams over TLS (FR2).
  *
  *   python examples/webserver/scripts/gen_dev_certs.py
- *   # enable cfg.tlsEnabled in main.pys
- *   python -m transpiler run examples/webserver/src/main.pys
+ *   # enable cfg.tlsEnabled in main.typhon
+ *   python -m transpiler run examples/webserver/src/main.typhon
  *   k6 run -e BASE_URL=https://127.0.0.1:8080 examples/webserver/load/k6/http2_multiplex.js
  */
 import http from "k6/http";

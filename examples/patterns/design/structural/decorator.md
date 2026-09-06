@@ -1,7 +1,7 @@
 # Decorator
 
 **Category:** Structural  
-**Demo:** [decorator.pys](decorator.pys)  
+**Demo:** [decorator.typhon](decorator.typhon)  
 **Wikipedia:** [Decorator pattern](https://en.wikipedia.org/wiki/Decorator_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -60,5 +60,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/structural/decorator.pys
+python -m transpiler run examples/patterns/design/structural/decorator.typhon
 ```

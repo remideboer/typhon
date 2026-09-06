@@ -1,13 +1,13 @@
 """Shared concurrency runtime preamble for tasks / await / shared."""
 
-CONCURRENCY_PREAMBLE = '''from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait as _pys_wait
-from threading import Event as _PysEvent, Lock as _PysLock
+CONCURRENCY_PREAMBLE = '''from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait as _typhon_wait
+from threading import Event as _TyphonEvent, Lock as _TyphonLock
 
-class _PysShared:
+class _TyphonShared:
     __slots__ = ("value", "_lock")
     def __init__(self, value):
         self.value = value
-        self._lock = _PysLock()
+        self._lock = _TyphonLock()
     def set(self, value):
         with self._lock:
             self.value = value
@@ -21,12 +21,12 @@ class _PysShared:
             self.value -= delta
             return self.value
 
-class _PysAtomic:
+class _TyphonAtomic:
     """Lock-backed indivisible get / set / iadd / isub / compareAndSet."""
     __slots__ = ("_value", "_lock")
     def __init__(self, value):
         self._value = value
-        self._lock = _PysLock()
+        self._lock = _TyphonLock()
     def get(self):
         with self._lock:
             return self._value
@@ -49,7 +49,7 @@ class _PysAtomic:
                 return True
             return False
 
-def _pys_await(value):
+def _typhon_await(value):
     if isinstance(value, Future):
         return value.result()
     result = getattr(value, "result", None)
@@ -57,7 +57,7 @@ def _pys_await(value):
         return result()
     return value
 
-class _PysTaskGroup:
+class _TyphonTaskGroup:
     """Autos start on run(); parameterized templates via call(name, *args)."""
     def __init__(self):
         self.futures = {}
@@ -65,8 +65,8 @@ class _PysTaskGroup:
         self._autos = {}
         self._pending = []
         self._pool = None
-        self._gate = _PysEvent()
-        self._lock = _PysLock()
+        self._gate = _TyphonEvent()
+        self._lock = _TyphonLock()
 
     def add_auto(self, name, fn):
         self._autos[name] = fn
@@ -105,7 +105,7 @@ class _PysTaskGroup:
                     self._pending.clear()
                 if not batch:
                     break
-                done, not_done = _pys_wait(batch, return_when=FIRST_COMPLETED)
+                done, not_done = _typhon_wait(batch, return_when=FIRST_COMPLETED)
                 with self._lock:
                     self._pending.extend(not_done)
                 for fut in done:

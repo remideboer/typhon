@@ -90,37 +90,37 @@ def test_parse_deps_from_toml_rejects_interpreter_path() -> None:
 def test_parse_deps_from_toml_npm_only_returns_none() -> None:
     assert (
         parse_deps_from_toml(
-            '[project]\nmain = "main.pys"\n\n[dependencies.npm]\nmysql2 = "^3"\n'
+            '[project]\nmain = "main.typhon"\n\n[dependencies.npm]\nmysql2 = "^3"\n'
         )
         is None
     )
 
 
-def test_load_deps_prefers_pys_toml(tmp_path: Path) -> None:
-    (tmp_path / "pys.toml").write_text(
+def test_load_deps_prefers_typhon_toml(tmp_path: Path) -> None:
+    (tmp_path / "typhon.toml").write_text(
         '[interpreter]\nversion = ">=3.10"\n\n'
         '[dependencies]\n"demo-pkg" = { version = "1.0.0", build = "run" }\n',
         encoding="utf-8",
     )
-    (tmp_path / "pys.deps").write_text(
+    (tmp_path / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n\told\n\t\tversion: 9.9.9\n",
         encoding="utf-8",
     )
-    config = load_deps(tmp_path / "main.pys", stop_at=tmp_path)
+    config = load_deps(tmp_path / "main.typhon", stop_at=tmp_path)
     assert config is not None
     assert config.source_path == (tmp_path / MANIFEST_FILENAME).resolve()
     assert config.dependencies[0].name == "demo-pkg"
 
 
-def test_load_deps_legacy_pys_deps_warns(tmp_path: Path) -> None:
-    (tmp_path / "pys.deps").write_text(
+def test_load_deps_legacy_typhon_deps_warns(tmp_path: Path) -> None:
+    (tmp_path / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n",
         encoding="utf-8",
     )
-    with pytest.warns(DeprecationWarning, match="pys.deps is deprecated"):
-        config = load_deps(tmp_path / "main.pys", stop_at=tmp_path)
+    with pytest.warns(DeprecationWarning, match="typhon.deps is deprecated"):
+        config = load_deps(tmp_path / "main.typhon", stop_at=tmp_path)
     assert config is not None
-    assert config.source_path and config.source_path.name == "pys.deps"
+    assert config.source_path and config.source_path.name == "typhon.deps"
     assert config.interpreter.version is None
     assert config.dependencies == []
 
@@ -190,33 +190,33 @@ def test_parse_allows_simple_dependency_versions() -> None:
 
 
 def test_find_deps_file_stops_at_workspace_root(tmp_path: Path) -> None:
-    """F5: do not honor pys.deps above the workspace root."""
+    """F5: do not honor typhon.deps above the workspace root."""
     above = tmp_path / "above"
     workspace = above / "workspace"
     nested = workspace / "src"
     nested.mkdir(parents=True)
-    (above / "pys.deps").write_text(
+    (above / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n",
         encoding="utf-8",
     )
-    (workspace / "pys.deps").write_text(
+    (workspace / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n\tinside\n",
         encoding="utf-8",
     )
-    found = find_deps_file(nested / "main.pys", stop_at=workspace)
-    assert found == workspace / "pys.deps"
+    found = find_deps_file(nested / "main.typhon", stop_at=workspace)
+    assert found == workspace / "typhon.deps"
     # Parent above workspace must be ignored when stop_at is set.
     only_nested = workspace / "alone"
     only_nested.mkdir()
-    (above / "pys.deps").unlink()
+    (above / "typhon.deps").unlink()
     # Recreate only the above-workspace deps (no workspace deps).
-    (workspace / "pys.deps").unlink()
-    (above / "pys.deps").write_text(
+    (workspace / "typhon.deps").unlink()
+    (above / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n\tabove\n",
         encoding="utf-8",
     )
-    assert find_deps_file(only_nested / "main.pys", stop_at=workspace) is None
-    assert load_deps(only_nested / "main.pys", stop_at=workspace) is None
+    assert find_deps_file(only_nested / "main.typhon", stop_at=workspace) is None
+    assert load_deps(only_nested / "main.typhon", stop_at=workspace) is None
 
 
 def test_find_deps_file_respects_env_workspace_root(
@@ -225,35 +225,35 @@ def test_find_deps_file_respects_env_workspace_root(
     above = tmp_path / "above"
     workspace = above / "ws"
     workspace.mkdir(parents=True)
-    (above / "pys.deps").write_text(
+    (above / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n",
         encoding="utf-8",
     )
-    monkeypatch.setenv("PYS_WORKSPACE_ROOT", str(workspace))
-    assert find_deps_file(workspace / "main.pys") is None
+    monkeypatch.setenv("TYPHON_WORKSPACE_ROOT", str(workspace))
+    assert find_deps_file(workspace / "main.typhon") is None
 
 
-def test_find_deps_file_stops_at_nearest_pys_toml(
+def test_find_deps_file_stops_at_nearest_typhon_toml(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Nested pys.toml bounds deps without PYS_WORKSPACE_ROOT (CLI / ADR-017)."""
-    monkeypatch.delenv("PYS_WORKSPACE_ROOT", raising=False)
+    """Nested typhon.toml bounds deps without TYPHON_WORKSPACE_ROOT (CLI / ADR-017)."""
+    monkeypatch.delenv("TYPHON_WORKSPACE_ROOT", raising=False)
     parent = tmp_path / "monorepo"
     project = parent / "shop"
     src = project / "src"
     src.mkdir(parents=True)
-    (parent / "pys.deps").write_text(
+    (parent / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n\tparent-only\n",
         encoding="utf-8",
     )
-    (project / "pys.toml").write_text(
-        '[project]\nmain = "src/main.pys"\n[source_roots]\nmain = "src"\n',
+    (project / "typhon.toml").write_text(
+        '[project]\nmain = "src/main.typhon"\n[source_roots]\nmain = "src"\n',
         encoding="utf-8",
     )
-    (src / "main.pys").write_text("print(1)\n", encoding="utf-8")
-    # No local pys.deps — must not climb past pys.toml to the parent lock.
-    assert find_deps_file(src / "main.pys") is None
-    assert load_deps(src / "main.pys") is None
+    (src / "main.typhon").write_text("print(1)\n", encoding="utf-8")
+    # No local typhon.deps — must not climb past typhon.toml to the parent lock.
+    assert find_deps_file(src / "main.typhon") is None
+    assert load_deps(src / "main.typhon") is None
 
 
 def test_run_source_ignores_deps_above_workspace(
@@ -268,13 +268,13 @@ def test_run_source_ignores_deps_above_workspace(
     workspace = parent / "workspace"
     workspace.mkdir(parents=True)
     # This would fail parsing if Run incorrectly walked above the workspace.
-    (parent / "pys.deps").write_text(
+    (parent / "typhon.deps").write_text(
         "[interpreter]\n\tpath: ./evil.exe\n[dependencies]\n",
         encoding="utf-8",
     )
-    source = workspace / "main.pys"
+    source = workspace / "main.typhon"
     source.write_text("print(1)\n", encoding="utf-8")
-    monkeypatch.setenv("PYS_WORKSPACE_ROOT", str(workspace))
+    monkeypatch.setenv("TYPHON_WORKSPACE_ROOT", str(workspace))
     calls: list[list[str]] = []
 
     def fake_run(command: list[str], **kwargs: object) -> SimpleNamespace:
@@ -286,7 +286,7 @@ def test_run_source_ignores_deps_above_workspace(
     assert len(calls) == 1
 
 
-def test_pys_import_cannot_escape_workspace(
+def test_typhon_import_cannot_escape_workspace(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     from transpiler.transpiler import TranspileError, transpile_with_modules
@@ -295,22 +295,22 @@ def test_pys_import_cannot_escape_workspace(
     outside = tmp_path / "outside"
     workspace.mkdir()
     outside.mkdir()
-    (outside / "evil.pys").write_text(
+    (outside / "evil.typhon").write_text(
         "function int value() {\n    return 7\n}\n",
         encoding="utf-8",
     )
-    main = workspace / "main.pys"
+    main = workspace / "main.typhon"
     main.write_text(
-        "import all from ../outside/evil.pys\nprint(value())\n",
+        "import all from ../outside/evil.typhon\nprint(value())\n",
         encoding="utf-8",
     )
-    monkeypatch.setenv("PYS_WORKSPACE_ROOT", str(workspace))
+    monkeypatch.setenv("TYPHON_WORKSPACE_ROOT", str(workspace))
 
     with pytest.raises(TranspileError, match="Cannot find module"):
         transpile_with_modules(main)
 
 
-def test_pys_import_rejects_symlink_escape(
+def test_typhon_import_rejects_symlink_escape(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     from transpiler.transpiler import TranspileError, transpile_with_modules
@@ -319,7 +319,7 @@ def test_pys_import_rejects_symlink_escape(
     outside = tmp_path / "outside"
     workspace.mkdir()
     outside.mkdir()
-    (outside / "evil.pys").write_text(
+    (outside / "evil.typhon").write_text(
         "function int value() {\n    return 7\n}\n",
         encoding="utf-8",
     )
@@ -328,12 +328,12 @@ def test_pys_import_rejects_symlink_escape(
         os.symlink(outside, link, target_is_directory=True)
     except OSError as exc:
         pytest.skip(f"directory symlinks unavailable: {exc}")
-    main = workspace / "main.pys"
+    main = workspace / "main.typhon"
     main.write_text(
-        "import all from linked/evil.pys\nprint(value())\n",
+        "import all from linked/evil.typhon\nprint(value())\n",
         encoding="utf-8",
     )
-    monkeypatch.setenv("PYS_WORKSPACE_ROOT", str(workspace))
+    monkeypatch.setenv("TYPHON_WORKSPACE_ROOT", str(workspace))
 
     with pytest.raises(TranspileError, match="Cannot find module"):
         transpile_with_modules(main)
@@ -347,14 +347,14 @@ def test_ide_rejects_symlinked_document_escape(
 
     workspace = tmp_path / "workspace"
     workspace.mkdir()
-    outside = tmp_path / "outside.pys"
+    outside = tmp_path / "outside.typhon"
     outside.write_text("print(1)\n", encoding="utf-8")
-    linked = workspace / "linked.pys"
+    linked = workspace / "linked.typhon"
     try:
         os.symlink(outside, linked)
     except OSError as exc:
         pytest.skip(f"file symlinks unavailable: {exc}")
-    monkeypatch.setenv("PYS_WORKSPACE_ROOT", str(workspace))
+    monkeypatch.setenv("TYPHON_WORKSPACE_ROOT", str(workspace))
 
     with pytest.raises(TranspileError, match="outside the workspace"):
         analyze_file(linked)
@@ -401,7 +401,7 @@ def test_static_analysis_does_not_execute_cached_dependency(
     package_name = "security_side_effect_pkg"
     repo = tmp_path / "repo"
     monkeypatch.setattr("transpiler.deps.default_repo_root", lambda: repo)
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text(
         "[interpreter]\n"
         "\tversion: any\n"
@@ -421,10 +421,10 @@ def test_static_analysis_does_not_execute_cached_dependency(
             "f" * 64,
         ),
     )
-    write_lock(lock, tmp_path / "pys.lock")
+    write_lock(lock, tmp_path / "typhon.lock")
     site = _lock_environment_path(lock, repo)
     site.mkdir(parents=True)
-    (site / ".pys-lock.json").write_text("{}", encoding="utf-8")
+    (site / ".typhon-lock.json").write_text("{}", encoding="utf-8")
     package = site / package_name
     package.mkdir(parents=True)
     marker = tmp_path / "dependency-imported"
@@ -435,7 +435,7 @@ def test_static_analysis_does_not_execute_cached_dependency(
         "    pass\n",
         encoding="utf-8",
     )
-    source_path = tmp_path / "main.pys"
+    source_path = tmp_path / "main.typhon"
     source_path.write_text(
         f"import {package_name}\n"
         f"Widget widget = {package_name}.Widget()\n",
@@ -521,7 +521,7 @@ def test_resolve_site_paths_install_false_uses_cache(
 def test_import_resolver_does_not_install_on_validate(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Opening/transpiling a .pys file must not pip-install from pys.deps (F1)."""
+    """Opening/transpiling a .typhon file must not pip-install from typhon.deps (F1)."""
     from transpiler.transpiler import transpile
 
     calls: list[str] = []
@@ -531,14 +531,14 @@ def test_import_resolver_does_not_install_on_validate(
 
     monkeypatch.setattr("transpiler.deps._pip_install", fake_pip)
     monkeypatch.setattr("transpiler.deps.default_repo_root", lambda: tmp_path / "repo")
-    (tmp_path / "pys.deps").write_text(
+    (tmp_path / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n[dependencies]\n\tevildist\n\t\tversion: 9.9.9\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("print(1)\n", encoding="utf-8")
     python = transpile(main.read_text(encoding="utf-8"), source_path=main)
-    assert "print(_pys_format(1))" in python
+    assert "print(_typhon_format(1))" in python
     assert calls == []
 
 
@@ -556,7 +556,7 @@ def test_lock_declares_transitive_lock_packages(tmp_path: Path) -> None:
     """Analysis recognizes transitive lock entries (e.g. anyio) without install."""
     from transpiler.deps import lock_declares_module, write_lock
 
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text(
         "[dependencies]\n\tfastapi\n\t\tversion: 0.115.6\n",
         encoding="utf-8",
@@ -573,8 +573,8 @@ def test_lock_declares_transitive_lock_packages(tmp_path: Path) -> None:
             LockedPackage("anyio", "4.14.2", "https://example.invalid/a.whl", "b" * 64),
         ),
     )
-    write_lock(lock, tmp_path / "pys.lock")
-    main = tmp_path / "main.pys"
+    write_lock(lock, tmp_path / "typhon.lock")
+    main = tmp_path / "main.typhon"
     main.write_text("import anyio\n", encoding="utf-8")
     assert lock_declares_module(main, "anyio") is True
     assert lock_declares_module(main, "fastapi") is True
@@ -582,7 +582,7 @@ def test_lock_declares_transitive_lock_packages(tmp_path: Path) -> None:
 
 
 def test_lock_serialization_is_deterministic(tmp_path: Path) -> None:
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text(
         "[dependencies]\n\tdemo\n\t\tversion: 1.0.0\n",
         encoding="utf-8",
@@ -593,7 +593,7 @@ def test_lock_serialization_is_deterministic(tmp_path: Path) -> None:
         config,
         LockedPackage("demo", "1.0.0", "https://example.invalid/demo.whl", "a" * 64),
     )
-    lock_path = tmp_path / "pys.lock"
+    lock_path = tmp_path / "typhon.lock"
     write_lock(lock, lock_path)
     first = lock_path.read_bytes()
     write_lock(read_lock(lock_path), lock_path)
@@ -607,7 +607,7 @@ def test_generate_lock_records_resolved_transitive_packages(
     from types import SimpleNamespace
     import json
 
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text(
         "[dependencies]\n\tdemo\n\t\tversion: 1.0.0\n",
         encoding="utf-8",
@@ -650,13 +650,13 @@ def test_generate_lock_records_resolved_transitive_packages(
 
 
 def test_missing_and_stale_lock_fail_closed(tmp_path: Path) -> None:
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text(
         "[dependencies]\n\tdemo\n\t\tversion: 1.0.0\n",
         encoding="utf-8",
     )
-    with pytest.raises(DepsError, match="Missing pys.lock"):
-        ensure_site_paths_for(tmp_path / "main.pys", install=True)
+    with pytest.raises(DepsError, match="Missing typhon.lock"):
+        ensure_site_paths_for(tmp_path / "main.typhon", install=True)
 
     config = load_deps(deps_path, stop_at=tmp_path)
     assert config is not None
@@ -664,17 +664,17 @@ def test_missing_and_stale_lock_fail_closed(tmp_path: Path) -> None:
         config,
         LockedPackage("demo", "1.0.0", "https://example.invalid/demo.whl", "b" * 64),
     )
-    write_lock(lock, tmp_path / "pys.lock")
+    write_lock(lock, tmp_path / "typhon.lock")
     deps_path.write_text(
         "[dependencies]\n\tdemo\n\t\tversion: 2.0.0\n",
         encoding="utf-8",
     )
     with pytest.raises(DepsError, match="stale"):
-        ensure_site_paths_for(tmp_path / "main.pys", install=True)
+        ensure_site_paths_for(tmp_path / "main.typhon", install=True)
 
 
 def test_lock_rejects_wrong_runtime_and_hash(tmp_path: Path) -> None:
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text(
         "[dependencies]\n\tdemo\n\t\tversion: 1.0.0\n",
         encoding="utf-8",
@@ -704,7 +704,7 @@ def test_lock_rejects_wrong_runtime_and_hash(tmp_path: Path) -> None:
     with pytest.raises(DepsError, match="targets platform"):
         validate_lock(wrong_platform, config)
 
-    lock_path = tmp_path / "pys.lock"
+    lock_path = tmp_path / "typhon.lock"
     write_lock(valid, lock_path)
     text = lock_path.read_text(encoding="utf-8").replace("c" * 64, "not-a-hash")
     lock_path.write_text(text, encoding="utf-8")
@@ -728,7 +728,7 @@ def test_locked_local_wheel_installs_and_reuses_cache(tmp_path: Path) -> None:
         archive.writestr("demo-1.0.0.dist-info/RECORD", "")
     digest = hashlib.sha256(wheel.read_bytes()).hexdigest()
 
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text(
         "[dependencies]\n\tdemo\n\t\tversion: 1.0.0\n",
         encoding="utf-8",
@@ -739,7 +739,7 @@ def test_locked_local_wheel_installs_and_reuses_cache(tmp_path: Path) -> None:
         config,
         LockedPackage("demo", "1.0.0", wheel.resolve().as_uri(), digest),
     )
-    write_lock(lock, tmp_path / "pys.lock")
+    write_lock(lock, tmp_path / "typhon.lock")
     repo = tmp_path / "repo"
 
     first = resolve_site_paths(config, repo_root=repo, quiet=True, install=True)
@@ -751,13 +751,13 @@ def test_locked_local_wheel_installs_and_reuses_cache(tmp_path: Path) -> None:
         config,
         LockedPackage("demo", "1.0.0", wheel.resolve().as_uri(), "0" * 64),
     )
-    write_lock(bad_lock, tmp_path / "pys.lock")
+    write_lock(bad_lock, tmp_path / "typhon.lock")
     with pytest.raises(DepsError, match="Failed to install locked dependencies"):
         resolve_site_paths(config, repo_root=repo, quiet=True, install=True)
 
 
 def test_unpinned_run_dependency_is_rejected(tmp_path: Path) -> None:
-    deps_path = tmp_path / "pys.deps"
+    deps_path = tmp_path / "typhon.deps"
     deps_path.write_text("[dependencies]\n\tdemo\n", encoding="utf-8")
     config = load_deps(deps_path, stop_at=tmp_path)
     assert config is not None
@@ -776,7 +776,7 @@ def test_prepend_pythonpath(tmp_path: Path) -> None:
 def test_external_python_import_passes_through(tmp_path: Path) -> None:
     from transpiler.transpiler import transpile
 
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import math\nprint(math.pi)\n", encoding="utf-8")
     python = transpile(main.read_text(encoding="utf-8"), source_path=main)
     assert "import math" in python
@@ -800,7 +800,7 @@ def test_module_present_recognizes_pyd_extension(
         "transpiler.imports.ImportResolver._deps_paths",
         lambda self: [tmp_path],
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import PyQt6.QtCore\nprint(PyQt6.QtCore)\n", encoding="utf-8")
     python = transpile(main.read_text(encoding="utf-8"), source_path=main)
     assert "import PyQt6.QtCore" in python
@@ -810,7 +810,7 @@ def test_stdlib_import_as_alias(tmp_path: Path) -> None:
     from transpiler.imports import ImportResolver
     from transpiler.transpiler import transpile
 
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import tkinter as tk\nprint(tk)\n", encoding="utf-8")
     source = main.read_text(encoding="utf-8")
     python = transpile(source, source_path=main)
@@ -832,7 +832,7 @@ def test_external_dep_import_from_site_path(tmp_path: Path, monkeypatch: pytest.
         "transpiler.imports.ImportResolver._deps_paths",
         lambda self: [site],
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import mysql.connector\n", encoding="utf-8")
     python = transpile(main.read_text(encoding="utf-8"), source_path=main)
     assert "import mysql.connector" in python
@@ -856,7 +856,7 @@ def test_missing_type_suggests_library_return(tmp_path: Path, monkeypatch: pytes
         encoding="utf-8",
     )
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import demo\n"
         "Conn db = demo.connect()\n"
@@ -870,7 +870,7 @@ def test_missing_type_suggests_library_return(tmp_path: Path, monkeypatch: pytes
             source_path=main,
             allow_runtime_introspection=True,
         )
-    assert caught.value.code == "pys.missing-type"
+    assert caught.value.code == "typhon.missing-type"
     assert caught.value.suggested_fix == "list rows = cur.fetchall()"
 
 
@@ -879,7 +879,7 @@ def test_unknown_library_type_is_rejected(tmp_path: Path, monkeypatch: pytest.Mo
 
     # No imports: unknown types fail closed (student Character/Heritage case).
     # Files with library imports keep soft-unverified types (CER-001 / CER-057).
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("NoSuchType x = 1\n", encoding="utf-8")
     with pytest.raises(TranspileError, match="Unknown type 'NoSuchType'"):
         transpile(
@@ -903,7 +903,7 @@ def test_library_type_definition_is_navigable(tmp_path: Path, monkeypatch: pytes
         encoding="utf-8",
     )
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import demo\nWidget w = demo.make()\n", encoding="utf-8")
     result = analyze_file(main, allow_runtime_introspection=True)
     assert result["ok"]
@@ -935,7 +935,7 @@ def test_navigate_to_module_and_function(tmp_path: Path, monkeypatch: pytest.Mon
         encoding="utf-8",
     )
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         'import mysql.connector\n'
         'int x = 1\n',
@@ -973,7 +973,7 @@ def test_navigate_library_sources_cli_opt_in(
         encoding="utf-8",
     )
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import demo\nint x = 1\n", encoding="utf-8")
 
     assert ide_main([str(main), "demo.ping"]) == 0
@@ -1007,7 +1007,7 @@ def test_navigate_param_attr_into_library(
         encoding="utf-8",
     )
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
-    main = tmp_path / "body.pys"
+    main = tmp_path / "body.typhon"
     main.write_text(
         "import Request from web\n"
         "\n"
@@ -1043,7 +1043,7 @@ def test_navigate_to_instance_method(tmp_path: Path, monkeypatch: pytest.MonkeyP
         encoding="utf-8",
     )
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import demo\n"
         "Conn db = demo.connect()\n",
@@ -1057,10 +1057,10 @@ def test_navigate_to_instance_method(tmp_path: Path, monkeypatch: pytest.MonkeyP
     assert loc["line"] == 2
 
 
-def test_navigate_to_imported_pys_function(tmp_path: Path) -> None:
+def test_navigate_to_imported_typhon_function(tmp_path: Path) -> None:
     from transpiler.ide import analyze_file, lookup_symbol
 
-    (tmp_path / "store.pys").write_text(
+    (tmp_path / "store.typhon").write_text(
         "package class AppStore {\n"
         "    private int ready\n"
         "\n"
@@ -1074,7 +1074,7 @@ def test_navigate_to_imported_pys_function(tmp_path: Path) -> None:
         "}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import store\n"
         "AppStore appStore = openStore()\n",
@@ -1084,14 +1084,14 @@ def test_navigate_to_imported_pys_function(tmp_path: Path) -> None:
     assert analysis["ok"], analysis.get("error")
     loc = lookup_symbol(analysis, "openStore")
     assert loc is not None
-    assert loc["file"].replace("\\", "/").endswith("store.pys")
+    assert loc["file"].replace("\\", "/").endswith("store.typhon")
     assert loc["line"] == 9
 
 
-def test_navigate_to_imported_pys_instance_method(tmp_path: Path) -> None:
+def test_navigate_to_imported_typhon_instance_method(tmp_path: Path) -> None:
     from transpiler.ide import analyze_file, lookup_symbol
 
-    (tmp_path / "ui.pys").write_text(
+    (tmp_path / "ui.typhon").write_text(
         "package class PokemonApp {\n"
         "    public run() {\n"
         "        print(\"go\")\n"
@@ -1099,7 +1099,7 @@ def test_navigate_to_imported_pys_instance_method(tmp_path: Path) -> None:
         "}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import ui\n"
         "PokemonApp app = PokemonApp()\n"
@@ -1110,7 +1110,7 @@ def test_navigate_to_imported_pys_instance_method(tmp_path: Path) -> None:
     assert analysis["ok"], analysis.get("error")
     loc = lookup_symbol(analysis, "app.run")
     assert loc is not None
-    assert loc["file"].replace("\\", "/").endswith("ui.pys")
+    assert loc["file"].replace("\\", "/").endswith("ui.typhon")
     assert loc["line"] == 2
     assert loc["kind"] == "method"
 
@@ -1136,7 +1136,7 @@ def test_untyped_library_hints_for_fetchall(tmp_path: Path, monkeypatch: pytest.
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
 
     # Missing type → suggest list + weak-library note + tips payload
-    missing = tmp_path / "missing.pys"
+    missing = tmp_path / "missing.typhon"
     missing.write_text(
         "import demo\n"
         "Conn db = demo.connect()\n"
@@ -1150,12 +1150,12 @@ def test_untyped_library_hints_for_fetchall(tmp_path: Path, monkeypatch: pytest.
             source_path=missing,
             allow_runtime_introspection=True,
         )
-    assert caught.value.code == "pys.missing-type"
+    assert caught.value.code == "typhon.missing-type"
     assert "list rows" in (caught.value.suggested_fix or "")
     assert "weak/untyped" in str(caught.value)
     assert any("tuple" in tip for tip in (caught.value.tips or []))
 
-    typed = tmp_path / "typed.pys"
+    typed = tmp_path / "typed.typhon"
     typed.write_text(
         "import demo\n"
         "Conn db = demo.connect()\n"
@@ -1169,11 +1169,11 @@ def test_untyped_library_hints_for_fetchall(tmp_path: Path, monkeypatch: pytest.
     analysis = analyze_file(typed, allow_runtime_introspection=True)
     assert analysis["ok"]
     codes = {h["code"] for h in analysis["hints"]}
-    assert "pys.untyped-library" in codes
+    assert "typhon.untyped-library" in codes
     assert analysis["collection_element_types"].get("rows") == "tuple"
 
     # User already wrote generics → no untyped-library hint
-    precise = tmp_path / "precise.pys"
+    precise = tmp_path / "precise.typhon"
     precise.write_text(
         "import demo\n"
         "Conn db = demo.connect()\n"

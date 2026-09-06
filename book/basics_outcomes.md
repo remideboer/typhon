@@ -1,9 +1,9 @@
 # 2.8. Expressing success and failure
 
 Some operations have two honest outcomes: a value, or a problem the caller can
-handle. PYS writes both in the type:
+handle. Typhon writes both in the type:
 
-```pys
+```typhon
 function result<int, string> checkAge(int age) {
     if (age < 0) {
         return error("age cannot be negative")
@@ -16,7 +16,7 @@ function result<int, string> checkAge(int age) {
   `string`”.
 - `ok(age)` constructs the success outcome.
 - `error("...")` constructs the failure outcome.
-- `ok` and `error` are PYS words. You cannot reuse them as names.
+- `ok` and `error` are Typhon words. You cannot reuse them as names.
 
 This function only declares behavior, so it produces no output by itself.
 
@@ -25,7 +25,7 @@ This function only declares behavior, so it produces no output by itself.
 A result does **not** silently become its success value. Use a result `switch`
 to handle it:
 
-```pys
+```typhon
 function result<int, string> checkAge(int age) {
     if (age < 0) {
         return error("age cannot be negative")
@@ -59,7 +59,7 @@ age cannot be negative
 
 `case ok(value)` gives that arm the success payload. `case error(message)` gives
 that arm the error payload. The names `value` and `message` exist only in their
-own arm. Because `error` is a PYS word, you cannot use it as the binding name.
+own arm. Because `error` is a Typhon word, you cannot use it as the binding name.
 
 The switch must cover both outcomes. A `default` arm may stand in for one, but
 naming both is usually clearer. A plain value such as `case 15:` is not a
@@ -76,12 +76,12 @@ Sometimes a function cannot solve a failure but its caller can. Postfix
 > **Sidebar — why not a tiny `?` operator?**
 >
 > A one-character operator is easy to type without thinking (languages that
-> offer cheap “just unwrap” forms see that pattern abused). PYS uses the
+> offer cheap “just unwrap” forms see that pattern abused). Typhon uses the
 > word `propagate` so the early-return edge stays deliberate and readable.
-> There is also no `try`/`catch` in PYS — recoverable failure stays in the
+> There is also no `try`/`catch` in Typhon — recoverable failure stays in the
 > `result` type.
 
-```pys
+```typhon
 function result<int, string> checkAge(int age) {
     if (age < 0) {
         return error("age cannot be negative")
@@ -128,7 +128,7 @@ first. The error type must match exactly. For example, a function returning
 
 Use `result<void, E>` when success only means “completed”:
 
-```pys
+```typhon
 function result<void, string> save(bool allowed) {
     if (allowed == false) {
         return error("save denied")
@@ -158,7 +158,7 @@ always needs an error value.
 
 The directly run file is the **entrypoint**. It may propagate at top level:
 
-```pys
+```typhon
 function result<int, string> readCount() {
     return error("count is missing")
 }
@@ -170,19 +170,19 @@ print(count)
 Expected stdout: no output. Expected stderr starts with:
 
 ```text
-PYS panic: count is missing
+Typhon panic: count is missing
   at ... in <entrypoint>
 ```
 
-Expected exit status: non-zero. PYS calls this outcome a **panic**. It is not a
+Expected exit status: non-zero. Typhon calls this outcome a **panic**. It is not a
 `panic(...)` command: it means an error reached the entrypoint with nobody left
 to handle it. Statements after the failing propagation do not run.
 
-Larger projects put the authoritative entrypoint in `pys.toml`:
+Larger projects put the authoritative entrypoint in `typhon.toml`:
 
 ```toml
 [project]
-main = "src/app.pys"
+main = "src/app.typhon"
 ```
 
 Run and Debug use that same file. Imported files may return results from

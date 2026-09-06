@@ -14,7 +14,7 @@ For each need, write `struct`, `dict`, or `class`:
 
 This should fail to transpile — repair it so `d` stays immutable and construction stays legal:
 
-```pys
+```typhon
 struct Damage {
     int amount
     string type
@@ -26,7 +26,7 @@ d.amount = 21
 
 Also illegal (fields have no access modifiers):
 
-```pys
+```typhon
 struct Damage {
     public int amount
 }

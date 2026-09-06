@@ -1,7 +1,7 @@
 # Memento
 
 **Category:** Behavioral  
-**Demo:** [memento.pys](memento.pys)  
+**Demo:** [memento.typhon](memento.typhon)  
 **Wikipedia:** [Memento pattern](https://en.wikipedia.org/wiki/Memento_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -45,5 +45,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/memento.pys
+python -m transpiler run examples/patterns/design/behavioral/memento.typhon
 ```

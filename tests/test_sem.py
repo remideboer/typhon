@@ -300,11 +300,11 @@ def test_sem_class_rejects_method_keyword() -> None:
         parse_program(source)
 
 
-def test_fixture_pys_files_parse_on_ast() -> None:
+def test_fixture_typhon_files_parse_on_ast() -> None:
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1] / "tests"
-    for path in root.rglob("*.pys"):
+    for path in root.rglob("*.typhon"):
         # Must parse on the AST pipeline (no legacy fallback).
         parse_program(path.read_text(encoding="utf-8"))
 
@@ -319,13 +319,13 @@ def test_emit_python_has_no_legacy_parser() -> None:
     assert "_legacy_emit" not in text
 
 
-def test_examples_main_pys_compiles_on_ast() -> None:
+def test_examples_main_typhon_compiles_on_ast() -> None:
     from pathlib import Path
 
-    from transpiler.pipeline import compile_pys
+    from transpiler.pipeline import compile_typhon
 
-    path = Path(__file__).resolve().parents[1] / "examples" / "main.pys"
+    path = Path(__file__).resolve().parents[1] / "examples" / "main.typhon"
     source = path.read_text(encoding="utf-8")
     parse_program(source)
-    out = compile_pys(source, source_path=path)
+    out = compile_typhon(source, source_path=path)
     assert "def " in out or "class " in out

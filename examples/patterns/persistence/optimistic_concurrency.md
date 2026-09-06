@@ -1,7 +1,7 @@
 # Optimistic concurrency
 
 **Category:** Persistence  
-**Demo:** [optimistic_concurrency.pys](optimistic_concurrency.pys)  
+**Demo:** [optimistic_concurrency.typhon](optimistic_concurrency.typhon)  
 **Wikipedia / ref:** [Optimistic concurrency](https://en.wikipedia.org/wiki/Optimistic_concurrency_control)
 
 ## Intent
@@ -19,5 +19,5 @@ Version field; reject stale writes.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/persistence/optimistic_concurrency.pys
+python -m transpiler run examples/patterns/persistence/optimistic_concurrency.typhon
 ```

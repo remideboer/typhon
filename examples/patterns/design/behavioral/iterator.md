@@ -1,7 +1,7 @@
 # Iterator
 
 **Category:** Behavioral  
-**Demo:** [iterator.pys](iterator.pys)  
+**Demo:** [iterator.typhon](iterator.typhon)  
 **Wikipedia:** [Iterator pattern](https://en.wikipedia.org/wiki/Iterator_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -58,5 +58,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/iterator.pys
+python -m transpiler run examples/patterns/design/behavioral/iterator.typhon
 ```

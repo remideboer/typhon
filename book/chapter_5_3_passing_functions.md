@@ -21,7 +21,7 @@ Because lambdas are values, you can pass them into helpers:
   </figcaption>
 </figure>
 
-```pys
+```typhon
 function int apply(int value, lambda<int -> int> fn) {
     return fn(value)
 }
@@ -47,7 +47,7 @@ lambdas for short adapters at the call site.
 > an `if`, `break`, or more than one statement per item — see
 > [Loops](chapter_3_2_loops.md).
 
-```pys
+```typhon
 int[] numbers = [1, 2, 3]
 numbers.loop(print)
 ```

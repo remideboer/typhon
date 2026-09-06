@@ -13,7 +13,7 @@ from transpiler.transpiler import TranspileError, transpile, run_source
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "lambdas.pys"
+EXAMPLE = ROOT / "examples" / "lambdas.typhon"
 
 
 def test_example_lambdas_runs(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -25,7 +25,7 @@ def test_example_lambdas_runs(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_example_lambdas_emit_is_valid_python() -> None:
     py = transpile(EXAMPLE.read_text(encoding="utf-8"))
     ast.parse(py)
-    assert "def _pys_lam_" in py
+    assert "def _typhon_lam_" in py
     assert "_c_i=" in py
 
 

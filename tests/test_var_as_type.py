@@ -11,7 +11,7 @@ def _ok(src: str) -> None:
     transpile(src)
 
 
-def _err(src: str, *, code: str = "pys.var-as-type") -> TranspileError:
+def _err(src: str, *, code: str = "typhon.var-as-type") -> TranspileError:
     with pytest.raises(TranspileError) as ei:
         transpile(src)
     err = ei.value

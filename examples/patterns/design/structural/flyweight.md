@@ -1,7 +1,7 @@
 # Flyweight
 
 **Category:** Structural  
-**Demo:** [flyweight.pys](flyweight.pys)  
+**Demo:** [flyweight.typhon](flyweight.typhon)  
 **Wikipedia:** [Flyweight pattern](https://en.wikipedia.org/wiki/Flyweight_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -50,5 +50,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/structural/flyweight.pys
+python -m transpiler run examples/patterns/design/structural/flyweight.typhon
 ```

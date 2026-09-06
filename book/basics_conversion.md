@@ -5,7 +5,7 @@ another — for example text from the keyboard into an `int`.
 
 ## Built-in conversions
 
-```pys
+```typhon
 string raw = "42"
 int n = int(raw)
 float f = float("3.14")
@@ -25,13 +25,13 @@ Output:
 - `float(...)` — parse a floating-point number. Same: bad text is not a
   `result`.
 - `str(...)` — turn a value into a string explicitly (e.g. `string label = str(n)`).
-  When you already concatenate with `+` and one side is a string, PYS coerces
+  When you already concatenate with `+` and one side is a string, Typhon coerces
   the other side for you — `print("n=" + n)` needs no `str(n)`.
 - `parseInt(text)` — `result<int, string>`: `ok` on success, `error` on
   failure (preferred for form fields and other recoverable input).
 - `parseFloat(text)` — `result<float, string>`: same pattern for floats.
 
-```pys
+```typhon
 result<float, string> parsed = parseFloat("3.14")
 switch (parsed) {
     case ok(value):
@@ -57,7 +57,7 @@ temperature-converter chapter for when that trade-off matters.
 When both sides are numeric (or otherwise cast-compatible), you can write
 a cast:
 
-```pys
+```typhon
 float temperature = 18.7
 int whole = (int) temperature
 print(whole)

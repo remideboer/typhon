@@ -15,7 +15,7 @@ def _repo_pythonpath() -> dict[str, str]:
 
 
 def test_module_run_executes_and_prints(tmp_path: Path) -> None:
-    source = tmp_path / "hello.pys"
+    source = tmp_path / "hello.typhon"
     source.write_text('print("cli-ok")\n', encoding="utf-8")
     proc = subprocess.run(
         [sys.executable, "-m", "transpiler", "run", str(source)],
@@ -30,11 +30,11 @@ def test_module_run_executes_and_prints(tmp_path: Path) -> None:
 
 
 def test_module_run_requires_dependency_lock(tmp_path: Path) -> None:
-    (tmp_path / "pys.toml").write_text(
+    (tmp_path / "typhon.toml").write_text(
         '[dependencies]\n"mysql-connector-python" = { version = "8.0.33" }\n',
         encoding="utf-8",
     )
-    source = tmp_path / "hello.pys"
+    source = tmp_path / "hello.typhon"
     source.write_text('print("deps-ok")\n', encoding="utf-8")
     proc = subprocess.run(
         [sys.executable, "-m", "transpiler", "run", str(source)],
@@ -45,5 +45,5 @@ def test_module_run_requires_dependency_lock(tmp_path: Path) -> None:
         cwd=str(tmp_path),
     )
     assert proc.returncode != 0
-    assert "Missing pys.lock" in proc.stderr
+    assert "Missing typhon.lock" in proc.stderr
     assert "deps-ok" not in proc.stdout

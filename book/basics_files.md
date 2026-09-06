@@ -1,6 +1,6 @@
 # 2.10. Files
 
-Saving data between runs means talking to the **filesystem**. PYS reaches
+Saving data between runs means talking to the **filesystem**. Typhon reaches
 Python’s `pathlib.Path` through an import (the same pattern real examples
 in this repo use).
 
@@ -9,11 +9,11 @@ in this repo use).
 > `input` and `print` are built-in — no import. For libraries such as
 > `pathlib`, use `from pathlib import Path` (Python-shaped form some modules
 > expect). All imports must stay at the **top** of the file.
-```pys
+```typhon
 from pathlib import Path
 
 Path path = Path("note.txt")
-path.write_text("Hello from PYS\n", encoding="utf-8")
+path.write_text("Hello from Typhon\n", encoding="utf-8")
 string text = path.read_text(encoding="utf-8")
 print(text)
 ```
@@ -21,7 +21,7 @@ print(text)
 Output:
 
 ```text
-Hello from PYS
+Hello from Typhon
 ```
 
 

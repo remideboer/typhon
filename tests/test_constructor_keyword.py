@@ -40,7 +40,7 @@ class Foo {
 }
 """
         )
-    assert ei.value.code == "pys.constructor-keyword"
+    assert ei.value.code == "typhon.constructor-keyword"
 
 
 def test_this_chaining_emits_self_init() -> None:

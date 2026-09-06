@@ -73,7 +73,7 @@ syntax but skip the shared vocabulary of systems.
 |------------|---------|
 | CQRS vs Event sourcing | Split models vs event log; often paired |
 | Repository vs Unit of Work | Persistence API vs transaction batch |
-| entity vs Aggregate | PYS identity type vs consistency cluster / root |
+| entity vs Aggregate | Typhon identity type vs consistency cluster / root |
 | Aggregate vs Repository | What belongs together vs the persistence port |
 | DI vs Service Locator | Constructor supply vs hidden lookup |
 | Mock vs Fake | Expectation spy vs working mini-impl |
@@ -89,7 +89,7 @@ syntax but skip the shared vocabulary of systems.
 **Say:** “Add an **Anti-Corruption Layer** that maps CSV columns into domain
 `CatalogItem`. Expose a **DTO** to the API. Domain services never see CSV keys.”
 
-Runnable shape: [`dto_acl.pys`](../examples/patterns/application/dto_acl.pys).
+Runnable shape: [`dto_acl.typhon`](../examples/patterns/application/dto_acl.typhon).
 
 ## Drill 2 — name the failure
 
@@ -151,4 +151,4 @@ Diagram rules: [How these diagrams work](chapter_9_0_visual_style.md) ·
 
 ---
 
-[Previous: Data paths](chapter_9_7_data_paths.md) · [Next: From PYS to C# and Java](chapter_8_session_csharp_java.md)
+[Previous: Data paths](chapter_9_7_data_paths.md) · [Next: From Typhon to C# and Java](chapter_8_session_csharp_java.md)

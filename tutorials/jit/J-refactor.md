@@ -4,7 +4,7 @@
 
 | Command | Fowler name | When |
 |---------|-------------|------|
-| Rename Symbol (F2) | Rename Variable / Function / Field | Cursor on a PYS binding |
+| Rename Symbol (F2) | Rename Variable / Function / Field | Cursor on a Typhon binding |
 | Extract Variable | Extract Variable | Selection is an expression |
 | Extract Function | Extract Function | Selection is one or more statements |
 | Inline Variable | Inline Variable | Single-assignment local |

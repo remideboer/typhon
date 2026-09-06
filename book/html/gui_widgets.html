@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>7.2. Widgets and layout — PYS Development Classes</title>
+  <title>7.2. Widgets and layout — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -141,7 +141,7 @@ text field. Every widget you create needs two things: the widget itself,
 and an instruction for <em>where</em> to place it in the window — creating a
 widget alone does not make it appear.</p>
 <h2>1. Labels — displaying text</h2>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">Labels</span><span class="tok-string">&quot;</span>)
@@ -158,7 +158,7 @@ the placement instruction: <code>.pack()</code> is the simplest of Tkinter&rsquo
 managers, and simply stacks widgets one after another, in the order you
 call <code>.pack()</code> on them.</p>
 <h2>2. Buttons and layout ordering</h2>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">Buttons</span><span class="tok-string">&quot;</span>)
@@ -186,7 +186,7 @@ label. This confirms: layout order in Tkinter&rsquo;s <code>.pack()</code> is
 need a form-like layout — a label next to its input field, several rows
 of these, aligned. <code>.grid()</code> places each widget at an explicit row and
 column instead:</p>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">A simple form</span><span class="tok-string">&quot;</span>)
@@ -217,7 +217,7 @@ confusing crashes.</p>
 <p>A widget isn&rsquo;t just something to look at — it holds state you can read.
 <code>tk.Entry</code> has a <code>.get()</code> method returning whatever text is currently
 typed into it:</p>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">tkinter</span> <span class="tok-kw">as</span> <span class="tok-ident">tk</span>
 
 <span class="tok-typename">Tk</span> <span class="tok-ident">window</span> <span class="tok-op">=</span> <span class="tok-ident">tk</span>.<span class="tok-typename">Tk</span>()
 <span class="tok-ident">window</span>.<span class="tok-ident">title</span>(<span class="tok-string">&quot;</span><span class="tok-string">Reading input</span><span class="tok-string">&quot;</span>)

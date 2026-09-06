@@ -37,7 +37,7 @@ def plan_rename(
         return plan
     if new_name in KEYWORDS:
         plan.conflicts.append(
-            RefactorConflict(message=f"{new_name!r} is a PYS keyword.")
+            RefactorConflict(message=f"{new_name!r} is a Typhon keyword.")
         )
         return plan
 
@@ -46,7 +46,7 @@ def plan_rename(
     if decl is None:
         plan.conflicts.append(
             RefactorConflict(
-                message="No PYS declaration under the cursor (deps/Python symbols cannot be renamed).",
+                message="No Typhon declaration under the cursor (deps/Python symbols cannot be renamed).",
                 file=str(source_path),
                 line=line,
                 column=column,

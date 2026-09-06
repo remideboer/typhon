@@ -20,11 +20,11 @@ Before writing anything, it helps to state the plan in plain language:
 
 Point 3 is exactly the kind of situation `result<T,E>` exists for:
 parsing user input is a classic recoverable-failure case, not a
-programmer bug. PYS has no `try`/`catch`; instead
+programmer bug. Typhon has no `try`/`catch`; instead
 `parseFloat(string)` returns `result<float, string>` — `ok` when the
 text can be parsed as a float, `error` with a message when it cannot.
 
-```pys
+```typhon
 import tkinter as tk
 
 function result<float, string> parseCelsius(string input) {
@@ -93,7 +93,7 @@ a strict format you own.
 If you only need a yes/no without keeping the value, you can still wrap
 the same builtin:
 
-```pys
+```typhon
 function bool looksLikeFloat(string input) {
     result<float, string> parsed = parseFloat(input.strip())
     switch (parsed) {
@@ -138,7 +138,7 @@ For this converter we need the number, so `parseCelsius` returns the
 
 This concludes the procedural Tkinter course. Everything shown here —
 widgets, `.pack()`/`.grid()`, `command`/`.bind()` callbacks as lambdas,
-`result<T,E>` inside an event handler — remains valid PYS when you build
+`result<T,E>` inside an event handler — remains valid Typhon when you build
 class-based GUIs later. What changes in those larger apps is
 *organization*: instead of top-level statements holding every widget
 as a local variable, an application becomes a `class` with widgets as

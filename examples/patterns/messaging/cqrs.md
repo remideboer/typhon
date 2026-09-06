@@ -1,7 +1,7 @@
 # CQRS (Command Query Responsibility Segregation)
 
 **Category:** Messaging  
-**Demo:** [cqrs.pys](cqrs.pys)  
+**Demo:** [cqrs.typhon](cqrs.typhon)  
 **Wikipedia:** [Command Query Responsibility Segregation](https://en.wikipedia.org/wiki/Command_Query_Responsibility_Segregation)
 
 ## Intent
@@ -43,5 +43,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/messaging/cqrs.pys
+python -m transpiler run examples/patterns/messaging/cqrs.typhon
 ```

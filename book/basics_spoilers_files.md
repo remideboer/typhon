@@ -2,7 +2,7 @@
 
 Exercise: write your name to `me.txt`, read it back, print it.
 
-```pys
+```typhon
 from pathlib import Path
 
 Path path = Path("me.txt")

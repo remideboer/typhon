@@ -58,9 +58,9 @@ print(toOct(1, 3))
 
 def test_helpers_gated_on_use() -> None:
     bare = transpile("print(1)\n")
-    assert "_pys_to_bin" not in bare
+    assert "_typhon_to_bin" not in bare
     used = transpile("print(toBin(1))\n")
-    assert "def _pys_to_bin" in used
+    assert "def _typhon_to_bin" in used
 
 
 def test_arity_rejected() -> None:

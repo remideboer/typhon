@@ -4,7 +4,7 @@ For each line, write the **marker** that should wrap the expression (`#i`, `#f`,
 
 Assume:
 
-```pys
+```typhon
 int n = 3
 float x = 1.5
 string name = "Ada"

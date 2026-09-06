@@ -18,7 +18,7 @@ Host state named in `requires` is accessed via `this`. All `requires`
 come before methods in the trait body on purpose: every wire the trait
 needs sits next to the gears that use it.
 
-```pys
+```typhon
 trait Printable {
     requires string name
 
@@ -124,7 +124,7 @@ Item: Mug
 Traits stay reusable when the host uses different field names. Remap only
 `requires` entries — the trait’s **methods** keep the same name on every host:
 
-```pys
+```typhon
 trait Printable {
     requires string name
 
@@ -155,7 +155,7 @@ You can remap **several** requirements in one `uses` clause. Interpolated
 holes such as `{this.x}` also follow the remap (they must not keep looking
 up the trait’s require name on the host):
 
-```pys
+```typhon
 trait CoordPrinter {
     requires int x
     requires int y
@@ -223,7 +223,7 @@ adapter that connects the host’s `title` drawer to that required wire.
 If two traits define the same method name, the host class **must** override
 it. Call `TraitName.method(this)` to pick a side — or combine both:
 
-```pys
+```typhon
 trait Loud {
     string greet() {
         return "HEY"

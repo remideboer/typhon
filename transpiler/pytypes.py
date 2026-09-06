@@ -1,4 +1,4 @@
-"""Introspect return types from installed Python packages (pys.deps site paths)."""
+"""Introspect return types from installed Python packages (typhon.deps site paths)."""
 
 from __future__ import annotations
 
@@ -17,27 +17,27 @@ from typing import Any, get_args, get_origin
 
 @dataclass
 class InferredReturn:
-    """Best-effort PYS type for a library/user call."""
+    """Best-effort Typhon type for a library/user call."""
 
-    pys_type: str
+    typhon_type: str
     element_type: str | None = None
     from_external: bool = False
     weak: bool = False  # container/API with no precise element/shape typing
 
 
-def _annotation_to_pys_type(annotation: Any) -> str | None:
-    """Map a Python typing annotation to a simple PYS type name."""
+def _annotation_to_typhon_type(annotation: Any) -> str | None:
+    """Map a Python typing annotation to a simple Typhon type name."""
     if annotation is None or annotation is type(None):
         return None
 
     if isinstance(annotation, str):
-        return _string_annotation_to_pys_type(annotation)
+        return _string_annotation_to_typhon_type(annotation)
 
     origin = get_origin(annotation)
     if origin is not None:
         args = [a for a in get_args(annotation) if a is not type(None)]
         if origin in {typing.Union, getattr(types, "UnionType", ())}:
-            names = [_annotation_to_pys_type(a) for a in args]
+            names = [_annotation_to_typhon_type(a) for a in args]
             names = [n for n in names if n]
             return _prefer_canonical_type(names) if names else None
         origin_name = getattr(origin, "__name__", "") or ""
@@ -50,7 +50,7 @@ def _annotation_to_pys_type(annotation: Any) -> str | None:
         if origin in {set} or origin_name in {"set", "Set"}:
             return "set"
         if args:
-            return _annotation_to_pys_type(args[0])
+            return _annotation_to_typhon_type(args[0])
         return origin_name or None
 
     if isinstance(annotation, type):
@@ -72,7 +72,7 @@ def _annotation_element_type(annotation: Any) -> str | None:
                 first = _split_top_level_commas(inner)[0] if inner else ""
                 if first == "..." or not first:
                     return None
-                return _string_annotation_to_pys_type(first)
+                return _string_annotation_to_typhon_type(first)
         return None
     origin = get_origin(annotation)
     if origin is None:
@@ -91,15 +91,15 @@ def _annotation_element_type(annotation: Any) -> str | None:
         "Sequence",
         "Iterable",
     }:
-        return _annotation_to_pys_type(args[0])
+        return _annotation_to_typhon_type(args[0])
     if origin in {dict} or origin_name in {"dict", "Dict"}:
         if len(args) >= 2:
-            return _annotation_to_pys_type(args[1])
+            return _annotation_to_typhon_type(args[1])
     return None
 
 
-def _usable_pys_element(name: str | None) -> str | None:
-    """Keep only element types that are meaningful in PYS; drop RowType/Any/etc."""
+def _usable_typhon_element(name: str | None) -> str | None:
+    """Keep only element types that are meaningful in Typhon; drop RowType/Any/etc."""
     if not name:
         return None
     if name in {"int", "float", "char", "string", "bool", "list", "dict", "tuple", "set"}:
@@ -123,20 +123,20 @@ def _element_type_heuristic(recv_type: str | None, method_name: str | None) -> s
     return None
 
 
-def _usage_tips_for(pys_type: str, element_type: str | None, var_name: str = "result") -> list[str]:
+def _usage_tips_for(typhon_type: str, element_type: str | None, var_name: str = "result") -> list[str]:
     tips: list[str] = []
-    if pys_type == "list" and element_type:
+    if typhon_type == "list" and element_type:
         tips.append(
             f"Iterate with a typed loop variable: `loop ({element_type} x in {var_name}) {{ ... }}`"
         )
-    elif pys_type in {"list", "dict", "tuple", "set"}:
+    elif typhon_type in {"list", "dict", "tuple", "set"}:
         tips.append(
             f"Prefer declaring how you use `{var_name}` with an explicit element/row type when possible."
         )
     return tips
 
 
-def _string_annotation_to_pys_type(text: str) -> str | None:
+def _string_annotation_to_typhon_type(text: str) -> str | None:
     text = text.strip()
     if not text or text == "None":
         return None
@@ -144,12 +144,12 @@ def _string_annotation_to_pys_type(text: str) -> str | None:
     union = re.fullmatch(r"Union\[(.+)\]", text)
     if union:
         parts = _split_top_level_commas(union.group(1))
-        names = [_string_annotation_to_pys_type(p) for p in parts]
+        names = [_string_annotation_to_typhon_type(p) for p in parts]
         names = [n for n in names if n and n != "None"]
         return _prefer_canonical_type(names) if names else None
     optional = re.fullmatch(r"Optional\[(.+)\]", text)
     if optional:
-        return _string_annotation_to_pys_type(optional.group(1))
+        return _string_annotation_to_typhon_type(optional.group(1))
     for container, mapped in (
         ("List", "list"),
         ("list", "list"),
@@ -416,7 +416,7 @@ def infer_call_return_type(
         type_modules=type_modules,
         allow_runtime_imports=allow_runtime_imports,
     )
-    return info.pys_type if info else None
+    return info.typhon_type if info else None
 
 
 def infer_call_return_info(
@@ -429,21 +429,21 @@ def infer_call_return_info(
     type_modules: dict[str, str],
     allow_runtime_imports: bool = True,
 ) -> InferredReturn | None:
-    """Infer PYS type (+ optional element type) for a library/module call."""
+    """Infer Typhon type (+ optional element type) for a library/module call."""
     recv = receiver_expr.strip()
 
     def _pack(pys: str | None, ann: Any, recv_type: str | None, external: bool) -> InferredReturn | None:
         if not pys:
             return None
-        element = _usable_pys_element(_annotation_element_type(ann)) or _element_type_heuristic(
+        element = _usable_typhon_element(_annotation_element_type(ann)) or _element_type_heuristic(
             recv_type, method_name
         )
         weak = False
         if external and pys in {"list", "dict", "tuple", "set"}:
-            # Containers from Python libs are treated as weakly typed at the PYS boundary.
+            # Containers from Python libs are treated as weakly typed at the Typhon boundary.
             weak = True
         return InferredReturn(
-            pys_type=pys,
+            typhon_type=pys,
             element_type=element,
             from_external=external,
             weak=weak,
@@ -466,7 +466,7 @@ def infer_call_return_info(
             return None
         target = resolve_attr_chain(module, rest)
         ann = _get_return_annotation(target)
-        pys = _annotation_to_pys_type(ann)
+        pys = _annotation_to_typhon_type(ann)
         if pys:
             # Do not record container names as type_modules origins.
             if pys not in {"list", "dict", "tuple", "set", "int", "float", "bool", "str", "string"}:
@@ -496,7 +496,7 @@ def infer_call_return_info(
                 if cls is not None:
                     target = getattr(cls, method_name, None)
                     ann = _get_return_annotation(target)
-                    pys = _annotation_to_pys_type(ann)
+                    pys = _annotation_to_typhon_type(ann)
                     if pys and pys not in {
                         "list",
                         "dict",
@@ -516,14 +516,14 @@ def infer_call_return_info(
                     element = _element_type_heuristic(recv_type, method_name)
                     if element and method_name in {"fetchall", "fetchmany"}:
                         return InferredReturn(
-                            pys_type="list",
+                            typhon_type="list",
                             element_type=element,
                             from_external=True,
                             weak=True,
                         )
                     if element and method_name == "fetchone":
                         return InferredReturn(
-                            pys_type=element,
+                            typhon_type=element,
                             element_type=None,
                             from_external=True,
                             weak=True,
@@ -543,7 +543,7 @@ def infer_call_return_info(
                 parent = resolve_attr_chain(module, rest)
                 target = getattr(parent, method_name, None) if parent is not None else None
                 ann = _get_return_annotation(target)
-                pys = _annotation_to_pys_type(ann)
+                pys = _annotation_to_typhon_type(ann)
                 if pys and pys not in {
                     "list",
                     "dict",
@@ -561,20 +561,20 @@ def infer_call_return_info(
 
 
 def _remember_type_origin(
-    pys_type: str,
+    typhon_type: str,
     target: Any,
     type_modules: dict[str, str],
     fallback_module: str | None = None,
 ) -> None:
-    if pys_type in type_modules:
+    if typhon_type in type_modules:
         return
     # From a class return annotation
     ann = _get_return_annotation(target)
     if isinstance(ann, type):
-        type_modules[pys_type] = ann.__module__
+        type_modules[typhon_type] = ann.__module__
         return
     if fallback_module:
-        type_modules[pys_type] = fallback_module
+        type_modules[typhon_type] = fallback_module
 
 
 def _find_class_in_package(

@@ -15,7 +15,7 @@ EX = ROOT / "examples" / "webserver-templates-query"
 
 
 def test_webserver_templates_query_main_transpiles() -> None:
-    modules = transpile_with_modules(EX / "src" / "main.pys")
+    modules = transpile_with_modules(EX / "src" / "main.typhon")
     assert "main" in modules
     assert "query" in modules
     for text in modules.values():
@@ -24,5 +24,5 @@ def test_webserver_templates_query_main_transpiles() -> None:
 
 def test_webserver_templates_query_suite_runs(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(EX))
-    monkeypatch.setenv("PYS_TEMPLATES_DIR", str(EX / "templates"))
-    assert run_source(EX / "tests" / "test_query.pys") == 0
+    monkeypatch.setenv("TYPHON_TEMPLATES_DIR", str(EX / "templates"))
+    assert run_source(EX / "tests" / "test_query.typhon") == 0

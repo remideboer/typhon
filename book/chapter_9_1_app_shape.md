@@ -34,13 +34,13 @@ layer, and DTO / ACL.
 
 Before you can say “repository for one aggregate,” you need the word
 **Aggregate** itself. It is **design vocabulary** (Domain-Driven Design), not a
-PYS keyword. You already know [`entity`](chapter_4_5_structs_data_entity.md) —
+Typhon keyword. You already know [`entity`](chapter_4_5_structs_data_entity.md) —
 a type with a stable identity key. An Aggregate is a **cluster** of domain
 objects that must stay consistent together.
 
 | Term | Means |
 |------|--------|
-| **`entity`** | PYS construct: identity equality via `identity(...)` |
+| **`entity`** | Typhon construct: identity equality via `identity(...)` |
 | **Aggregate** | Design boundary: root + parts loaded / changed / saved as one unit |
 | **Aggregate root** | The entry object outsiders talk to (usually one root entity) |
 
@@ -86,7 +86,7 @@ order’s rules (totals, status, stock) need the whole cluster.
 
 ### Sketch — root owns its parts
 
-```pys
+```typhon
 data OrderLine {
     string sku
     int qty
@@ -135,7 +135,7 @@ Lines are reached through `Order`. A repository (next section) would
 - `save(order)` / `findById(id)` mean load or persist the **whole** cluster your
   rules need.
 - A teaching demo may show a single-entity Aggregate for brevity
-  ([`repository.pys`](../examples/patterns/persistence/repository.pys)); living
+  ([`repository.typhon`](../examples/patterns/persistence/repository.typhon)); living
   shops under [`examples/rest-api/shop/`](../examples/rest-api/shop/) model
   orders and lines — use Aggregate vocabulary even when the demo is thin.
   The JavaScript Express twin lives under
@@ -188,17 +188,17 @@ code depends on the interface; an adapter talks to memory or MySQL.
   </figcaption>
 </figure>
 
-```pys
+```typhon
 interface OrderRepository {
     save(Order order)
     nullable<Order> findById(string orderId)
 }
 ```
 
-Full demo: [`examples/patterns/persistence/repository.pys`](../examples/patterns/persistence/repository.pys).
+Full demo: [`examples/patterns/persistence/repository.typhon`](../examples/patterns/persistence/repository.typhon).
 
 ```text
-python -m transpiler run examples/patterns/persistence/repository.pys
+python -m transpiler run examples/patterns/persistence/repository.typhon
 ```
 
 **Output:**
@@ -240,7 +240,7 @@ A **Unit of Work** gathers changes during one business transaction, then
   </figcaption>
 </figure>
 
-Demo: [`unit_of_work.pys`](../examples/patterns/persistence/unit_of_work.pys).
+Demo: [`unit_of_work.typhon`](../examples/patterns/persistence/unit_of_work.typhon).
 
 **Output (concept):** first product visible after commit; second missing after
 rollback.
@@ -273,7 +273,7 @@ ports, return a result, no HTTP/SQL.
   </figcaption>
 </figure>
 
-Demo: [`service_layer.pys`](../examples/patterns/application/service_layer.pys).
+Demo: [`service_layer.typhon`](../examples/patterns/application/service_layer.typhon).
 
 **Output:**
 
@@ -306,7 +306,7 @@ created:O-9@2026-08-08T12:00:00Z
   </figcaption>
 </figure>
 
-Demo: [`dto_acl.pys`](../examples/patterns/application/dto_acl.pys).
+Demo: [`dto_acl.typhon`](../examples/patterns/application/dto_acl.typhon).
 
 **Output:**
 

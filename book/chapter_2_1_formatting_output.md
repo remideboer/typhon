@@ -1,9 +1,9 @@
 # 3.1. Formatting output
 
 String concatenation with `+` works, but longer messages get noisy.
-PYS can **interpolate** expressions inside a string:
+Typhon can **interpolate** expressions inside a string:
 
-```pys
+```typhon
 int a = 3
 float f = 1.5
 print("a is {a}, f is {f}")
@@ -32,7 +32,7 @@ the matching type or the transpile fails:
 | `#b{…}` | `bool` |
 | `#o{…}` | non-primitive object |
 
-```pys
+```typhon
 int x = 7
 string greeting = "hi"
 float ratio = 0.5

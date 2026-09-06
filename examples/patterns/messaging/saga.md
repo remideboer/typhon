@@ -1,7 +1,7 @@
 # Saga
 
 **Category:** Messaging  
-**Demo:** [saga.pys](saga.pys)  
+**Demo:** [saga.typhon](saga.typhon)  
 **Wikipedia / ref:** [Saga](https://microservices.io/patterns/data/saga.html)
 
 ## Intent
@@ -19,5 +19,5 @@ Multi-step workflow with compensating actions on failure.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/messaging/saga.pys
+python -m transpiler run examples/patterns/messaging/saga.typhon
 ```

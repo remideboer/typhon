@@ -2,7 +2,7 @@
 
 Three declaration styles you will use constantly:
 
-```pys
+```typhon
 int count = 0              # typed, reassignable
 var inferred = count + 1   # type taken from the initializer
 fix int locked = count    # assign once, then locked
@@ -30,13 +30,13 @@ cannot write it as a return type, parameter type, field type, or inside
 type `object`, or omit a parameter type at that boundary — see
 [LANGUAGE.md](../docs/LANGUAGE.md).
 
-```pys
+```typhon
 # Illegal — var is not a type here
 # public var peek() { return 1 }
 # function void f(var x) { }
 ```
 
-```pys
+```typhon
 const int MAX_RETRIES = 3
 fix string mode = "demo"
 var attempt = 0
@@ -55,7 +55,7 @@ mode=demo attempt=1 max=3
 When two variables need the same starting value, write two complete
 declarations:
 
-```pys
+```typhon
 int x = 10
 int y = 10
 print("#i{x}, #i{y}")
@@ -67,21 +67,21 @@ Output:
 10, 10
 ```
 
-These compact forms are intentionally **not** PYS:
+These compact forms are intentionally **not** Typhon:
 
 ```text
 int x, y = 10
 int x = 10, y = 10
 ```
 
-*Both lines are compile errors in PYS.*
+*Both lines are compile errors in Typhon.*
 
 Why reject even the second, unambiguous form? It saves one line but adds no
-new capability, while every PYS declaration currently introduces exactly one
+new capability, while every Typhon declaration currently introduces exactly one
 name. More importantly, comma declarations teach conflicting habits: in a
 Java or C-style local declaration, `int x, y = 10;` initializes only `y`;
 Python's different `x, y = 10, 10` assignment gives both names a value by
-position. Separate PYS declarations avoid making punctuation carry a
+position. Separate Typhon declarations avoid making punctuation carry a
 language-dependent guess.
 
 

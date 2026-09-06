@@ -141,7 +141,7 @@ _MSG_IMPORT_AFTER = (
     "full dependency surface before its content."
 )
 _MSG_METHOD_BEFORE_FIELDS = (
-    "Method '{name}' found before the fields/constructor section. PYS requires "
+    "Method '{name}' found before the fields/constructor section. Typhon requires "
     "class members in the order: const fields, fix fields, fields, constructors, "
     "methods — this fixed order lets a reader find any member category without "
     "scanning the whole class."
@@ -188,7 +188,7 @@ def _require_member_phase(
             p.cur().column,
             code=code,
             tips=tips or [
-                "PYS enforces member kind order so readers find each category "
+                "Typhon enforces member kind order so readers find each category "
                 "without scanning the whole body."
             ],
         )
@@ -468,7 +468,7 @@ def _check_same_line_boundary(
             "Two statements on the same line must be separated by ';'.",
             p.cur().line,
             p.cur().column,
-            code="pys.same-line-statements",
+            code="typhon.same-line-statements",
             tips=[
                 "Insert ';' between them, or put each statement on its own line.",
             ],
@@ -504,7 +504,7 @@ def _parse_brace_module_rd(
                         _MSG_IMPORT_AFTER,
                         p.cur().line,
                         p.cur().column,
-                        code="pys.order-import",
+                        code="typhon.order-import",
                         tips=[
                             "Move every `import` / `import … from …` to the top of the file, "
                             "before declarations and statements."
@@ -672,7 +672,7 @@ def _parse_toplevel(p: _Tok):
                 "Decorators may only apply to `function`, `class`, or methods.",
                 p.cur().line,
                 p.cur().column,
-                code="pys.decorator-target",
+                code="typhon.decorator-target",
                 tips=["Place `@expr` immediately above a function, class, or method."],
             )
         if p.at_kw("fix") and p.peek(1).kind == TokenKind.KEYWORD and p.peek(1).text == "struct":
@@ -703,7 +703,7 @@ def _parse_toplevel(p: _Tok):
             "Decorators may only apply to `function`, `class`, or methods.",
             p.cur().line,
             p.cur().column,
-            code="pys.decorator-target",
+            code="typhon.decorator-target",
             tips=["Place `@expr` immediately above a function, class, or method."],
         )
     if p.at_kw("fix") and p.peek(1).kind == TokenKind.KEYWORD and p.peek(1).text == "struct":
@@ -744,7 +744,7 @@ def _parse_shared(p: _Tok) -> SharedDecl:
             "(`atomic` already implies shared for capture).",
             p.cur().line,
             p.cur().column,
-            code="pys.atomic-redundant",
+            code="typhon.atomic-redundant",
             tips=["Drop `shared` and use `atomic int counter = 0`."],
         )
     dtype = ""
@@ -777,7 +777,7 @@ def _parse_atomic(p: _Tok) -> AtomicDecl:
             "(`atomic` already implies shared for capture).",
             p.cur().line,
             p.cur().column,
-            code="pys.atomic-redundant",
+            code="typhon.atomic-redundant",
             tips=["Drop `shared` and use `atomic int counter = 0`."],
         )
     if p.at_kw("nullable"):
@@ -786,7 +786,7 @@ def _parse_atomic(p: _Tok) -> AtomicDecl:
             "atomic operation contract.",
             p.cur().line,
             p.cur().column,
-            code="pys.nullable-atomic",
+            code="typhon.nullable-atomic",
             tips=["Use a shared nullable value and copy a synchronized snapshot to a local."],
         )
     if not (p.at_kw(*_TYPES) or p.at(TokenKind.IDENT)):
@@ -795,7 +795,7 @@ def _parse_atomic(p: _Tok) -> AtomicDecl:
             "(int, int16, int32, int64, dword, or bool).",
             p.cur().line,
             p.cur().column,
-            code="pys.atomic-type",
+            code="typhon.atomic-type",
             tips=["Example: `atomic int counter = 0`."],
         )
     dtype = p.eat(TokenKind.KEYWORD, TokenKind.IDENT).text
@@ -805,7 +805,7 @@ def _parse_atomic(p: _Tok) -> AtomicDecl:
             f"(float/string are excluded).",
             sp.line,
             sp.column,
-            code="pys.atomic-type",
+            code="typhon.atomic-type",
             tips=[
                 "Use `atomic int …` (or int16/int32/int64/dword/bool).",
                 "For float accumulators, use an explicit compareAndSet loop.",
@@ -885,13 +885,13 @@ def _parse_import(p: _Tok) -> ImportStmt:
         mod = _parse_dotted_name(p)
         return ImportStmt(span=sp, kind="name_from", module=mod, name=names[0], names=names)
     if p.at_kw("from"):
-        # PYS `import Name from module` vs adjacent Python-style `from module import Name`
-        # (newlines are not statement separators in the token stream). Prefer PYS when the
+        # Typhon `import Name from module` vs adjacent Python-style `from module import Name`
+        # (newlines are not statement separators in the token stream). Prefer Typhon when the
         # look-ahead is `from mod import Name from …` (back-to-back name_from imports).
         if (
             p.peek(2).kind == TokenKind.KEYWORD
             and p.peek(2).text == "import"
-            and not _peek_pys_name_from_then_from(p)
+            and not _peek_typhon_name_from_then_from(p)
         ):
             return ImportStmt(span=sp, kind="module", module=first)
         p.eat_kw("from")
@@ -901,7 +901,7 @@ def _parse_import(p: _Tok) -> ImportStmt:
     while p.at(TokenKind.DOT):
         p.eat(TokenKind.DOT)
         part = p.eat(TokenKind.IDENT, TokenKind.KEYWORD).text
-        if part == "pys":
+        if part == "typhon":
             break
         mod += "." + part
     if p.at_kw("as"):
@@ -911,8 +911,8 @@ def _parse_import(p: _Tok) -> ImportStmt:
     return ImportStmt(span=sp, kind="module", module=mod)
 
 
-def _peek_pys_name_from_then_from(p: _Tok) -> bool:
-    """True when at ``from`` the stream is ``from mod import name[,…] from`` (PYS)."""
+def _peek_typhon_name_from_then_from(p: _Tok) -> bool:
+    """True when at ``from`` the stream is ``from mod import name[,…] from`` (Typhon)."""
     i = 0
     t0 = p.peek(i)
     if not (t0.kind == TokenKind.KEYWORD and t0.text == "from"):
@@ -929,7 +929,7 @@ def _peek_pys_name_from_then_from(p: _Tok) -> bool:
         if t.kind not in {TokenKind.IDENT, TokenKind.KEYWORD}:
             return False
         i += 1
-        if t.text == "pys":
+        if t.text == "typhon":
             break
     t = p.peek(i)
     if not (t.kind == TokenKind.KEYWORD and t.text == "import"):
@@ -969,7 +969,7 @@ def _parse_from_import(p: _Tok) -> ImportStmt:
 
 
 def _parse_dotted_name(p: _Tok) -> str:
-    """Parse a module ref: ``math``, ``a.b``, ``funcs.pys``, ``../pkg/funcs.pys``."""
+    """Parse a module ref: ``math``, ``a.b``, ``funcs.typhon``, ``../pkg/funcs.typhon``."""
     parts: list[str] = []
     # Leading ``../`` or ``./`` path prefixes.
     while True:
@@ -1002,8 +1002,8 @@ def _parse_dotted_name(p: _Tok) -> str:
         if p.at(TokenKind.DOT):
             p.eat(TokenKind.DOT)
             nxt = p.eat(TokenKind.IDENT, TokenKind.KEYWORD).text
-            if nxt == "pys":
-                parts.append(".pys")
+            if nxt == "typhon":
+                parts.append(".typhon")
                 break
             parts.append(".")
             parts.append(nxt)
@@ -1061,7 +1061,7 @@ def _reject_var_as_type(
         "It cannot be used as a type.",
         tok.line,
         tok.column,
-        code="pys.var-as-type",
+        code="typhon.var-as-type",
         tips=[
             "Use `object` for foreign or opaque values.",
             "Omit the parameter type at a foreign boundary (e.g. `serve(conn)`).",
@@ -1083,7 +1083,7 @@ def _parse_type_name(p: _Tok) -> str:
                 "`nullable<T>` requires exactly one underlying type.",
                 base_tok.line,
                 base_tok.column,
-                code="pys.nullable-arity",
+                code="typhon.nullable-arity",
                 tips=["Write `nullable<Type>`."],
             )
         return base
@@ -1101,7 +1101,7 @@ def _parse_type_name(p: _Tok) -> str:
             "the success type T and error type E.",
             base_tok.line,
             base_tok.column,
-            code="pys.result-arity",
+            code="typhon.result-arity",
             tips=["Write `result<SuccessType, ErrorType>`."],
         )
     if base == "result" and args[1] == "void":
@@ -1109,7 +1109,7 @@ def _parse_type_name(p: _Tok) -> str:
             "`result<T, E>` requires a concrete error type; E cannot be `void`.",
             base_tok.line,
             base_tok.column,
-            code="pys.result-error-type",
+            code="typhon.result-error-type",
             tips=["Choose an error value type such as `string` or an enum."],
         )
     if base == "nullable" and len(args) != 1:
@@ -1117,7 +1117,7 @@ def _parse_type_name(p: _Tok) -> str:
             "`nullable<T>` requires exactly one underlying type.",
             base_tok.line,
             base_tok.column,
-            code="pys.nullable-arity",
+            code="typhon.nullable-arity",
             tips=["Write `nullable<Type>`."],
         )
     if base == "nullable" and args[0] == "void":
@@ -1125,7 +1125,7 @@ def _parse_type_name(p: _Tok) -> str:
             "`nullable<void>` is invalid because void is not a runtime value.",
             base_tok.line,
             base_tok.column,
-            code="pys.nullable-void",
+            code="typhon.nullable-void",
             tips=["Choose the concrete value type that may be absent."],
         )
     if base == "nullable" and args[0].startswith("nullable<"):
@@ -1133,7 +1133,7 @@ def _parse_type_name(p: _Tok) -> str:
             f"`{args[0]}` is already nullable; nested nullable types add no state.",
             base_tok.line,
             base_tok.column,
-            code="pys.nullable-nested",
+            code="typhon.nullable-nested",
             tips=[f"Use `{args[0]}` directly."],
         )
     return f"{base}<{', '.join(args)}>"
@@ -1170,7 +1170,7 @@ def _parse_lambda_type_args(p: _Tok, base_tok: Token) -> str:
         "Lambda types separate parameters from the return type with `->`.",
         base_tok.line,
         base_tok.column,
-        code="pys.lambda-type-arrow",
+        code="typhon.lambda-type-arrow",
         tips=[
             "Write `lambda<int -> bool>` or `lambda<int, int -> int>`.",
             "Zero parameters: sugar `lambda<int>` or explicit `lambda<-> int>`.",
@@ -1314,7 +1314,7 @@ def _parse_interface(p: _Tok, visibility: str = "") -> InterfaceDef:
                 f"omit `{mod}` on the method signature.",
                 p.cur().line,
                 p.cur().column,
-                code="pys.interface-access",
+                code="typhon.interface-access",
                 tips=[
                     "Write `name(...)` or `Type name(...)` inside the interface "
                     "(no access modifier)."
@@ -1436,7 +1436,7 @@ def _parse_struct(
                 phase,
                 _PHASE_STRUCT_FIX,
                 message=_MSG_FIX_AFTER_MUTABLE.format(name=fname),
-                code="pys.order-fix-after-mutable",
+                code="typhon.order-fix-after-mutable",
             )
         else:
             _require_member_phase(
@@ -1444,7 +1444,7 @@ def _parse_struct(
                 phase,
                 _PHASE_STRUCT_FIELD,
                 message=_MSG_FIX_AFTER_MUTABLE.format(name=fname),
-                code="pys.order-fix-after-mutable",
+                code="typhon.order-fix-after-mutable",
             )
         default = None
         if p.at(TokenKind.OP, text="="):
@@ -1616,7 +1616,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                 "Constructors cannot use open/override/closed (ADR-028).",
                 member_sp.line,
                 member_sp.column,
-                code="pys.ctor-extension",
+                code="typhon.ctor-extension",
             )
         if p.at_kw("constructor") and p.peek(1).kind == TokenKind.LPAREN:
             # Omitted access ⇒ module (same-file teaching boundary), like top-level
@@ -1628,7 +1628,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                 phase,
                 _PHASE_ENTITY_CTOR,
                 message=_MSG_METHOD_BEFORE_FIELDS.format(name=name),
-                code="pys.order-entity-ctor",
+                code="typhon.order-entity-ctor",
             )
             p.eat(TokenKind.LPAREN)
             params: list[tuple[str, str]] = []
@@ -1657,7 +1657,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                 f"`{name}`. Write `public constructor(...)` instead of `public {name}(...)`.",
                 p.cur().line,
                 p.cur().column,
-                code="pys.constructor-keyword",
+                code="typhon.constructor-keyword",
                 tips=[
                     f"Replace `public {name}(` with `public constructor(`.",
                 ],
@@ -1701,7 +1701,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                 phase,
                 _PHASE_ENTITY_METHOD,
                 message=_MSG_METHOD_BEFORE_FIELDS.format(name=mname),
-                code="pys.order-entity-method",
+                code="typhon.order-entity-method",
             )
             p.eat(TokenKind.LPAREN)
             params = []
@@ -1730,7 +1730,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                     "open/override/closed apply to methods, not fields.",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.field-extension",
+                    code="typhon.field-extension",
                 )
             access = _member_access_or_module(access)
             if not type_name:
@@ -1749,7 +1749,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                         name=mname,
                         identity=next(iter(pending_identity), mname),
                     ),
-                    code="pys.order-entity-identity",
+                    code="typhon.order-entity-identity",
                 )
                 pending_identity.discard(mname)
             elif is_fix:
@@ -1762,7 +1762,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                         ),
                         p.cur().line,
                         p.cur().column,
-                        code="pys.order-entity-identity",
+                        code="typhon.order-entity-identity",
                         tips=[
                             "Declare every identity(...) field first, then other fix fields."
                         ],
@@ -1772,7 +1772,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                     phase,
                     _PHASE_ENTITY_FIX,
                     message=_MSG_FIELD_AFTER_CTOR.format(name=mname),
-                    code="pys.order-entity-fix",
+                    code="typhon.order-entity-fix",
                 )
             else:
                 if pending_identity and phase[0] <= _PHASE_ENTITY_IDENTITY:
@@ -1783,7 +1783,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                         ),
                         p.cur().line,
                         p.cur().column,
-                        code="pys.order-entity-identity",
+                        code="typhon.order-entity-identity",
                         tips=[
                             "Declare every identity(...) field first, then other fields."
                         ],
@@ -1793,7 +1793,7 @@ def _parse_entity(p: _Tok, visibility: str = "") -> EntityDef:
                     phase,
                     _PHASE_ENTITY_FIELD,
                     message=_MSG_FIELD_AFTER_CTOR.format(name=mname),
-                    code="pys.order-entity-field",
+                    code="typhon.order-entity-field",
                 )
             default = None
             if p.at(TokenKind.OP, text="="):
@@ -1865,7 +1865,7 @@ def _parse_enum(p: _Tok, visibility: str = "") -> EnumDef:
             "Enum members must be separated by ','.",
             p.cur().line,
             p.cur().column,
-            code="pys.enum-member-comma",
+            code="typhon.enum-member-comma",
             tips=[
                 "Write `enum Name { A, B, C }` (optional trailing comma allowed).",
                 "Juxtaposed members without commas are no longer valid.",
@@ -1894,7 +1894,7 @@ def _parse_trait_use(p: _Tok) -> TraitUse:
                 f"or write `uses {name}(requirement: hostMember)`.",
                 p.cur().line,
                 p.cur().column,
-                code="pys.trait-remap",
+                code="typhon.trait-remap",
                 tips=[
                     f"Write `uses {name}` with no parentheses when names match, "
                     f"or map each requirement: `uses {name}(reqName: hostName)`.",
@@ -1908,7 +1908,7 @@ def _parse_trait_use(p: _Tok) -> TraitUse:
                     f"(found `{left}` without `:`).",
                     p.cur().line,
                     p.cur().column,
-                    code="pys.trait-remap",
+                    code="typhon.trait-remap",
                     tips=[f"Write `{left}: hostFieldOrMethod`."],
                 )
             p.eat(TokenKind.COLON)
@@ -1938,7 +1938,7 @@ def _parse_class(
             "Use `closed class` instead of `sealed class` (ADR-028).",
             p.cur().line,
             p.cur().column,
-            code="pys.closed-not-sealed",
+            code="typhon.closed-not-sealed",
             tips=["Replace `sealed` with `closed`."],
         )
     if p.at_kw("closed"):
@@ -2027,7 +2027,7 @@ def _parse_class(
                     "Decorators may only apply to methods (not fields).",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.decorator-target",
+                    code="typhon.decorator-target",
                 )
             access = _member_access_or_module(access)
             p.eat_kw("const")
@@ -2038,7 +2038,7 @@ def _parse_class(
                 phase,
                 _PHASE_CLASS_CONST,
                 message=_MSG_CONST_AFTER_FIELDS.format(name=fname),
-                code="pys.order-const-field",
+                code="typhon.order-const-field",
             )
             p.eat(TokenKind.OP, text="=")
             default = _parse_expression(p)
@@ -2061,7 +2061,7 @@ def _parse_class(
                     "Decorators may only apply to methods (not fields).",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.decorator-target",
+                    code="typhon.decorator-target",
                 )
             access = _member_access_or_module(access)
             p.eat_kw("fix")
@@ -2080,7 +2080,7 @@ def _parse_class(
                     if phase[0] == _PHASE_CLASS_FIELD
                     else _MSG_FIELD_AFTER_CTOR.format(name=fname)
                 ),
-                code="pys.order-fix-field",
+                code="typhon.order-fix-field",
             )
             default = None
             if p.at(TokenKind.OP, text="="):
@@ -2107,7 +2107,7 @@ def _parse_class(
                     "to override (ADR-029).",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.static-abstract",
+                    code="typhon.static-abstract",
                 )
             p.eat_kw("abstract")
             if extension in {"closed", "override", "override_closed"}:
@@ -2116,7 +2116,7 @@ def _parse_class(
                     "implicitly open sockets with no implementation yet (ADR-028).",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.abstract-extension",
+                    code="typhon.abstract-extension",
                 )
             access = _member_access_or_module(access)
             ret = _parse_type_name(p)
@@ -2130,7 +2130,7 @@ def _parse_class(
                 phase,
                 _PHASE_CLASS_METHOD,
                 message=_MSG_METHOD_BEFORE_FIELDS.format(name=mname),
-                code="pys.order-method",
+                code="typhon.order-method",
             )
             p.eat(TokenKind.LPAREN)
             params: list[tuple[str, str]] = []
@@ -2169,14 +2169,14 @@ def _parse_class(
                     "Constructors cannot use open/override/closed (ADR-028).",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.ctor-extension",
+                    code="typhon.ctor-extension",
                 )
         if is_static and p.at_kw("constructor"):
             raise FatalParseError(
                 "Constructors cannot be `static` (ADR-029).",
                 member_sp.line,
                 member_sp.column,
-                code="pys.static-ctor",
+                code="typhon.static-ctor",
             )
         if p.at_kw("constructor") and p.peek(1).kind == TokenKind.LPAREN:
             # Omitted access ⇒ module (same-file teaching boundary), like top-level
@@ -2188,7 +2188,7 @@ def _parse_class(
                 phase,
                 _PHASE_CLASS_CTOR,
                 message=_MSG_METHOD_BEFORE_FIELDS.format(name=name),
-                code="pys.order-ctor",
+                code="typhon.order-ctor",
             )
             p.eat(TokenKind.LPAREN)
             params = []
@@ -2219,7 +2219,7 @@ def _parse_class(
                 f"`{name}`. Write `public constructor(...)` instead of `public {name}(...)`.",
                 p.cur().line,
                 p.cur().column,
-                code="pys.constructor-keyword",
+                code="typhon.constructor-keyword",
                 tips=[
                     f"Replace `public {name}(` with `public constructor(`.",
                     "JavaScript uses `constructor` the same way; C#/Java drop the keyword "
@@ -2256,7 +2256,7 @@ def _parse_class(
                     "needs an instance to dispatch (ADR-029).",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.static-extension",
+                    code="typhon.static-extension",
                     tips=[
                         "Remove `open`/`override`, or make the method an instance method.",
                     ],
@@ -2271,7 +2271,7 @@ def _parse_class(
                 phase,
                 _PHASE_CLASS_METHOD,
                 message=_MSG_METHOD_BEFORE_FIELDS.format(name=mname),
-                code="pys.order-method",
+                code="typhon.order-method",
             )
             p.eat(TokenKind.LPAREN)
             params = []
@@ -2302,14 +2302,14 @@ def _parse_class(
                     "open/override/closed apply to methods, not fields.",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.field-extension",
+                    code="typhon.field-extension",
                 )
             if member_decorators:
                 raise FatalParseError(
                     "Decorators may only apply to methods (not fields).",
                     member_sp.line,
                     member_sp.column,
-                    code="pys.decorator-target",
+                    code="typhon.decorator-target",
                 )
             access = _member_access_or_module(access)
             _require_member_phase(
@@ -2317,7 +2317,7 @@ def _parse_class(
                 phase,
                 _PHASE_CLASS_FIELD,
                 message=_MSG_FIELD_AFTER_CTOR.format(name=mname),
-                code="pys.order-field-after-ctor",
+                code="typhon.order-field-after-ctor",
             )
             default = None
             if p.at(TokenKind.OP, text="="):
@@ -2390,7 +2390,7 @@ def _parse_trait(p: _Tok, visibility: str = "") -> TraitDef:
                     "`requires Type name` (exact spelling) — not a field declaration.",
                     p.cur().line,
                     p.cur().column,
-                    code="pys.trait-require-typo",
+                    code="typhon.trait-require-typo",
                     tips=[
                         "Write `requires int a` — the trait requires that field from "
                         "the host class.",
@@ -2408,7 +2408,7 @@ def _parse_trait(p: _Tok, visibility: str = "") -> TraitDef:
                 message=_MSG_TRAIT_METHOD_BEFORE_REQUIRES.format(
                     name=req_name, trait=name
                 ),
-                code="pys.order-trait-requires",
+                code="typhon.order-trait-requires",
             )
             if p.at(TokenKind.LPAREN):
                 p.eat(TokenKind.LPAREN)
@@ -2468,7 +2468,7 @@ def _parse_trait(p: _Tok, visibility: str = "") -> TraitDef:
             phase,
             _PHASE_TRAIT_METHOD,
             message=_MSG_TRAIT_METHOD_BEFORE_REQUIRES.format(name=mname, trait=name),
-            code="pys.order-trait-requires",
+            code="typhon.order-trait-requires",
         )
         p.eat(TokenKind.LPAREN)
         params = []
@@ -2625,7 +2625,7 @@ def _parse_statement(p: _Tok):
     if p.at(TokenKind.COMMENT):
         t = p.eat(TokenKind.COMMENT)
         return CommentStmt(span=Span(t.line, t.column), text=t.text)
-    # SA-8: `new Type(...)` is not part of PYS; constructors are `Type(...)`.
+    # SA-8: `new Type(...)` is not part of Typhon; constructors are `Type(...)`.
     if (p.at(TokenKind.IDENT) or p.at(TokenKind.KEYWORD)) and p.cur().text == "new":
         raise FatalParseError(
             "Unexpected `new`. Construct values with `TypeName(...)` "
@@ -2855,7 +2855,7 @@ def _reject_legacy_err_ctor(p: _Tok, *, pattern: bool) -> None:
             "`err` is not a result pattern; use `error`.",
             tok.line,
             tok.column,
-            code="pys.result-err-renamed",
+            code="typhon.result-err-renamed",
             tips=["Write `case error(message)` instead of `case err(...)`."],
             suggested_fix="error",
         )
@@ -2863,7 +2863,7 @@ def _reject_legacy_err_ctor(p: _Tok, *, pattern: bool) -> None:
         "`err` is not a result constructor; use `error`.",
         tok.line,
         tok.column,
-        code="pys.result-err-renamed",
+        code="typhon.result-err-renamed",
         tips=["Write `error(payload)` instead of `err(...)`."],
         suggested_fix="error",
     )
@@ -2887,7 +2887,7 @@ def _parse_case_label(p: _Tok) -> Expr:
                 "`error` switch patterns require an error binding.",
                 sp.line,
                 sp.column,
-                code="pys.result-pattern",
+                code="typhon.result-pattern",
                 tips=["Write `case error(message)`."],
             )
         p.eat(TokenKind.RPAREN)
@@ -3120,7 +3120,7 @@ def _parse_loop(p: _Tok):
                 f"(write `loop (T {name_hint} in ...)`, where T matches the element type).",
                 tok.line,
                 tok.column,
-                code="pys.foreach-type-required",
+                code="typhon.foreach-type-required",
                 tips=[
                     "Example: `loop (int x in numbers)` for `int[]` / `list<int>`.",
                     "The binder type must match the collection element type.",
@@ -3158,7 +3158,7 @@ def _parse_loop(p: _Tok):
             "(comma separators are no longer valid).",
             p.cur().line,
             p.cur().column,
-            code="pys.c-for-semi",
+            code="typhon.c-for-semi",
             tips=[
                 "Write `loop (int i = 0; i < n; i++) { … }`.",
             ],
@@ -3604,7 +3604,7 @@ def _parse_primary(p: _Tok) -> Expr:
                 "`error` requires an error value.",
                 sp.line,
                 sp.column,
-                code="pys.result-error-value",
+                code="typhon.result-error-value",
                 tips=["Write `error(payload)`."],
             )
         p.eat(TokenKind.RPAREN)

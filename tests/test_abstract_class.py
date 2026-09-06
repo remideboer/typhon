@@ -15,9 +15,9 @@ from transpiler.transpiler import TranspileError, run_source, transpile
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "abstract_classes.pys"
+EXAMPLE = ROOT / "examples" / "abstract_classes.typhon"
 
-os.environ.setdefault("PYS_SUPPRESS_WARNINGS", "1")
+os.environ.setdefault("TYPHON_SUPPRESS_WARNINGS", "1")
 
 
 def test_example_abstract_classes_runs(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -174,7 +174,7 @@ print(c.template())
 
 
 def test_ide_goto_abstract_class(tmp_path: Path) -> None:
-    path = tmp_path / "a.pys"
+    path = tmp_path / "a.typhon"
     path.write_text(
         """
 abstract class Shape {
@@ -202,5 +202,5 @@ class Character {
 """
     with pytest.raises(TranspileError, match="abstract class") as caught:
         transpile(src)
-    assert caught.value.code == "pys.abstract-method"
+    assert caught.value.code == "typhon.abstract-method"
     assert caught.value.suggested_fix == "abstract class Character"

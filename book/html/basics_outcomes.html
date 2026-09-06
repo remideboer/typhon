@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2.8. Expressing success and failure — PYS Development Classes</title>
+  <title>2.8. Expressing success and failure — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -137,8 +137,8 @@
     <main>
 <h1>2.8. Expressing success and failure</h1>
 <p>Some operations have two honest outcomes: a value, or a problem the caller can
-handle. PYS writes both in the type:</p>
-<pre><code class="language-pys"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">checkAge</span>(<span class="tok-type">int</span> <span class="tok-ident">age</span>) {
+handle. Typhon writes both in the type:</p>
+<pre><code class="language-typhon"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">checkAge</span>(<span class="tok-type">int</span> <span class="tok-ident">age</span>) {
     <span class="tok-kw">if</span> (<span class="tok-ident">age</span> <span class="tok-op">&lt;</span> <span class="tok-number">0</span>) {
         <span class="tok-kw">return</span> <span class="tok-builtin">error</span>(<span class="tok-string">&quot;</span><span class="tok-string">age cannot be negative</span><span class="tok-string">&quot;</span>)
     }
@@ -149,13 +149,13 @@ handle. PYS writes both in the type:</p>
   <code>string</code>”.</li>
 <li><code>ok(age)</code> constructs the success outcome.</li>
 <li><code>error("...")</code> constructs the failure outcome.</li>
-<li><code>ok</code> and <code>error</code> are PYS words. You cannot reuse them as names.</li>
+<li><code>ok</code> and <code>error</code> are Typhon words. You cannot reuse them as names.</li>
 </ul>
 <p>This function only declares behavior, so it produces no output by itself.</p>
 <h2>Handle both outcomes</h2>
 <p>A result does <strong>not</strong> silently become its success value. Use a result <code>switch</code>
 to handle it:</p>
-<pre><code class="language-pys"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">checkAge</span>(<span class="tok-type">int</span> <span class="tok-ident">age</span>) {
+<pre><code class="language-typhon"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">checkAge</span>(<span class="tok-type">int</span> <span class="tok-ident">age</span>) {
     <span class="tok-kw">if</span> (<span class="tok-ident">age</span> <span class="tok-op">&lt;</span> <span class="tok-number">0</span>) {
         <span class="tok-kw">return</span> <span class="tok-builtin">error</span>(<span class="tok-string">&quot;</span><span class="tok-string">age cannot be negative</span><span class="tok-string">&quot;</span>)
     }
@@ -183,7 +183,7 @@ age cannot be negative
 </code></pre>
 <p><code>case ok(value)</code> gives that arm the success payload. <code>case error(message)</code> gives
 that arm the error payload. The names <code>value</code> and <code>message</code> exist only in their
-own arm. Because <code>error</code> is a PYS word, you cannot use it as the binding name.</p>
+own arm. Because <code>error</code> is a Typhon word, you cannot use it as the binding name.</p>
 <p>The switch must cover both outcomes. A <code>default</code> arm may stand in for one, but
 naming both is usually clearer. A plain value such as <code>case 15:</code> is not a
 result pattern.</p>
@@ -195,12 +195,12 @@ result pattern.</p>
 return the same error now.</p>
 <p><strong>Sidebar — why not a tiny <code>?</code> operator?</strong></p>
 <p>A one-character operator is easy to type without thinking (languages that
-offer cheap “just unwrap” forms see that pattern abused). PYS uses the
+offer cheap “just unwrap” forms see that pattern abused). Typhon uses the
 word <code>propagate</code> so the early-return edge stays deliberate and readable.
-There is also no <code>try</code>/<code>catch</code> in PYS — recoverable failure stays in the
+There is also no <code>try</code>/<code>catch</code> in Typhon — recoverable failure stays in the
 <code>result</code> type.</p>
 </blockquote>
-<pre><code class="language-pys"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">checkAge</span>(<span class="tok-type">int</span> <span class="tok-ident">age</span>) {
+<pre><code class="language-typhon"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">checkAge</span>(<span class="tok-type">int</span> <span class="tok-ident">age</span>) {
     <span class="tok-kw">if</span> (<span class="tok-ident">age</span> <span class="tok-op">&lt;</span> <span class="tok-number">0</span>) {
         <span class="tok-kw">return</span> <span class="tok-builtin">error</span>(<span class="tok-string">&quot;</span><span class="tok-string">age cannot be negative</span><span class="tok-string">&quot;</span>)
     }
@@ -238,7 +238,7 @@ first. The error type must match exactly. For example, a function returning
 <code>result&lt;int, string&gt;</code> cannot directly propagate <code>result&lt;int, int&gt;</code>.</p>
 <h2>Success without a payload</h2>
 <p>Use <code>result&lt;void, E&gt;</code> when success only means “completed”:</p>
-<pre><code class="language-pys"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">void</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">save</span>(<span class="tok-type">bool</span> <span class="tok-ident">allowed</span>) {
+<pre><code class="language-typhon"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">void</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">save</span>(<span class="tok-type">bool</span> <span class="tok-ident">allowed</span>) {
     <span class="tok-kw">if</span> (<span class="tok-ident">allowed</span> <span class="tok-op">==</span> <span class="tok-const">false</span>) {
         <span class="tok-kw">return</span> <span class="tok-builtin">error</span>(<span class="tok-string">&quot;</span><span class="tok-string">save denied</span><span class="tok-string">&quot;</span>)
     }
@@ -259,22 +259,22 @@ first. The error type must match exactly. For example, a function returning
 always needs an error value.</p>
 <h2>When an error reaches the program boundary</h2>
 <p>The directly run file is the <strong>entrypoint</strong>. It may propagate at top level:</p>
-<pre><code class="language-pys"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">readCount</span>() {
+<pre><code class="language-typhon"><span class="tok-kw">function</span> <span class="tok-type">result</span><span class="tok-op">&lt;</span><span class="tok-type">int</span>, <span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">readCount</span>() {
     <span class="tok-kw">return</span> <span class="tok-builtin">error</span>(<span class="tok-string">&quot;</span><span class="tok-string">count is missing</span><span class="tok-string">&quot;</span>)
 }
 
 <span class="tok-type">int</span> <span class="tok-ident">count</span> <span class="tok-op">=</span> <span class="tok-ident">readCount</span>() <span class="tok-kw">propagate</span>
 <span class="tok-builtin">print</span>(<span class="tok-ident">count</span>)</code></pre>
 <p>Expected stdout: no output. Expected stderr starts with:</p>
-<pre><code class="language-text">PYS panic: count is missing
+<pre><code class="language-text">Typhon panic: count is missing
   at ... in &lt;entrypoint&gt;
 </code></pre>
-<p>Expected exit status: non-zero. PYS calls this outcome a <strong>panic</strong>. It is not a
+<p>Expected exit status: non-zero. Typhon calls this outcome a <strong>panic</strong>. It is not a
 <code>panic(...)</code> command: it means an error reached the entrypoint with nobody left
 to handle it. Statements after the failing propagation do not run.</p>
-<p>Larger projects put the authoritative entrypoint in <code>pys.toml</code>:</p>
+<p>Larger projects put the authoritative entrypoint in <code>typhon.toml</code>:</p>
 <pre><code class="language-toml">[project]
-main = &quot;src/app.pys&quot;
+main = &quot;src/app.typhon&quot;
 </code></pre>
 <p>Run and Debug use that same file. Imported files may return results from
 functions, but may not propagate at top level.</p>

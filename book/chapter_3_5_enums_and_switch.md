@@ -5,7 +5,7 @@
 Closed sets of named constants — member names should be
 `SCREAMING_SNAKE_CASE`:
 
-```pys
+```typhon
 enum Day {
     MONDAY,
     WEDNESDAY,
@@ -30,7 +30,7 @@ No implicit fall-through. Use bare `continue` to fall into the next case
 when you mean it. Several labels may share one arm with commas, and an arm
 body may be an explicit `{ … }` block (locals inside the block stay there):
 
-```pys
+```typhon
 enum Day {
     MONDAY,
     WEDNESDAY,
@@ -77,7 +77,7 @@ Output:
 
 ## Switch expression
 
-```pys
+```typhon
 enum Day {
     MONDAY,
     WEDNESDAY,

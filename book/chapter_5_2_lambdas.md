@@ -22,7 +22,7 @@ returns `int`.
   </figcaption>
 </figure>
 
-```pys
+```typhon
 lambda<int -> bool> isEven = n => n % 2 == 0
 print(isEven(4))
 print(isEven(5))

@@ -106,12 +106,12 @@ switch (r) {
 }
 """
     )
-    assert "_pys_ok" in py
-    assert "_pys_parse_float" not in py
-    assert "_pys_parse_int" not in py
+    assert "_typhon_ok" in py
+    assert "_typhon_parse_float" not in py
+    assert "_typhon_parse_int" not in py
 
 
 def test_parse_helpers_emitted_when_used() -> None:
     py = transpile('result<float, string> n = parseFloat("1")\n')
-    assert "def _pys_parse_float" in py
-    assert "def _pys_ok" in py
+    assert "def _typhon_parse_float" in py
+    assert "def _typhon_ok" in py

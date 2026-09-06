@@ -1,4 +1,4 @@
-"""Project manifest (`pys.toml`) — source roots and package identity (ADR-017)."""
+"""Project manifest (`typhon.toml`) — source roots and package identity (ADR-017)."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-MANIFEST_NAME = "pys.toml"
+MANIFEST_NAME = "typhon.toml"
 
 _ROOT_ASSIGN = re.compile(
     r'^\s*([A-Za-z_][\w-]*)\s*=\s*["\']([^"\']+)["\']\s*(?:#.*)?$'
@@ -42,7 +42,7 @@ class SourceRoots:
 class PackageIdentity:
     """Post-root-stripping package path (posix, no leading/trailing slash).
 
-    For ``src/billing/Invoice.pys`` with root ``src``, ``rel_dir`` is ``billing``.
+    For ``src/billing/Invoice.typhon`` with root ``src``, ``rel_dir`` is ``billing``.
     Files directly under a root use empty ``rel_dir`` (``""``).
     """
 
@@ -56,7 +56,7 @@ class PackageIdentity:
 
 
 def find_manifest(start: Path) -> Path | None:
-    """Walk upward from ``start`` (file or dir) for ``pys.toml``."""
+    """Walk upward from ``start`` (file or dir) for ``typhon.toml``."""
     cur = start.resolve()
     if cur.is_file():
         cur = cur.parent
@@ -84,7 +84,7 @@ def _manifest_error(
         suggested_fix=suggested_fix,
         tips=tips
         if tips is not None
-        else ["Set `[project].main` to a contained `.pys` file."],
+        else ["Set `[project].main` to a contained `.typhon` file."],
     )
 
 
@@ -100,7 +100,7 @@ def _parse_project_main_text(text: str, manifest: Path) -> str | None:
         _manifest_error(
             "`[project].main` must be a non-empty path string.",
             manifest=manifest,
-            code="pys.entrypoint-main",
+            code="typhon.entrypoint-main",
         )
     return raw.strip()
 
@@ -119,7 +119,7 @@ def _parse_project_table(text: str, manifest: Path) -> dict | None:
             _manifest_error(
                 f"Invalid {MANIFEST_NAME}: {exc}",
                 manifest=manifest,
-                code="pys.manifest-invalid",
+                code="typhon.manifest-invalid",
             )
         project = data.get("project")
         if project is None:
@@ -128,7 +128,7 @@ def _parse_project_table(text: str, manifest: Path) -> dict | None:
             _manifest_error(
                 "`[project]` must be a TOML table.",
                 manifest=manifest,
-                code="pys.manifest-project",
+                code="typhon.manifest-project",
             )
         return project
 
@@ -150,20 +150,20 @@ def _parse_project_table(text: str, manifest: Path) -> dict | None:
                     _manifest_error(
                         f"`[project].{key}` may be declared only once.",
                         manifest=manifest,
-                        code="pys.manifest-invalid",
+                        code="typhon.manifest-invalid",
                     )
                 project[key] = match.group(2).strip()
             elif re.match(r"^\s*main\s*=", line):
                 _manifest_error(
                     "`[project].main` must be a non-empty path string.",
                     manifest=manifest,
-                    code="pys.entrypoint-main",
+                    code="typhon.entrypoint-main",
                 )
             elif re.match(r"^\s*target\s*=", line):
                 _manifest_error(
                     "`[project].target` must be \"python\" or \"javascript\".",
                     manifest=manifest,
-                    code="pys.manifest-target",
+                    code="typhon.manifest-target",
                 )
     return project or None
 
@@ -180,14 +180,14 @@ def _parse_project_emit_target_text(text: str, manifest: Path) -> str | None:
         _manifest_error(
             '`[project].target` must be "python" or "javascript".',
             manifest=manifest,
-            code="pys.manifest-target",
+            code="typhon.manifest-target",
         )
     value = raw.strip().lower()
     if value not in EMIT_TARGETS:
         _manifest_error(
             f'`[project].target` must be "python" or "javascript", got {raw!r}.',
             manifest=manifest,
-            code="pys.manifest-target",
+            code="typhon.manifest-target",
             suggested_fix='target = "python"',
             tips=['Use target = "python" or target = "javascript".'],
         )
@@ -200,7 +200,7 @@ def _load_project_emit_target_cached(manifest_path: str, text: str) -> str | Non
 
 
 def load_project_emit_target(start: Path) -> str:
-    """Emit target from nearest ``pys.toml`` ``[project].target``, else ``python``."""
+    """Emit target from nearest ``typhon.toml`` ``[project].target``, else ``python``."""
     path = start.expanduser()
     try:
         path = path.resolve()
@@ -230,19 +230,19 @@ def _load_project_main_cached(manifest_path: str, text: str) -> Path | None:
         _manifest_error(
             f"`[project].main` resolves outside the project: {raw}",
             manifest=manifest,
-            code="pys.entrypoint-outside",
+            code="typhon.entrypoint-outside",
         )
-    if candidate.suffix.lower() != ".pys":
+    if candidate.suffix.lower() != ".typhon":
         _manifest_error(
-            f"`[project].main` must name a `.pys` file: {raw}",
+            f"`[project].main` must name a `.typhon` file: {raw}",
             manifest=manifest,
-            code="pys.entrypoint-suffix",
+            code="typhon.entrypoint-suffix",
         )
     if not candidate.is_file():
         _manifest_error(
             f"Configured entrypoint does not exist: {raw}",
             manifest=manifest,
-            code="pys.entrypoint-missing",
+            code="typhon.entrypoint-missing",
         )
     return candidate
 
@@ -254,7 +254,7 @@ def load_project_main(manifest_path: Path) -> Path | None:
         _manifest_error(
             f"Project manifest not found: {manifest}",
             manifest=manifest,
-            code="pys.manifest-missing",
+            code="typhon.manifest-missing",
         )
     text = manifest.read_text(encoding="utf-8")
     return _load_project_main_cached(str(manifest), text)
@@ -269,20 +269,20 @@ def resolve_entrypoint(selected: Path) -> Path:
         raise TranspileError(
             f"Selected path does not exist: {choice}",
             source_file=choice,
-            code="pys.entrypoint-missing",
+            code="typhon.entrypoint-missing",
         )
     manifest = find_manifest(choice)
     configured = load_project_main(manifest) if manifest is not None else None
     if configured is not None:
         if choice.is_file() and choice != configured:
             if _is_declared_test_source(choice):
-                if choice.suffix.lower() != ".pys":
+                if choice.suffix.lower() != ".typhon":
                     from .transpiler import TranspileError
 
                     raise TranspileError(
-                        f"Entrypoint must be a `.pys` file: {choice}",
+                        f"Entrypoint must be a `.typhon` file: {choice}",
                         source_file=choice,
-                        code="pys.entrypoint-suffix",
+                        code="typhon.entrypoint-suffix",
                     )
                 return choice
             from .transpiler import TranspileError
@@ -291,31 +291,31 @@ def resolve_entrypoint(selected: Path) -> Path:
                 f"Selected file '{choice.name}' conflicts with the configured "
                 f"entrypoint '{configured.name}'.",
                 source_file=choice,
-                code="pys.entrypoint-conflict",
+                code="typhon.entrypoint-conflict",
                 suggested_fix=str(configured),
                 tips=[
                     "Run the configured entrypoint, or use “Set as entrypoint” "
-                    "to update pys.toml."
+                    "to update typhon.toml."
                 ],
             )
         return configured
     if choice.is_file():
-        if choice.suffix.lower() != ".pys":
+        if choice.suffix.lower() != ".typhon":
             from .transpiler import TranspileError
 
             raise TranspileError(
-                f"Entrypoint must be a `.pys` file: {choice}",
+                f"Entrypoint must be a `.typhon` file: {choice}",
                 source_file=choice,
-                code="pys.entrypoint-suffix",
+                code="typhon.entrypoint-suffix",
             )
         return choice
     from .transpiler import TranspileError
 
     raise TranspileError(
-        "Running a directory requires `[project].main` in pys.toml.",
+        "Running a directory requires `[project].main` in typhon.toml.",
         source_file=manifest or choice / MANIFEST_NAME,
-        code="pys.entrypoint-main",
-        suggested_fix='[project]\nmain = "main.pys"',
+        code="typhon.entrypoint-main",
+        suggested_fix='[project]\nmain = "main.typhon"',
         tips=["Choose the project entry file explicitly."],
     )
 
@@ -332,7 +332,7 @@ def _is_declared_test_source(file_path: Path) -> bool:
 
 
 def _parse_source_roots_text(text: str, project_root: Path) -> SourceRoots | None:
-    """Parse ``[source_roots]`` from pys.toml (stdlib tomllib on 3.11+, else line scan)."""
+    """Parse ``[source_roots]`` from typhon.toml (stdlib tomllib on 3.11+, else line scan)."""
     section: dict[str, str] = {}
     if sys.version_info >= (3, 11):
         import tomllib
@@ -411,19 +411,19 @@ def package_identity(file_path: Path, roots: SourceRoots | None = None) -> Packa
 
 
 def package_peer_files(file_path: Path) -> list[Path]:
-    """All ``.pys`` files in the same package (across source roots, or same folder)."""
+    """All ``.typhon`` files in the same package (across source roots, or same folder)."""
     path = file_path.resolve()
     roots = source_roots_for(path)
     if roots is None:
-        return sorted(p.resolve() for p in path.parent.glob("*.pys"))
+        return sorted(p.resolve() for p in path.parent.glob("*.typhon"))
     ident = package_identity(path, roots)
     if ident is None:
-        return sorted(p.resolve() for p in path.parent.glob("*.pys"))
+        return sorted(p.resolve() for p in path.parent.glob("*.typhon"))
     peers: list[Path] = []
     for _name, root in roots.roots:
         pkg_dir = root / ident.rel_dir if ident.rel_dir else root
         if pkg_dir.is_dir():
-            peers.extend(pkg_dir.glob("*.pys"))
+            peers.extend(pkg_dir.glob("*.typhon"))
     return sorted({p.resolve() for p in peers})
 
 

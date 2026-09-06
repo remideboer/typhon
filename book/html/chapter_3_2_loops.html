@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>4.2. Loops — PYS Development Classes</title>
+  <title>4.2. Loops — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -152,7 +152,7 @@
   </figcaption>
 </figure>
 
-<pre><code class="language-pys"><span class="tok-comment"># C-style</span>
+<pre><code class="language-typhon"><span class="tok-comment"># C-style</span>
 <span class="tok-kw">loop</span> (<span class="tok-type">int</span> <span class="tok-ident">i</span> <span class="tok-op">=</span> <span class="tok-number">0</span>; <span class="tok-ident">i</span> <span class="tok-op">&lt;</span> <span class="tok-number">3</span>; <span class="tok-ident">i</span><span class="tok-op">++</span>) {
     <span class="tok-builtin">print</span>(<span class="tok-ident">i</span>)
 }
@@ -183,7 +183,7 @@ b
 <p>The variable after <code>in</code> must declare the <strong>element</strong> type of the collection
 (<code>int</code> for <code>int[]</code> / <code>list&lt;int&gt;</code>, <code>string</code> for <code>list&lt;string&gt;</code>, and so on).
 Omitting the type, or naming the wrong type, is a compile error:</p>
-<pre><code class="language-pys"><span class="tok-type">int</span>[] <span class="tok-ident">nums</span> <span class="tok-op">=</span> {<span class="tok-number">1</span>, <span class="tok-number">2</span>, <span class="tok-number">3</span>}
+<pre><code class="language-typhon"><span class="tok-type">int</span>[] <span class="tok-ident">nums</span> <span class="tok-op">=</span> {<span class="tok-number">1</span>, <span class="tok-number">2</span>, <span class="tok-number">3</span>}
 <span class="tok-comment"># loop (x in nums) { }           # error: type required</span>
 <span class="tok-comment"># loop (string x in nums) { }    # error: elements are int, not string</span>
 <span class="tok-kw">loop</span> (<span class="tok-type">int</span> <span class="tok-ident">x</span> <span class="tok-kw">in</span> <span class="tok-ident">nums</span>) {
@@ -194,10 +194,10 @@ Omitting the type, or naming the wrong type, is a compile error:</p>
 Type mismatch: foreach binder 'x' has type string, but elements of 'nums' are int.
 </code></pre>
 <h2>Why a C-style loop has one counter</h2>
-<p>PYS deliberately keeps the C-style form narrow. The initializer, condition,
+<p>Typhon deliberately keeps the C-style form narrow. The initializer, condition,
 and step must all name the same counter, and that counter is immutable in the
 body. This gives the reader one clear answer to: “what controls this loop?”</p>
-<p>Java and C++ allow this denser form (the following is <strong>not PYS</strong>):</p>
+<p>Java and C++ allow this denser form (the following is <strong>not Typhon</strong>):</p>
 <pre><code class="language-java">for (int x = 0, y = 10; x &lt; 3; x++, y++) {
     System.out.println(x + &quot;, &quot; + y);
 }
@@ -224,9 +224,9 @@ this Java body accidentally advances <code>y</code> twice during one pass:</p>
 <p>The condition still checks only <code>x</code>; nothing guarantees that <code>y</code> stays in
 step. A different <code>y += 2</code> in the header would compile too. C++ expresses the
 update with its comma operator, while Java uses a comma-separated update list.</p>
-<p>PYS does not add comma-separated counters or a special <code>{x, y}</code> group. Use
+<p>Typhon does not add comma-separated counters or a special <code>{x, y}</code> group. Use
 the existing while-style form when several ordinary mutable values take part:</p>
-<pre><code class="language-pys"><span class="tok-type">int</span> <span class="tok-ident">x</span> <span class="tok-op">=</span> <span class="tok-number">0</span>
+<pre><code class="language-typhon"><span class="tok-type">int</span> <span class="tok-ident">x</span> <span class="tok-op">=</span> <span class="tok-number">0</span>
 <span class="tok-type">int</span> <span class="tok-ident">y</span> <span class="tok-op">=</span> <span class="tok-number">10</span>
 
 <span class="tok-kw">loop</span> (<span class="tok-ident">x</span> <span class="tok-op">&lt;</span> <span class="tok-number">3</span>) {
@@ -262,7 +262,7 @@ were looking for and further passes would waste work.</p>
   </figcaption>
 </figure>
 
-<pre><code class="language-pys"><span class="tok-type">list</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">names</span> <span class="tok-op">=</span> [<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Lin</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Sam</span><span class="tok-string">&quot;</span>]
+<pre><code class="language-typhon"><span class="tok-type">list</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">names</span> <span class="tok-op">=</span> [<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Lin</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Sam</span><span class="tok-string">&quot;</span>]
 <span class="tok-type">string</span> <span class="tok-ident">target</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Lin</span><span class="tok-string">&quot;</span>
 <span class="tok-type">bool</span> <span class="tok-ident">found</span> <span class="tok-op">=</span> <span class="tok-const">false</span>
 
@@ -288,7 +288,7 @@ the loop’s closing <code>}</code>.</p>
 <p><code>continue</code> ends <strong>only the current iteration</strong> and jumps to the next one
 (the next value, or the next C-style step). Use it to skip work you do not
 want for some items.</p>
-<pre><code class="language-pys"><span class="tok-kw">loop</span> (<span class="tok-type">int</span> <span class="tok-ident">i</span> <span class="tok-op">=</span> <span class="tok-number">1</span>; <span class="tok-ident">i</span> <span class="tok-op">&lt;=</span> <span class="tok-number">6</span>; <span class="tok-ident">i</span><span class="tok-op">++</span>) {
+<pre><code class="language-typhon"><span class="tok-kw">loop</span> (<span class="tok-type">int</span> <span class="tok-ident">i</span> <span class="tok-op">=</span> <span class="tok-number">1</span>; <span class="tok-ident">i</span> <span class="tok-op">&lt;=</span> <span class="tok-number">6</span>; <span class="tok-ident">i</span><span class="tok-op">++</span>) {
     <span class="tok-kw">if</span> (<span class="tok-ident">i</span> <span class="tok-op">%</span> <span class="tok-number">2</span> <span class="tok-op">==</span> <span class="tok-number">0</span>) {
         <span class="tok-kw">continue</span>
     }
@@ -313,7 +313,7 @@ In a <code>loop</code>, <code>continue</code> always means “next iteration.”
 <h2>Block scope</h2>
 <p>Names declared inside a loop’s <code>{ … }</code> exist only until that closing
 brace. After the loop, they are gone — that is <strong>block scope</strong>.</p>
-<pre><code class="language-pys"><span class="tok-kw">loop</span> (<span class="tok-type">int</span> <span class="tok-ident">i</span> <span class="tok-op">=</span> <span class="tok-number">0</span>; <span class="tok-ident">i</span> <span class="tok-op">&lt;</span> <span class="tok-number">1</span>; <span class="tok-ident">i</span><span class="tok-op">++</span>) {
+<pre><code class="language-typhon"><span class="tok-kw">loop</span> (<span class="tok-type">int</span> <span class="tok-ident">i</span> <span class="tok-op">=</span> <span class="tok-number">0</span>; <span class="tok-ident">i</span> <span class="tok-op">&lt;</span> <span class="tok-number">1</span>; <span class="tok-ident">i</span><span class="tok-op">++</span>) {
     <span class="tok-type">int</span> <span class="tok-ident">scratch</span> <span class="tok-op">=</span> <span class="tok-number">10</span>
     <span class="tok-builtin">print</span>(<span class="tok-ident">scratch</span>)
 }

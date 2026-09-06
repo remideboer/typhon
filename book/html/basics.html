@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Back to the basics — PYS Development Classes</title>
+  <title>Back to the basics — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -142,7 +142,7 @@ already know what a variable is, skip ahead to
 <a href="chapter_2_session_types.html">Session 1</a>.</p>
 </blockquote>
 <p>What if someone would ask me: “Can you teach me how software works — from
-scratch?” This chapter is that answer for <strong>PYS</strong>: small steps, plain
+scratch?” This chapter is that answer for <strong>Typhon</strong>: small steps, plain
 language, and examples you can run yourself.</p>
 <h2>Hello World</h2>
 <p>To write software you need:</p>
@@ -150,28 +150,28 @@ language, and examples you can run yourself.</p>
 <li>A <strong>compiler</strong> that turns your text into something the computer can run.</li>
 <li>An <strong>editor</strong> to write that text in.</li>
 </ol>
-<p>Complete <a href="chapter_1_1_getting_ready.html">Getting ready</a> first. Then create <code>main.pys</code>:</p>
-<pre><code class="language-pys"><span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, world!</span><span class="tok-string">&quot;</span>)</code></pre>
+<p>Complete <a href="chapter_1_1_getting_ready.html">Getting ready</a> first. Then create <code>main.typhon</code>:</p>
+<pre><code class="language-typhon"><span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, world!</span><span class="tok-string">&quot;</span>)</code></pre>
 <p>Output:</p>
 <pre><code class="language-text">Hello, world!
 </code></pre>
 <p>Run it:</p>
-<pre><code class="language-shell">python -m transpiler run main.pys
+<pre><code class="language-shell">python -m transpiler run main.typhon
 </code></pre>
 <p>You should see <code>Hello, world!</code>.</p>
 <h3>Exploring Hello World</h3>
-<p>PYS executes the file <strong>from top to bottom</strong>. Each complete line is a
+<p>Typhon executes the file <strong>from top to bottom</strong>. Each complete line is a
 <em>statement</em> — one instruction. Here there is only one: <code>print(...)</code>.</p>
 <ul>
 <li><code>print</code> — a built-in that sends a value to the screen.</li>
 <li><code>"Hello, world!"</code> — a <em>string</em>: text in double quotes.</li>
-<li>There is <strong>no</strong> semicolon at the end. In PYS a statement ends at the
+<li>There is <strong>no</strong> semicolon at the end. In Typhon a statement ends at the
   newline. Braces <code>{</code> <code>}</code> group blocks later; they are not decoration.</li>
 </ul>
 <h2>Expanding Hello World</h2>
 <p>Introduce a <strong>variable</strong> — a labeled place to keep a value while the
 program runs:</p>
-<pre><code class="language-pys"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
+<pre><code class="language-typhon"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
 <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, </span><span class="tok-string">&quot;</span> <span class="tok-op">+</span> <span class="tok-ident">firstName</span> <span class="tok-op">+</span> <span class="tok-string">&quot;</span><span class="tok-string">!</span><span class="tok-string">&quot;</span>)</code></pre>
 <p>Output:</p>
 <pre><code class="language-text">Hello, Ada!
@@ -228,7 +228,7 @@ the name <code>firstName</code>:</p>
 <li>Puts <code>"Ada"</code> inside it.</li>
 </ol>
 <blockquote>
-<p>By convention PYS variables use <strong>camelCase</strong>: no spaces, no
+<p>By convention Typhon variables use <strong>camelCase</strong>: no spaces, no
 underscores between words; each new word after the first starts with a
 capital letter (<code>firstName</code>, not <code>first_name</code> or <code>FirstName</code>). That matches
 C# and Java, so the habit transfers later.</p>
@@ -236,7 +236,7 @@ C# and Java, so the habit transfers later.</p>
 <p>The <code>+</code> between strings <em>concatenates</em> them — glues them into one string.
 Run the program; you should see <code>Hello, Ada!</code>.</p>
 <h3>Changing what’s in the drawer</h3>
-<pre><code class="language-pys"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
+<pre><code class="language-typhon"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
 <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, </span><span class="tok-string">&quot;</span> <span class="tok-op">+</span> <span class="tok-ident">firstName</span> <span class="tok-op">+</span> <span class="tok-string">&quot;</span><span class="tok-string">!</span><span class="tok-string">&quot;</span>)
 
 <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>
@@ -307,9 +307,9 @@ print shows <code>Greetings, Tom!</code>.</p>
 <h3>A drawer that can’t be swapped: <code>fix</code></h3>
 <p>Keep building on the same program. <code>firstName</code> is still a normal <code>var</code>
 drawer (we left it holding <code>"Tom"</code>). Add a second drawer that must not
-change later — PYS uses <code>fix</code> for that. A year is a whole number, so this
+change later — Typhon uses <code>fix</code> for that. A year is a whole number, so this
 drawer’s type is <code>int</code>, not <code>string</code>:</p>
-<pre><code class="language-pys"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
+<pre><code class="language-typhon"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
 <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, </span><span class="tok-string">&quot;</span> <span class="tok-op">+</span> <span class="tok-ident">firstName</span> <span class="tok-op">+</span> <span class="tok-string">&quot;</span><span class="tok-string">!</span><span class="tok-string">&quot;</span>)
 
 <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>
@@ -326,7 +326,7 @@ Greetings, Tom!
 Tom was born in 1990
 </code></pre>
 <p><em>Compile error if the <code>birthYear = …</code> line is uncommented.</em></p>
-<p>When one side of <code>+</code> is a string, PYS concatenates and turns the other
+<p>When one side of <code>+</code> is a string, Typhon concatenates and turns the other
 side into text for you — no <code>str(birthYear)</code> needed here. The drawer
 itself still holds an <code>int</code> — look at the type on the right of the address.</p>
 <p><code>fix</code> locks <strong>that</strong> drawer after the first value is placed. Trying to
@@ -385,7 +385,7 @@ left, type on the right — <code>5 string</code> versus <code>9 int</code>.</p>
 <p>Add one more fact — place of birth — without throwing away what you
 already have. Another <code>fix</code> drawer opens (a <code>string</code> again); more of the
 map lights up:</p>
-<pre><code class="language-pys"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
+<pre><code class="language-typhon"><span class="tok-mod">var</span> <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>
 <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, </span><span class="tok-string">&quot;</span> <span class="tok-op">+</span> <span class="tok-ident">firstName</span> <span class="tok-op">+</span> <span class="tok-string">&quot;</span><span class="tok-string">!</span><span class="tok-string">&quot;</span>)
 
 <span class="tok-ident">firstName</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>
@@ -469,7 +469,7 @@ right of the drawer number in the maps above. Prefer that form once you
 know the type; keep <code>var</code> for obvious initializers. Session 1 goes deeper.</p>
 <p><strong>Sidebar — one drawer per declaration</strong></p>
 <p>Give every variable its own line: <code>int x = 10</code>, then <code>int y = 10</code>.
-PYS rejects <code>int x, y = 10</code> because it is unclear at a glance whether
+Typhon rejects <code>int x, y = 10</code> because it is unclear at a glance whether
 <code>10</code> belongs to <code>y</code> only or to both names. Separate lines keep one label,
 one drawer, and one starting value together.</p>
 </blockquote>

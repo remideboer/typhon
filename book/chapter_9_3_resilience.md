@@ -23,7 +23,7 @@ Repeat up to N times.
   </figcaption>
 </figure>
 
-Demo: [`retry.pys`](../examples/patterns/resilience/retry.pys)
+Demo: [`retry.typhon`](../examples/patterns/resilience/retry.typhon)
 
 **Output:**
 
@@ -50,7 +50,7 @@ Logical **step budget** (teaching). Wall-clock timers need platform support.
   </figcaption>
 </figure>
 
-Demo: [`timeout.pys`](../examples/patterns/resilience/timeout.pys)
+Demo: [`timeout.typhon`](../examples/patterns/resilience/timeout.typhon)
 
 **Output:**
 
@@ -76,7 +76,7 @@ States: **Closed → Open → HalfOpen**. Stop calling a sick dependency.
   </figcaption>
 </figure>
 
-Demo: [`circuit_breaker.pys`](../examples/patterns/resilience/circuit_breaker.pys)
+Demo: [`circuit_breaker.typhon`](../examples/patterns/resilience/circuit_breaker.typhon)
 
 **Output:**
 
@@ -105,7 +105,7 @@ Cap concurrent **slots** so one workload cannot take all capacity.
   </figcaption>
 </figure>
 
-Demo: [`bulkhead.pys`](../examples/patterns/resilience/bulkhead.pys)
+Demo: [`bulkhead.typhon`](../examples/patterns/resilience/bulkhead.typhon)
 
 **Output:**
 
@@ -135,7 +135,7 @@ Primary fails → secondary path.
   </figcaption>
 </figure>
 
-Demo: [`fallback.pys`](../examples/patterns/resilience/fallback.pys)
+Demo: [`fallback.typhon`](../examples/patterns/resilience/fallback.typhon)
 
 **Output:**
 
@@ -161,7 +161,7 @@ Allow N actions per window.
   </figcaption>
 </figure>
 
-Demo: [`rate_limiting.pys`](../examples/patterns/resilience/rate_limiting.pys)
+Demo: [`rate_limiting.typhon`](../examples/patterns/resilience/rate_limiting.typhon)
 
 **Output:**
 
@@ -189,7 +189,7 @@ Same client key → same result; duplicates do not create twice.
   </figcaption>
 </figure>
 
-Demo: [`idempotency.pys`](../examples/patterns/resilience/idempotency.pys)
+Demo: [`idempotency.typhon`](../examples/patterns/resilience/idempotency.typhon)
 
 **Output:**
 

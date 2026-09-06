@@ -1,4 +1,4 @@
-"""`.pys` import resolution / visibility (shared by sem + emit).
+"""`.typhon` import resolution / visibility (shared by sem + emit).
 
 Loads sibling modules via the AST parser (no legacy ``Parser``).
 """
@@ -23,6 +23,7 @@ from .ast_nodes import (
     StructDef,
     TraitDef,
 )
+from .brand import SOURCE_EXT
 from .workspace import resolve_workspace_path, workspace_root_from_env
 
 
@@ -389,7 +390,7 @@ def module_info_from_ast(path: Path, tree: Module) -> ModuleInfo:
 
 
 class ImportResolver:
-    """Resolve PYS / external imports and track visibility for sem + emit."""
+    """Resolve Typhon / external imports and track visibility for sem + emit."""
 
     def __init__(
         self,
@@ -514,7 +515,7 @@ class ImportResolver:
             self._deps_site_paths = []
         return self._deps_site_paths
 
-    def _find_pys_module_path(self, module_ref: str) -> Path | None:
+    def _find_typhon_module_path(self, module_ref: str) -> Path | None:
         ref = module_ref.strip().strip("\"'")
         if not ref:
             return None
@@ -523,13 +524,13 @@ class ImportResolver:
             "/" in ref
             or "\\" in ref
             or ref.startswith(".")
-            or path.suffix.lower() == ".pys"
+            or path.suffix.lower() == SOURCE_EXT
         )
         if not pathish and "." in ref:
-            # Dotted Python-style names are not .pys file paths.
+            # Dotted Python-style names are not .typhon file paths.
             return None
-        if path.suffix.lower() != ".pys":
-            path = path.with_suffix(".pys")
+        if path.suffix.lower() != SOURCE_EXT:
+            path = path.with_suffix(SOURCE_EXT)
         if not path.is_absolute():
             base = self.source_path.parent if self.source_path is not None else Path.cwd()
             candidate = (base / path)
@@ -544,7 +545,7 @@ class ImportResolver:
                 except OSError:
                     pass
             # Bare module (e.g. `config`): resolve among same-package peers under
-            # pys.toml [source_roots] so tests/ can import src/ without relative paths.
+            # typhon.toml [source_roots] so tests/ can import src/ without relative paths.
             if self.source_path is not None and not (
                 "/" in ref or "\\" in ref or ref.startswith(".")
             ):
@@ -569,7 +570,7 @@ class ImportResolver:
     def _same_package(self, other: Path) -> bool:
         # source_path / ModuleInfo.path are already resolved; re-resolve here was
         # hundreds of filesystem hits per analyze with no semantic gain.
-        # With pys.toml [source_roots], package identity is root-relative (ADR-017).
+        # With typhon.toml [source_roots], package identity is root-relative (ADR-017).
         if self.source_path is None:
             return False
         from .project_manifest import same_package
@@ -709,7 +710,7 @@ class ImportResolver:
         from .deps import is_external_python_module, lock_declares_module
 
         ref = module_ref.strip().strip("\"'")
-        if ref.lower().endswith(".pys"):
+        if ref.lower().endswith(SOURCE_EXT):
             return None
         present = is_external_python_module(ref, self._deps_paths())
         if (
@@ -797,7 +798,7 @@ class ImportResolver:
         else:
             return None
 
-        pys_path = self._find_pys_module_path(module_ref)
+        pys_path = self._find_typhon_module_path(module_ref)
         if pys_path is None:
             external = self._translate_external_import(
                 module_ref, names, line_number, raw_line, alias=alias
@@ -805,10 +806,10 @@ class ImportResolver:
             if external is not None:
                 return external
             _error(
-                f"Cannot find module '{module_ref}'. Expected a .pys file next to this source, "
-                f"a Python package from pys.toml [dependencies] / the standard library, or (for "
+                f"Cannot find module '{module_ref}'. Expected a .typhon file next to this source, "
+                f"a Python package from typhon.toml [dependencies] / the standard library, or (for "
                 f"--target javascript) an npm-mapped name such as mysql2 / nodegui / express "
-                f"(declared in [dependencies.npm]; installed into ~/.pys/repository/npm on Run).",
+                f"(declared in [dependencies.npm]; installed into ~/.typhon/repository/npm on Run).",
                 line_number,
                 raw_line.rstrip(),
             )
@@ -816,7 +817,7 @@ class ImportResolver:
         if alias is not None:
             _error(
                 "Alias imports (`import … as …`) are only supported for Python packages "
-                "from pys.toml [dependencies] / the standard library.",
+                "from typhon.toml [dependencies] / the standard library.",
                 line_number,
                 raw_line.rstrip(),
             )
@@ -867,10 +868,10 @@ class ImportResolver:
                     )
                     if hint:
                         msg = f"{msg}\n{hint}"
-                        err_code = "pys.package-mismatch"
+                        err_code = "typhon.package-mismatch"
                         tips = [
                             "Place the test under the mirrored path for the same package "
-                            "(see pys.toml [source_roots])."
+                            "(see typhon.toml [source_roots])."
                         ]
                         roots = source_roots_for(self.source_path)
                         id_dec = package_identity(pys_path, roots) if roots else None

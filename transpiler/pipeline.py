@@ -1,4 +1,4 @@
-"""Compile PYS source through lex → parse → sem → emit[target]."""
+"""Compile Typhon source through lex → parse → sem → emit[target]."""
 from __future__ import annotations
 
 import os
@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from typing import Literal
 
+from .brand import SUPPRESS_WARNINGS_ENV
 from . import parse as parse_mod
 from . import sem as sem_mod
 from .emit import javascript as emit_javascript
@@ -14,7 +15,7 @@ from .emit import python as emit_python
 Target = Literal["python", "javascript"]
 
 
-def compile_pys(
+def compile_typhon(
     source: str,
     *,
     target: Target = "python",
@@ -22,8 +23,8 @@ def compile_pys(
     allow_runtime_introspection: bool = False,
     is_entrypoint: bool = False,
 ) -> str:
-    """Compile PYS to the requested backend (`python` or `javascript`)."""
-    text, _maps, _names = compile_pys_with_map(
+    """Compile Typhon to the requested backend (`python` or `javascript`)."""
+    text, _maps, _names = compile_typhon_with_map(
         source,
         target=target,
         source_path=source_path,
@@ -33,7 +34,7 @@ def compile_pys(
     return text
 
 
-def compile_pys_with_map(
+def compile_typhon_with_map(
     source: str,
     *,
     target: Target = "python",
@@ -41,11 +42,11 @@ def compile_pys_with_map(
     allow_runtime_introspection: bool = False,
     is_entrypoint: bool = False,
 ) -> tuple[str, list[dict[str, int]], dict[str, str]]:
-    """Compile PYS and return ``(emitted_text, line_map, debug_names)``.
+    """Compile Typhon and return ``(emitted_text, line_map, debug_names)``.
 
-    For ``python``, map entries are ``{"py": int, "pys": int}`` (1-based).
-    For ``javascript``, map entries are ``{"js": int, "pys": int}``.
-    ``debug_names`` maps emitted locals → PYS display names.
+    For ``python``, map entries are ``{"py": int, "typhon": int}`` (1-based).
+    For ``javascript``, map entries are ``{"js": int, "typhon": int}``.
+    ``debug_names`` maps emitted locals → Typhon display names.
     """
     if target not in ("python", "javascript"):
         raise ValueError(
@@ -59,7 +60,7 @@ def compile_pys_with_map(
         allow_runtime_introspection=allow_runtime_introspection,
         is_entrypoint=is_entrypoint,
     )
-    if os.environ.get("PYS_SUPPRESS_WARNINGS", "").strip() not in {"1", "true", "yes"}:
+    if os.environ.get(SUPPRESS_WARNINGS_ENV, "").strip() not in {"1", "true", "yes"}:
         for warn in getattr(tree, "analysis_warnings", []) or []:
             print(str(warn), file=sys.stderr)
     if target == "javascript":

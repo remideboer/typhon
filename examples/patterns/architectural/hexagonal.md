@@ -1,7 +1,7 @@
 # Hexagonal architecture (ports and adapters)
 
 **Category:** Architectural  
-**Demo:** [hexagonal.pys](hexagonal.pys)  
+**Demo:** [hexagonal.typhon](hexagonal.typhon)  
 **Wikipedia:** [Hexagonal architecture (software)](https://en.wikipedia.org/wiki/Hexagonal_architecture_%28software%29)
 
 ## Intent
@@ -49,5 +49,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/architectural/hexagonal.pys
+python -m transpiler run examples/patterns/architectural/hexagonal.typhon
 ```

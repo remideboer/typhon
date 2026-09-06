@@ -1,7 +1,7 @@
 # Interpreter
 
 **Category:** Behavioral  
-**Demo:** [interpreter.pys](interpreter.pys)  
+**Demo:** [interpreter.typhon](interpreter.typhon)  
 **Wikipedia:** [Interpreter pattern](https://en.wikipedia.org/wiki/Interpreter_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -55,5 +55,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/interpreter.pys
+python -m transpiler run examples/patterns/design/behavioral/interpreter.typhon
 ```

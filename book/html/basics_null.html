@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2.7. Null and missing values — PYS Development Classes</title>
+  <title>2.7. Null and missing values — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -137,7 +137,7 @@
     <main>
 <h1>2.7. Null and missing values</h1>
 <p>Sometimes a drawer exists but is <strong>empty on purpose</strong>: “we do not have a
-value yet.” In PYS that empty marker is <code>null</code>. Ordinary types such as
+value yet.” In Typhon that empty marker is <code>null</code>. Ordinary types such as
 <code>string</code> and <code>int</code> never hold <code>null</code>. Absence must be written on the type:
 <code>nullable&lt;T&gt;</code>.</p>
 <blockquote>
@@ -146,7 +146,7 @@ value yet.” In PYS that empty marker is <code>null</code>. Ordinary types such
 aanwezig is. An empty string <code>""</code> is also a present value — it is text
 with zero characters, not “no string.”</p>
 </blockquote>
-<pre><code class="language-pys"><span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">nickname</span> <span class="tok-op">=</span> <span class="tok-const">null</span>
+<pre><code class="language-typhon"><span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">nickname</span> <span class="tok-op">=</span> <span class="tok-const">null</span>
 
 <span class="tok-kw">if</span> (<span class="tok-ident">nickname</span> <span class="tok-op">==</span> <span class="tok-const">null</span>) {
     <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">No nickname yet</span><span class="tok-string">&quot;</span>)
@@ -158,7 +158,7 @@ with zero characters, not “no string.”</p>
 </code></pre>
 <p>Assign a present value, then use it only after a check (or in the <code>else</code>
 branch of a null check):</p>
-<pre><code class="language-pys"><span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">nickname</span> <span class="tok-op">=</span> <span class="tok-const">null</span>
+<pre><code class="language-typhon"><span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">nickname</span> <span class="tok-op">=</span> <span class="tok-const">null</span>
 <span class="tok-ident">nickname</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">Sanne</span><span class="tok-string">&quot;</span>
 
 <span class="tok-kw">if</span> (<span class="tok-ident">nickname</span> <span class="tok-op">!=</span> <span class="tok-const">null</span>) {
@@ -168,7 +168,7 @@ branch of a null check):</p>
 <pre><code class="language-text">SANNE
 </code></pre>
 <p>Zero and empty stay distinct from absence:</p>
-<pre><code class="language-pys"><span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-type">int</span><span class="tok-op">&gt;</span> <span class="tok-ident">number</span> <span class="tok-op">=</span> <span class="tok-const">null</span>
+<pre><code class="language-typhon"><span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-type">int</span><span class="tok-op">&gt;</span> <span class="tok-ident">number</span> <span class="tok-op">=</span> <span class="tok-const">null</span>
 <span class="tok-ident">number</span> <span class="tok-op">=</span> <span class="tok-number">0</span>
 <span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">text</span> <span class="tok-op">=</span> <span class="tok-const">null</span>
 <span class="tok-ident">text</span> <span class="tok-op">=</span> <span class="tok-string">&quot;</span><span class="tok-string">&quot;</span>
@@ -181,7 +181,7 @@ false
 true
 </code></pre>
 <p>Compile error — plain types reject <code>null</code>:</p>
-<pre><code class="language-pys"><span class="tok-type">string</span> <span class="tok-ident">city</span> <span class="tok-op">=</span> <span class="tok-const">null</span></code></pre>
+<pre><code class="language-typhon"><span class="tok-type">string</span> <span class="tok-ident">city</span> <span class="tok-op">=</span> <span class="tok-const">null</span></code></pre>
 <pre><code class="language-text">Type 'string' does not allow null.
 </code></pre>
 <ul>
@@ -196,7 +196,7 @@ true
 <blockquote>
 <p><strong>Sidebar — databases</strong></p>
 <p>SQL <code>NULL</code> is the same idea: missing/unknown. A <code>VARCHAR NULL</code> column maps
-to <code>nullable&lt;string&gt;</code> in PYS. Do not convert SQL <code>NULL</code> to <code>""</code> — students
+to <code>nullable&lt;string&gt;</code> in Typhon. Do not convert SQL <code>NULL</code> to <code>""</code> — students
 must keep absent and empty distinct. See the shop example under
 <code>examples/database/</code>.</p>
 </blockquote>

@@ -1,12 +1,12 @@
-def _pys_format(value):
+def _typhon_format(value):
     return "null" if value is None else str(value)
-print(_pys_format(42))
-print(_pys_format(True))
-print(_pys_format(False))
-print(_pys_format(None))
+print(_typhon_format(42))
+print(_typhon_format(True))
+print(_typhon_format(False))
+print(_typhon_format(None))
 f = 3.14
 c = 'A'
 s = "hello"
-print(_pys_format(f))
-print(_pys_format(c))
-print(_pys_format(s))
+print(_typhon_format(f))
+print(_typhon_format(c))
+print(_typhon_format(s))

@@ -22,7 +22,7 @@ finish before the code after the block runs.
   </figcaption>
 </figure>
 
-```pys
+```typhon
 tasks {
     task {
         print("A")
@@ -49,7 +49,7 @@ both finished
 Named tasks can return values; `await` waits for them (**only inside a
 `task`**):
 
-```pys
+```typhon
 tasks {
     task add(int a, int b) {
         return a + b
@@ -86,13 +86,13 @@ never a loop.
     </div>
   </div>
   <figcaption>
-    One-way arrows only — a cycle would never finish, so PYS rejects it.
+    One-way arrows only — a cycle would never finish, so Typhon rejects it.
   </figcaption>
 </figure>
 
 Valid (a pipeline):
 
-```pys
+```typhon
 tasks {
     task stepOne() {
         return 2
@@ -115,14 +115,14 @@ Output:
 ```
 
 
-Illegal (a cycle) — rejected at transpile time (`pys.await-cycle`):
+Illegal (a cycle) — rejected at transpile time (`typhon.await-cycle`):
 
 ```text
 task a awaits b
 task b awaits a
 ```
 
-Neither task could ever finish; PYS refuses to emit that program. Deeper
+Neither task could ever finish; Typhon refuses to emit that program. Deeper
 notes: [`docs/CONCURRENCY.md`](../docs/CONCURRENCY.md).
 
 Prefer **parameters** to feed data into tasks instead of grabbing outer

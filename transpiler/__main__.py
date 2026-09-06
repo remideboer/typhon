@@ -10,7 +10,7 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     transpile_parser = subparsers.add_parser("transpile", help="Transpile a source file")
-    transpile_parser.add_argument("source", type=Path, help="Source file path (.pys or .py)")
+    transpile_parser.add_argument("source", type=Path, help="Source file path (.typhon or .py)")
     transpile_parser.add_argument(
         "output",
         type=Path,
@@ -24,13 +24,13 @@ def main() -> None:
     )
 
     run_parser = subparsers.add_parser("run", help="Transpile and execute a source file")
-    run_parser.add_argument("source", type=Path, help="Source file path (.pys or .py)")
+    run_parser.add_argument("source", type=Path, help="Source file path (.typhon or .py)")
     run_parser.add_argument(
         "--target",
         choices=("python", "javascript"),
         default=None,
         help=(
-            "Emit backend / runtime (default: [project].target in pys.toml, "
+            "Emit backend / runtime (default: [project].target in typhon.toml, "
             "else python)"
         ),
     )
@@ -43,17 +43,17 @@ def main() -> None:
         type=Path,
         nargs="?",
         default=None,
-        help="Path to pys.toml or legacy pys.deps (default: ./pys.toml, else ./pys.deps)",
+        help="Path to typhon.toml or legacy typhon.deps (default: ./typhon.toml, else ./typhon.deps)",
     )
 
     install_parser = subparsers.add_parser(
         "install",
-        help="Install local PYS tooling (contributor helpers)",
+        help="Install local Typhon tooling (contributor helpers)",
     )
     install_sub = install_parser.add_subparsers(dest="install_target", required=True)
     ext_parser = install_sub.add_parser(
         "extension",
-        help="Build and install the latest pys-language VSIX into Cursor/VS Code",
+        help="Build and install the latest typhon-language VSIX into Cursor/VS Code",
     )
     ext_parser.add_argument(
         "--no-build",
@@ -108,15 +108,15 @@ def main() -> None:
                     )
                     if npm is not None:
                         print(
-                            f"{deps_file}: [dependencies.npm] only - no pys.lock. "
-                            "npm packages install on Run into ~/.pys/repository/npm/ "
-                            "(PYS_REPO override). Use Run Project / "
+                            f"{deps_file}: [dependencies.npm] only - no typhon.lock. "
+                            "npm packages install on Run into ~/.typhon/repository/npm/ "
+                            "(TYPHON_REPO override). Use Run Project / "
                             "`python -m transpiler run` instead of deps lock."
                         )
                         return
                 raise DepsError(
                     f"No Python [dependencies] / [interpreter] in {deps_file} "
-                    "(deps lock writes pys.lock for Python packages only)."
+                    "(deps lock writes typhon.lock for Python packages only)."
                 )
             if config.source_path.resolve() != deps_file:
                 raise DepsError(f"Dependency file not found: {deps_file}")

@@ -1,7 +1,7 @@
 # Session 3 — Objects and composition
 
 Until now values were mostly numbers, strings, and collections. **Objects**
-bundle data with behavior — and PYS gives you several shapes on purpose.
+bundle data with behavior — and Typhon gives you several shapes on purpose.
 
 1. [Classes and member order](chapter_4_1a_classes.md)
 2. [Inheritance and subclasses](chapter_4_1b_inheriting_classes.md)

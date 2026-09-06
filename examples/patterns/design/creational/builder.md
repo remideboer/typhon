@@ -1,7 +1,7 @@
 # Builder
 
 **Category:** Creational  
-**Demo:** [builder.pys](builder.pys)  
+**Demo:** [builder.typhon](builder.typhon)  
 **Wikipedia:** [Builder pattern](https://en.wikipedia.org/wiki/Builder_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -52,5 +52,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/creational/builder.pys
+python -m transpiler run examples/patterns/design/creational/builder.typhon
 ```

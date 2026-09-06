@@ -1,7 +1,7 @@
 # Null Object
 
 **Category:** Application  
-**Demo:** [null_object.pys](null_object.pys)  
+**Demo:** [null_object.typhon](null_object.typhon)  
 **Wikipedia / ref:** [Null Object](https://en.wikipedia.org/wiki/Null_object_pattern)
 
 ## Intent
@@ -19,5 +19,5 @@ Do-nothing implementation instead of null checks.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/application/null_object.pys
+python -m transpiler run examples/patterns/application/null_object.typhon
 ```

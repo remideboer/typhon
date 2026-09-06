@@ -1,4 +1,4 @@
-"""Find Usages / references for PYS identifiers (IDE)."""
+"""Find Usages / references for Typhon identifiers (IDE)."""
 
 from __future__ import annotations
 
@@ -8,11 +8,11 @@ from transpiler.ide import find_usages
 
 
 def test_find_usages_same_package(tmp_path: Path) -> None:
-    (tmp_path / "lib.pys").write_text(
+    (tmp_path / "lib.typhon").write_text(
         "package function int bump(int n) {\n    return n + 1\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         'import bump from lib\nint a = bump(1)\nint b = bump(2)\nprint("bump")\n',
         encoding="utf-8",
@@ -23,12 +23,12 @@ def test_find_usages_same_package(tmp_path: Path) -> None:
     by_file = {}
     for h in hits:
         by_file.setdefault(Path(h["file"]).name, []).append(h["line"])
-    assert by_file["lib.pys"] == [1]
-    assert sorted(by_file["main.pys"]) == [1, 2, 3]
+    assert by_file["lib.typhon"] == [1]
+    assert sorted(by_file["main.typhon"]) == [1, 2, 3]
 
 
 def test_find_usages_skips_keywords_and_empty(tmp_path: Path) -> None:
-    src = tmp_path / "x.pys"
+    src = tmp_path / "x.typhon"
     src.write_text("function noop() {\n    return\n}\n", encoding="utf-8")
     assert find_usages(src, "function") == []
     assert find_usages(src, "") == []
@@ -36,7 +36,7 @@ def test_find_usages_skips_keywords_and_empty(tmp_path: Path) -> None:
 
 
 def test_find_usages_dotted_uses_last_segment(tmp_path: Path) -> None:
-    src = tmp_path / "e.pys"
+    src = tmp_path / "e.typhon"
     src.write_text(
         "enum Color {\n    RED = 1,\n    BLUE = 2\n}\nColor c = Color.RED\nprint(Color.RED)\n",
         encoding="utf-8",

@@ -1,0 +1,6 @@
+[project]
+main = "main.typhon"
+target = "javascript"
+
+[dependencies.npm]
+"@nodegui/nodegui" = "^0.67.0"

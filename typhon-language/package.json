@@ -1,0 +1,1021 @@
+{
+  "name": "typhon-language",
+  "displayName": "Typhon Language Support",
+  "description": "Syntax highlighting, snippets, and Run for the Typhon teaching language (transpiler bundled; typhon.toml for libraries).",
+  "version": "0.0.108",
+  "publisher": "remideboer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/remideboer/pys.git"
+  },
+  "bugs": {
+    "url": "https://github.com/remideboer/pys/issues"
+  },
+  "homepage": "https://github.com/remideboer/pys#readme",
+  "icon": "icons/pys-icon.png",
+  "keywords": [
+    "typhon",
+    "teaching",
+    "education",
+    "transpiler",
+    "python"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "apply-syntax-colors": "node scripts/apply-syntax-colors.js",
+    "prepare-bundle": "node scripts/prepare-bundle.js",
+    "prepare": "npm run prepare-bundle",
+    "vscode:prepublish": "npm run prepare-bundle",
+    "package": "npm run prepare-bundle && npx --no-install vsce package",
+    "package:elo": "npm run package && python scripts/prepare_elo_zip.py",
+    "publish:marketplace": "npm run prepare-bundle && npx --no-install vsce publish",
+    "publish:open-vsx": "npx --no-install ovsx publish"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Typhon",
+      "properties": {
+        "typhon.mainFile": {
+          "type": "string",
+          "default": "",
+          "description": "Deprecated fallback entry file used only when no typhon.toml exists.",
+          "deprecationMessage": "Use [project].main in typhon.toml or Typhon: Set as entrypoint."
+        },
+        "typhon.libraryTyping.usageTips": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show optional tips for using weakly typed Python library values in a typed way (for example typed loop variables)."
+        },
+        "typhon.debug.inlineValues": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show current variable values inline in the .typhon editor while debugging (IntelliJ-style)."
+        },
+        "typhon.navigateLibrarySources": {
+          "type": "boolean",
+          "default": false,
+          "description": "Go to Definition may open Python sources from the locked typhon.toml / typhon.lock environment (imports library packages). Off by default (ADR-001). Requires a trusted workspace."
+        },
+        "typhon.emitTarget": {
+          "type": "string",
+          "enum": [
+            "python",
+            "javascript"
+          ],
+          "default": "python",
+          "description": "Backend used when running or debugging .typhon files: Python (CPython / debugpy) or JavaScript (Node.js / js-debug)."
+        },
+        "typhon.intellisense.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Analysis-driven IntelliSense: in-scope identifiers, member completion after `.`, and Create Class suggestions. Toggle from the status bar."
+        },
+        "typhon.syntaxColors.comments": {
+          "type": "string",
+          "format": "color",
+          "default": "#6272A4",
+          "order": 20,
+          "markdownDescription": "Color for comments (hex). Settings UI is text-only — open **[Typhon: Customize Syntax Colors](command:typhon.customizeSyntaxColors)** for a color square, picker, and **Use color** (live update). **Reset Setting** restores per-theme defaults."
+        },
+        "typhon.syntaxColors.strings": {
+          "type": "string",
+          "format": "color",
+          "default": "#007328",
+          "order": 22,
+          "markdownDescription": "Color for string literals (hex). Use **[Typhon: Customize Syntax Colors](command:typhon.customizeSyntaxColors)** for swatch + picker. **Reset Setting** restores defaults."
+        },
+        "typhon.syntaxColors.numbers": {
+          "type": "string",
+          "format": "color",
+          "default": "#FFB86C",
+          "order": 21,
+          "markdownDescription": "Color for numbers, booleans, and escapes (hex). Use **[Typhon: Customize Syntax Colors](command:typhon.customizeSyntaxColors)** for swatch + picker. **Reset Setting** restores defaults."
+        },
+        "typhon.syntaxColors.functions": {
+          "type": "string",
+          "format": "color",
+          "default": "#20AAE0",
+          "order": 23,
+          "markdownDescription": "Color for functions and methods (hex). Use **[Typhon: Customize Syntax Colors](command:typhon.customizeSyntaxColors)** for swatch + picker. **Reset Setting** restores defaults."
+        },
+        "typhon.syntaxColors.types": {
+          "type": "string",
+          "format": "color",
+          "default": "#20E0CA",
+          "order": 24,
+          "markdownDescription": "Color for types (classes, primitives, structs, …) (hex). Use **[Typhon: Customize Syntax Colors](command:typhon.customizeSyntaxColors)** for swatch + picker. **Reset Setting** restores defaults."
+        },
+        "typhon.syntaxColors.languageConstants": {
+          "type": "string",
+          "format": "color",
+          "default": "#BD93F9",
+          "order": 25,
+          "markdownDescription": "Color for `this` / `super` and named constants (hex). Use **[Typhon: Customize Syntax Colors](command:typhon.customizeSyntaxColors)** for swatch + picker. **Reset Setting** restores defaults."
+        },
+        "typhon.syntaxColors.keywords": {
+          "type": "string",
+          "format": "color",
+          "default": "#FF79C6",
+          "order": 26,
+          "markdownDescription": "Color for keywords, storage modifiers, and decorators (hex). Use **[Typhon: Customize Syntax Colors](command:typhon.customizeSyntaxColors)** for swatch + picker. **Reset Setting** restores defaults."
+        }
+      }
+    },
+    "configurationDefaults": {
+      "editor.tokenColorCustomizations": {
+        "[*Dark*]": {
+          "textMateRules": [
+            {
+              "scope": [
+                "comment.line.number-sign.typhon",
+                "comment.block.typhon"
+              ],
+              "settings": {
+                "foreground": "#6272A4"
+              }
+            },
+            {
+              "scope": [
+                "constant.numeric.integer.typhon",
+                "constant.numeric.float.typhon",
+                "constant.numeric.hex.typhon",
+                "constant.numeric.binary.typhon",
+                "constant.language.typhon",
+                "constant.character.escape.typhon"
+              ],
+              "settings": {
+                "foreground": "#FFB86C"
+              }
+            },
+            {
+              "scope": [
+                "string.quoted.double.typhon",
+                "string.quoted.single.typhon"
+              ],
+              "settings": {
+                "foreground": "#007328"
+              }
+            },
+            {
+              "scope": [
+                "entity.name.function.typhon",
+                "support.function.typhon"
+              ],
+              "settings": {
+                "foreground": "#20AAE0"
+              }
+            },
+            {
+              "scope": [
+                "storage.type.primitive.typhon",
+                "entity.name.type.typhon",
+                "entity.name.type.class.typhon",
+                "entity.name.type.interface.typhon",
+                "entity.name.type.struct.typhon",
+                "entity.name.type.data.typhon",
+                "entity.name.type.entity.typhon",
+                "entity.name.type.enum.typhon"
+              ],
+              "settings": {
+                "foreground": "#20E0CA"
+              }
+            },
+            {
+              "scope": [
+                "variable.language.typhon",
+                "variable.other.constant.typhon"
+              ],
+              "settings": {
+                "foreground": "#BD93F9"
+              }
+            },
+            {
+              "scope": [
+                "keyword.control.typhon",
+                "keyword.operator.typhon",
+                "storage.modifier.typhon",
+                "punctuation.definition.decorator.typhon",
+                "entity.name.function.decorator.typhon",
+                "meta.function.decorator.typhon"
+              ],
+              "settings": {
+                "foreground": "#FF79C6"
+              }
+            }
+          ]
+        },
+        "[*Light*]": {
+          "textMateRules": [
+            {
+              "scope": [
+                "comment.line.number-sign.typhon",
+                "comment.block.typhon"
+              ],
+              "settings": {
+                "foreground": "#6C664B"
+              }
+            },
+            {
+              "scope": [
+                "constant.numeric.integer.typhon",
+                "constant.numeric.float.typhon",
+                "constant.numeric.hex.typhon",
+                "constant.numeric.binary.typhon",
+                "constant.language.typhon",
+                "constant.character.escape.typhon"
+              ],
+              "settings": {
+                "foreground": "#A34D14"
+              }
+            },
+            {
+              "scope": [
+                "string.quoted.double.typhon",
+                "string.quoted.single.typhon"
+              ],
+              "settings": {
+                "foreground": "#846E15"
+              }
+            },
+            {
+              "scope": [
+                "entity.name.function.typhon",
+                "support.function.typhon"
+              ],
+              "settings": {
+                "foreground": "#14710A"
+              }
+            },
+            {
+              "scope": [
+                "storage.type.primitive.typhon",
+                "entity.name.type.typhon",
+                "entity.name.type.class.typhon",
+                "entity.name.type.interface.typhon",
+                "entity.name.type.struct.typhon",
+                "entity.name.type.data.typhon",
+                "entity.name.type.entity.typhon",
+                "entity.name.type.enum.typhon"
+              ],
+              "settings": {
+                "foreground": "#036A96"
+              }
+            },
+            {
+              "scope": [
+                "variable.language.typhon",
+                "variable.other.constant.typhon"
+              ],
+              "settings": {
+                "foreground": "#644AC9"
+              }
+            },
+            {
+              "scope": [
+                "keyword.control.typhon",
+                "keyword.operator.typhon",
+                "storage.modifier.typhon",
+                "punctuation.definition.decorator.typhon",
+                "entity.name.function.decorator.typhon",
+                "meta.function.decorator.typhon"
+              ],
+              "settings": {
+                "foreground": "#A3144D"
+              }
+            }
+          ]
+        },
+        "[*HighContrast*]": {
+          "textMateRules": [
+            {
+              "scope": [
+                "comment.line.number-sign.typhon",
+                "comment.block.typhon"
+              ],
+              "settings": {
+                "foreground": "#9AA5CE"
+              }
+            },
+            {
+              "scope": [
+                "constant.numeric.integer.typhon",
+                "constant.numeric.float.typhon",
+                "constant.numeric.hex.typhon",
+                "constant.numeric.binary.typhon",
+                "constant.language.typhon",
+                "constant.character.escape.typhon"
+              ],
+              "settings": {
+                "foreground": "#FFB86C"
+              }
+            },
+            {
+              "scope": [
+                "string.quoted.double.typhon",
+                "string.quoted.single.typhon"
+              ],
+              "settings": {
+                "foreground": "#01720C"
+              }
+            },
+            {
+              "scope": [
+                "entity.name.function.typhon",
+                "support.function.typhon"
+              ],
+              "settings": {
+                "foreground": "#1575BE"
+              }
+            },
+            {
+              "scope": [
+                "storage.type.primitive.typhon",
+                "entity.name.type.typhon",
+                "entity.name.type.class.typhon",
+                "entity.name.type.interface.typhon",
+                "entity.name.type.struct.typhon",
+                "entity.name.type.data.typhon",
+                "entity.name.type.entity.typhon",
+                "entity.name.type.enum.typhon"
+              ],
+              "settings": {
+                "foreground": "#00FFFF"
+              }
+            },
+            {
+              "scope": [
+                "variable.language.typhon",
+                "variable.other.constant.typhon"
+              ],
+              "settings": {
+                "foreground": "#BD93F9"
+              }
+            },
+            {
+              "scope": [
+                "keyword.control.typhon",
+                "keyword.operator.typhon",
+                "storage.modifier.typhon",
+                "punctuation.definition.decorator.typhon",
+                "entity.name.function.decorator.typhon",
+                "meta.function.decorator.typhon"
+              ],
+              "settings": {
+                "foreground": "#FF79C6",
+                "fontStyle": "bold"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "typhon",
+          "title": "Typhon",
+          "icon": "icons/pys-logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "typhon": [
+        {
+          "id": "typhon.sidebar",
+          "name": "Project",
+          "icon": "icons/pys-logo.svg"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "typhon.sidebar",
+        "contents": "Create a Typhon project with source roots (`src` / `tests`) and a `typhon.toml` (entrypoint, emit `target`, deps).\n\n[Create Typhon Project](command:typhon.createProject)\n\nPick Python or JavaScript; missing runtimes prompt an OS install. Right-click `typhon.toml` → **Run Project**. After editing `[dependencies]`, use **Run Deps Lock**."
+      }
+    ],
+    "languages": [
+      {
+        "id": "typhon",
+        "aliases": [
+          "Typhon",
+          "typhon"
+        ],
+        "extensions": [
+          ".typhon"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/pys-light.svg",
+          "dark": "./icons/pys-dark.svg"
+        }
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "typhon"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "typhon",
+        "scopeName": "source.typhon",
+        "path": "./syntaxes/typhon.tmLanguage.json"
+      },
+      {
+        "scopeName": "markdown.typhon.codeblock",
+        "path": "./syntaxes/typhon.markdown.codeblock.json",
+        "injectTo": [
+          "text.html.markdown",
+          "source.mdx"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.typhon": "typhon"
+        }
+      }
+    ],
+    "markdown.markdownItPlugins": true,
+    "markdown.previewStyles": [
+      "./media/typhon-markdown.css"
+    ],
+    "semanticTokenTypes": [
+      {
+        "id": "typhonType",
+        "description": "Validated Typhon user or library type"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "typhon",
+        "scopes": {
+          "typhonType": [
+            "entity.name.type.class.typhon"
+          ]
+        }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "typhon",
+        "path": "./snippets/typhon.code-snippets"
+      }
+    ],
+    "commands": [
+      {
+        "command": "typhon.runFile",
+        "title": "Run File",
+        "category": "Typhon",
+        "icon": "$(play)"
+      },
+      {
+        "command": "typhon.debugFile",
+        "title": "Debug File",
+        "category": "Typhon",
+        "icon": "$(debug-alt)"
+      },
+      {
+        "command": "typhon.debugTranspiledFile",
+        "title": "Debug Transpiled Output",
+        "category": "Typhon Advanced",
+        "icon": "$(symbol-file)"
+      },
+      {
+        "command": "typhon.runMain",
+        "title": "Run Main File",
+        "category": "Typhon",
+        "icon": "$(play)"
+      },
+      {
+        "command": "typhon.debugMain",
+        "title": "Debug Main File",
+        "category": "Typhon",
+        "icon": "$(debug-alt)"
+      },
+      {
+        "command": "typhon.createProject",
+        "title": "Create Typhon Project",
+        "category": "Typhon",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "typhon.runProject",
+        "title": "Run Project",
+        "category": "Typhon",
+        "icon": "$(play)"
+      },
+      {
+        "command": "typhon.lockDeps",
+        "title": "Run Deps Lock",
+        "category": "Typhon",
+        "icon": "$(package)"
+      },
+      {
+        "command": "typhon.setAsEntrypoint",
+        "title": "Set as entrypoint",
+        "category": "Typhon"
+      },
+      {
+        "command": "typhon.selectEmitTarget",
+        "title": "Select Emit Target",
+        "category": "Typhon",
+        "icon": "$(symbol-misc)"
+      },
+      {
+        "command": "typhon.clearAllBreakpoints",
+        "title": "Clear All Breakpoints",
+        "category": "Typhon",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "typhon.addLogpoint",
+        "title": "Add Logpoint",
+        "category": "Typhon",
+        "icon": "$(debug-breakpoint-log)"
+      },
+      {
+        "command": "typhon.enableTyphonOnlyStepping",
+        "title": "Typhon-only Stepping: Off (Click to Enable)",
+        "category": "Typhon",
+        "icon": "$(filter)",
+        "enablement": "typhon.debugSessionActive"
+      },
+      {
+        "command": "typhon.disableTyphonOnlyStepping",
+        "title": "Typhon-only Stepping: On (Click to Disable)",
+        "category": "Typhon",
+        "icon": "$(filter-filled)",
+        "enablement": "typhon.debugSessionActive"
+      },
+      {
+        "command": "typhon.findUsages",
+        "title": "Find Usages",
+        "category": "Typhon",
+        "icon": "$(references)"
+      },
+      {
+        "command": "typhon.formatDocument",
+        "title": "Reformat Code in File",
+        "category": "Typhon",
+        "icon": "$(symbol-namespace)"
+      },
+      {
+        "command": "typhon.moveToSuggestedPackagePath",
+        "title": "Move File to Suggested Package Path",
+        "category": "Typhon"
+      },
+      {
+        "command": "typhon.refactor.rename",
+        "title": "Rename",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.refactor.extractVariable",
+        "title": "Extract Variable",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.refactor.extractFunction",
+        "title": "Extract Function",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.refactor.extractMethod",
+        "title": "Extract Method",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.refactor.inlineVariable",
+        "title": "Inline Variable",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.refactor.inlineFunction",
+        "title": "Inline Function",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.refactor.safeDelete",
+        "title": "Safe Delete",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.refactor.introduceParameter",
+        "title": "Introduce Parameter",
+        "category": "Typhon Refactor"
+      },
+      {
+        "command": "typhon.toggleIntellisense",
+        "title": "Toggle IntelliSense",
+        "category": "Typhon"
+      },
+      {
+        "command": "typhon.customizeSyntaxColors",
+        "title": "Customize Syntax Colors",
+        "category": "Typhon",
+        "icon": "$(symbol-color)"
+      },
+      {
+        "command": "typhon.generate.createClass",
+        "title": "Create Class",
+        "category": "Typhon Generate"
+      },
+      {
+        "command": "typhon.generate.createStaticMethod",
+        "title": "Create Static Method",
+        "category": "Typhon Generate"
+      },
+      {
+        "command": "typhon.generate.constructor",
+        "title": "Constructor…",
+        "category": "Typhon Generate",
+        "enablement": "false"
+      },
+      {
+        "command": "typhon.generate.toString",
+        "title": "toString…",
+        "category": "Typhon Generate",
+        "enablement": "false"
+      },
+      {
+        "command": "typhon.generate.overrideMethods",
+        "title": "Override Methods…",
+        "category": "Typhon Generate",
+        "enablement": "false"
+      },
+      {
+        "command": "typhon.generate.gettersSetters",
+        "title": "Getters/Setters…",
+        "category": "Typhon Generate",
+        "enablement": "false"
+      },
+      {
+        "command": "typhon.generate.test",
+        "title": "Test…",
+        "category": "Typhon Generate",
+        "enablement": "false"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "typhon.refactor.more",
+        "label": "Refactor"
+      },
+      {
+        "id": "typhon.generate",
+        "label": "Generate"
+      }
+    ],
+    "menus": {
+      "debug/toolBar": [
+        {
+          "command": "typhon.enableTyphonOnlyStepping",
+          "when": "typhon.debugSessionActive && !typhon.debug.typhonOnlyStepping",
+          "group": "navigation@100"
+        },
+        {
+          "command": "typhon.disableTyphonOnlyStepping",
+          "when": "typhon.debugSessionActive && typhon.debug.typhonOnlyStepping",
+          "group": "navigation@100"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "typhon.createProject",
+          "when": "view == typhon.sidebar",
+          "group": "navigation@1"
+        }
+      ],
+      "editor/title/run": [
+        {
+          "command": "typhon.runFile",
+          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "group": "navigation@0"
+        },
+        {
+          "command": "typhon.debugFile",
+          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "group": "navigation@1"
+        },
+        {
+          "command": "typhon.runMain",
+          "when": "typhon.hasMainFile && !isInDiffEditor",
+          "group": "navigation@2"
+        },
+        {
+          "command": "typhon.debugMain",
+          "when": "typhon.hasMainFile && !isInDiffEditor",
+          "group": "navigation@3"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "typhon.runProject",
+          "when": "resourceFilename == 'typhon.toml' && !isInDiffEditor",
+          "group": "navigation@99"
+        },
+        {
+          "command": "typhon.lockDeps",
+          "when": "(resourceFilename == 'typhon.toml' || resourceFilename == 'typhon.deps') && !isInDiffEditor",
+          "group": "navigation@100"
+        },
+        {
+          "command": "typhon.debugFile",
+          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "group": "navigation@100"
+        },
+        {
+          "command": "typhon.runFile",
+          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "group": "navigation@101"
+        },
+        {
+          "command": "typhon.clearAllBreakpoints",
+          "when": "resourceExtname == .typhon && !isInDiffEditor",
+          "group": "navigation@102"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "typhon.clearAllBreakpoints",
+          "when": "resourceExtname == .typhon",
+          "group": "debug@1"
+        },
+        {
+          "command": "typhon.debugFile",
+          "when": "resourceExtname == .typhon",
+          "group": "debug@2"
+        },
+        {
+          "command": "typhon.debugTranspiledFile",
+          "when": "resourceExtname == .typhon",
+          "group": "debug@3"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "typhon.runProject",
+          "when": "resourceFilename == 'typhon.toml'",
+          "group": "navigation@0"
+        },
+        {
+          "command": "typhon.lockDeps",
+          "when": "resourceFilename == 'typhon.toml' || resourceFilename == 'typhon.deps'",
+          "group": "navigation@1"
+        },
+        {
+          "command": "typhon.runFile",
+          "when": "resourceExtname == .typhon",
+          "group": "0_run@1"
+        },
+        {
+          "command": "typhon.debugFile",
+          "when": "resourceExtname == .typhon",
+          "group": "0_run@2"
+        },
+        {
+          "command": "typhon.formatDocument",
+          "when": "resourceExtname == .typhon",
+          "group": "1_modification@1"
+        },
+        {
+          "command": "typhon.refactor.rename",
+          "when": "resourceExtname == .typhon",
+          "group": "1_typhon_refactor@1"
+        },
+        {
+          "command": "typhon.refactor.extractFunction",
+          "when": "resourceExtname == .typhon && !typhon.inClassBody",
+          "group": "1_typhon_refactor@2"
+        },
+        {
+          "command": "typhon.refactor.extractMethod",
+          "when": "resourceExtname == .typhon && typhon.inClassBody",
+          "group": "1_typhon_refactor@2"
+        },
+        {
+          "submenu": "typhon.refactor.more",
+          "when": "resourceExtname == .typhon",
+          "group": "1_typhon_refactor@3"
+        },
+        {
+          "command": "typhon.findUsages",
+          "when": "resourceExtname == .typhon",
+          "group": "navigation@50"
+        },
+        {
+          "submenu": "typhon.generate",
+          "when": "resourceExtname == .typhon",
+          "group": "z_typhon_generate@1"
+        },
+        {
+          "command": "revealFileInOS",
+          "when": "resourceExtname == .typhon && resourceScheme == file",
+          "group": "z_typhon_reveal@1"
+        },
+        {
+          "command": "typhon.debugTranspiledFile",
+          "when": "resourceExtname == .typhon",
+          "group": "z_typhon_extra@1"
+        },
+        {
+          "command": "typhon.addLogpoint",
+          "when": "resourceExtname == .typhon",
+          "group": "z_typhon_extra@2"
+        },
+        {
+          "command": "typhon.clearAllBreakpoints",
+          "when": "resourceExtname == .typhon",
+          "group": "z_typhon_extra@3"
+        },
+        {
+          "command": "typhon.setAsEntrypoint",
+          "when": "resourceExtname == .typhon",
+          "group": "z_typhon_extra@4"
+        }
+      ],
+      "typhon.refactor.more": [
+        {
+          "command": "typhon.refactor.extractVariable",
+          "group": "1_modify@1"
+        },
+        {
+          "command": "typhon.refactor.inlineVariable",
+          "group": "1_modify@2"
+        },
+        {
+          "command": "typhon.refactor.inlineFunction",
+          "group": "1_modify@3"
+        },
+        {
+          "command": "typhon.refactor.safeDelete",
+          "group": "1_modify@4"
+        },
+        {
+          "command": "typhon.refactor.introduceParameter",
+          "group": "1_modify@5"
+        }
+      ],
+      "typhon.generate": [
+        {
+          "command": "typhon.generate.constructor",
+          "group": "1_gen@1"
+        },
+        {
+          "command": "typhon.generate.toString",
+          "group": "1_gen@2"
+        },
+        {
+          "command": "typhon.generate.overrideMethods",
+          "group": "1_gen@3"
+        },
+        {
+          "command": "typhon.generate.gettersSetters",
+          "group": "1_gen@4"
+        },
+        {
+          "command": "typhon.generate.test",
+          "group": "1_gen@5"
+        },
+        {
+          "command": "typhon.generate.createClass",
+          "group": "1_gen@6"
+        }
+      ],
+      "editor/lineNumber/context": [
+        {
+          "command": "typhon.addLogpoint",
+          "when": "resourceExtname == .typhon",
+          "group": "debug@1"
+        },
+        {
+          "command": "typhon.clearAllBreakpoints",
+          "when": "resourceExtname == .typhon",
+          "group": "debug@2"
+        },
+        {
+          "command": "typhon.debugFile",
+          "when": "resourceExtname == .typhon",
+          "group": "debug@3"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "typhon.runProject",
+          "when": "resourceFilename == 'typhon.toml'",
+          "group": "navigation@0"
+        },
+        {
+          "command": "typhon.lockDeps",
+          "when": "resourceFilename == 'typhon.toml' || resourceFilename == 'typhon.deps'",
+          "group": "navigation@1"
+        },
+        {
+          "command": "typhon.runFile",
+          "when": "resourceExtname == .typhon",
+          "group": "navigation@1"
+        },
+        {
+          "command": "typhon.setAsEntrypoint",
+          "when": "resourceExtname == .typhon",
+          "group": "navigation@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "typhon.createProject"
+        },
+        {
+          "command": "typhon.runProject",
+          "when": "resourceFilename == 'typhon.toml'"
+        },
+        {
+          "command": "typhon.lockDeps",
+          "when": "resourceFilename == 'typhon.toml' || resourceFilename == 'typhon.deps'"
+        },
+        {
+          "command": "typhon.debugTranspiledFile",
+          "when": "resourceExtname == .typhon || editorLangId == pys"
+        },
+        {
+          "command": "typhon.runMain",
+          "when": "typhon.hasMainFile"
+        },
+        {
+          "command": "typhon.debugMain",
+          "when": "typhon.hasMainFile"
+        },
+        {
+          "command": "typhon.addLogpoint",
+          "when": "resourceExtname == .typhon || editorLangId == pys"
+        },
+        {
+          "command": "typhon.clearAllBreakpoints",
+          "when": "resourceExtname == .typhon || editorLangId == pys"
+        },
+        {
+          "command": "typhon.customizeSyntaxColors"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "typhon.runFile",
+        "key": "ctrl+shift+r",
+        "when": "resourceExtname == .typhon"
+      },
+      {
+        "command": "typhon.debugFile",
+        "key": "ctrl+shift+d",
+        "when": "resourceExtname == .typhon"
+      },
+      {
+        "command": "typhon.refactor.rename",
+        "key": "f2",
+        "when": "editorTextFocus && editorLangId == pys && !editorReadonly"
+      },
+      {
+        "command": "typhon.runMain",
+        "key": "ctrl+alt+r",
+        "when": "typhon.hasMainFile"
+      },
+      {
+        "command": "typhon.debugMain",
+        "key": "ctrl+alt+d",
+        "when": "typhon.hasMainFile"
+      }
+    ]
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:pys",
+    "onLanguage:markdown",
+    "onCommand:typhon.runFile",
+    "onCommand:typhon.debugFile",
+    "onCommand:typhon.debugTranspiledFile",
+    "onCommand:typhon.runMain",
+    "onCommand:typhon.debugMain",
+    "onCommand:typhon.setAsEntrypoint",
+    "onCommand:typhon.setAsMainFile",
+    "onCommand:typhon.createProject",
+    "onCommand:typhon.runProject",
+    "onCommand:typhon.lockDeps",
+    "onCommand:typhon.clearAllBreakpoints",
+    "onCommand:typhon.addLogpoint",
+    "onCommand:typhon.enableTyphonOnlyStepping",
+    "onCommand:typhon.disableTyphonOnlyStepping",
+    "onView:typhon.sidebar",
+    "onStartupFinished"
+  ],
+  "devDependencies": {
+    "@vscode/vsce": "3.9.2",
+    "ovsx": "1.0.2"
+  }
+}

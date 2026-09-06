@@ -33,27 +33,27 @@ jobs:
           node-version: "20"
 
       - name: Install locked extension toolchain
-        working-directory: pys-language
+        working-directory: typhon-language
         run: npm ci --ignore-scripts
 
       - name: Test extension helpers
-        working-directory: pys-language
+        working-directory: typhon-language
         run: npm test
 
       - name: Package VSIX and ELO zip
-        working-directory: pys-language
+        working-directory: typhon-language
         run: npm run package:elo
 
       - name: Upload VSIX
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: pys-language-vsix
-          path: pys-language/*.vsix
+          name: typhon-language-vsix
+          path: typhon-language/*.vsix
           if-no-files-found: error
 
       - name: Upload ELO zip
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: pys-student-elo
-          path: dist/pys-student-*.zip
+          name: typhon-student-elo
+          path: dist/typhon-student-*.zip
           if-no-files-found: error

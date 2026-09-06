@@ -10,7 +10,7 @@
 
 ## Side by side
 
-```pys
+```typhon
 package struct Damage {
     int amount
     string type
@@ -21,12 +21,12 @@ d.amount = 21
 print(d == Damage(amount=21, type="physical"))
 ```
 
-```pys
+```typhon
 dict bag = {"amount": 20, "type": "physical"}
 bag["amount"] = 21
 ```
 
-```pys
+```typhon
 class Unit {
     private int health
     public constructor(int health) {

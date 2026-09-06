@@ -13,12 +13,12 @@ memory-FD soak is a **manual** maturity gate for F-007.
 ## H1 — 1k VU constant load (5 minutes)
 
 1. Unix: `ulimit -n 65535` (or higher).
-2. Optionally lower `inboundMaxPending` / `poolSize` in `src/config.pys` if you
+2. Optionally lower `inboundMaxPending` / `poolSize` in `src/config.typhon` if you
    want visible 429 vs 503 shedding under pressure.
 3. Start server from repo root:
 
 ```bash
-python -m transpiler run examples/webserver/src/main.pys
+python -m transpiler run examples/webserver/src/main.typhon
 ```
 
 4. Run soak:
@@ -32,7 +32,7 @@ k6 run -e BASE_URL=http://127.0.0.1:8080 examples/webserver/load/k6/soak.js
 ```bash
 curl -s http://127.0.0.1:8080/metrics
 # Linux example:
-# ls /proc/$(pgrep -f main.pys)/fd | wc -l
+# ls /proc/$(pgrep -f main.typhon)/fd | wc -l
 ```
 
 **Pass:** process stays up; `http_req_failed` under threshold; 429

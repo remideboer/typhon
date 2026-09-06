@@ -7,9 +7,9 @@
 | [`jwt/`](jwt/) | 3 — JWT on writes | **Done** |
 
 ```bash
-python -m transpiler run examples/rest-api/shop/memory/src/main.pys   # :8090
-python -m transpiler run examples/rest-api/shop/mysql/src/main.pys    # :8091
-python -m transpiler run examples/rest-api/shop/jwt/src/main.pys      # :8092
+python -m transpiler run examples/rest-api/shop/memory/src/main.typhon   # :8090
+python -m transpiler run examples/rest-api/shop/mysql/src/main.typhon    # :8091
+python -m transpiler run examples/rest-api/shop/jwt/src/main.typhon      # :8092
 ```
 
 **JavaScript / Express twin** (same route shapes, ports 8190–8192):  

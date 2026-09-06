@@ -1,4 +1,4 @@
-"""PYS lexer: source text → tokens with spans (EBNF lexical + keywords)."""
+"""Typhon lexer: source text → tokens with spans (EBNF lexical + keywords)."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -224,7 +224,7 @@ class LexError(ValueError):
 
 
 def tokenize(source: str, *, emit_newlines: bool = False) -> list[Token]:
-    """Tokenize PYS source. Block comments are skipped; standalone `#` lines become COMMENT tokens."""
+    """Tokenize Typhon source. Block comments are skipped; standalone `#` lines become COMMENT tokens."""
     return tokenize_with_flags(source, emit_newlines=emit_newlines).tokens
 
 

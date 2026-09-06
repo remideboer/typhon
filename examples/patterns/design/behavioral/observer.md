@@ -1,7 +1,7 @@
 # Observer
 
 **Category:** Behavioral  
-**Demo:** [observer.pys](observer.pys)  
+**Demo:** [observer.typhon](observer.typhon)  
 **Wikipedia:** [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -53,5 +53,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/observer.pys
+python -m transpiler run examples/patterns/design/behavioral/observer.typhon
 ```

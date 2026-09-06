@@ -13,7 +13,7 @@ the other at the TLS layer.
 ## Why stubbed
 
 Requires TLS termination, certificate issuance, and trust stores — not
-expressible as a pure in-process PYS teaching demo without OS/network plumbing.
+expressible as a pure in-process Typhon teaching demo without OS/network plumbing.
 
 ## Related
 

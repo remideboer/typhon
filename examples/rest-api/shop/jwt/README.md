@@ -11,10 +11,10 @@ Teaching users: `admin` / `admin123`, `clerk` / `clerk123`.
 ## Run
 
 ```bash
-python -m transpiler run examples/rest-api/shop/jwt/src/main.pys
+python -m transpiler run examples/rest-api/shop/jwt/src/main.typhon
 ```
 
-Or right-click this folder’s `pys.toml` → **Run Project**.
+Or right-click this folder’s `typhon.toml` → **Run Project**.
 
 Port **8092**.
 
@@ -30,15 +30,15 @@ Without a token, writes return `401` `{"error":"bearer token required"}`.
 
 | File | Role |
 |------|------|
-| `jwt_service.pys` | HS256 JWT (stdlib hmac) |
-| `auth.pys` | login + bearer check |
-| `http11.pys` | parses `Authorization` |
-| `router.pys` | write gate + `/api/login` |
+| `jwt_service.typhon` | HS256 JWT (stdlib hmac) |
+| `auth.typhon` | login + bearer check |
+| `http11.typhon` | parses `Authorization` |
+| `router.typhon` | write gate + `/api/login` |
 
 ## Tests
 
 ```bash
-set PYS_WORKSPACE_ROOT=examples\rest-api\shop\jwt
-python -m transpiler run examples/rest-api/shop/jwt/tests/test_jwt_crypto.pys
+set TYPHON_WORKSPACE_ROOT=examples\rest-api\shop\jwt
+python -m transpiler run examples/rest-api/shop/jwt/tests/test_jwt_crypto.typhon
 python -m pytest tests/test_rest_shop_jwt.py -q
 ```

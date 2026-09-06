@@ -6,9 +6,9 @@
 
 | Level | File | Your job |
 |-------|------|----------|
-| A Worked | [`1-worked.pys`](1-worked.pys) | Run it. Cover the file and retell the story (names + types). |
-| B Completion | [`2-completion.pys`](2-completion.pys) | Replace every `TODO` so the log is honest and runs. |
-| C Conventional | [`3-brief.md`](3-brief.md) | Only the brief — design your own `.pys` file. |
+| A Worked | [`1-worked.typhon`](1-worked.typhon) | Run it. Cover the file and retell the story (names + types). |
+| B Completion | [`2-completion.typhon`](2-completion.typhon) | Replace every `TODO` so the log is honest and runs. |
+| C Conventional | [`3-brief.md`](3-brief.md) | Only the brief — design your own `.typhon` file. |
 
 ## JIT (open only if blocked)
 
@@ -18,7 +18,7 @@
 
 ## Supportive (if the *idea* of types feels pointless)
 
-- [S1 — PYS as a contract](../../supportive/S1-pys-as-contract.md)
+- [S1 — Typhon as a contract](../../supportive/S1-typhon-as-contract.md)
 
 ## Success criteria (product)
 

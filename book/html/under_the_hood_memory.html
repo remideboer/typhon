@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>11.2. Processes, calls, and memory — PYS Development Classes</title>
+  <title>11.2. Processes, calls, and memory — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -138,7 +138,7 @@
 <h1>11.2. Processes, calls, and memory</h1>
 <blockquote>
 <p><strong>Optional background.</strong> This chapter gives you a useful mental model, not a
-promise about the exact byte address of every PYS value. PYS currently emits
+promise about the exact byte address of every Typhon value. Typhon currently emits
 Python, so Python and the operating system decide many physical storage
 details.</p>
 </blockquote>
@@ -171,13 +171,13 @@ with roles such as:</p>
 </figure>
 
 <p>Real layouts vary by operating system, CPU, runtime, and optimization. Treat
-these names as a map for reasoning, not as a PYS storage guarantee.</p>
+these names as a map for reasoning, not as a Typhon storage guarantee.</p>
 <h2>Function calls form a stack</h2>
 <p>When one function calls another, the runtime must remember where to return,
 which arguments were passed, and which local names belong to that call. This
 record is a <strong>stack frame</strong>. A later call sits above its caller and finishes
 first: last in, first out.</p>
-<pre><code class="language-pys"><span class="tok-kw">function</span> <span class="tok-type">int</span> <span class="tok-ident">addOne</span>(<span class="tok-type">int</span> <span class="tok-ident">number</span>) {
+<pre><code class="language-typhon"><span class="tok-kw">function</span> <span class="tok-type">int</span> <span class="tok-ident">addOne</span>(<span class="tok-type">int</span> <span class="tok-ident">number</span>) {
     <span class="tok-type">int</span> <span class="tok-type">result</span> <span class="tok-op">=</span> <span class="tok-ident">number</span> <span class="tok-op">+</span> <span class="tok-number">1</span>
     <span class="tok-kw">return</span> <span class="tok-type">result</span>
 }
@@ -215,20 +215,20 @@ appear as a recursion-depth error).</p>
 <p>Data often needs to outlive the function that created it or have a size that
 is known only while the program runs. Runtimes commonly manage such data in
 heap storage.</p>
-<p>Python—and therefore the current PYS backend—uses automatic memory
+<p>Python—and therefore the current Typhon backend—uses automatic memory
 management. When an object is no longer reachable, the runtime may reclaim
-its storage. You do not write <code>free(...)</code> in PYS.</p>
+its storage. You do not write <code>free(...)</code> in Typhon.</p>
 <p>Garbage collection prevents common manual-memory mistakes such as using an
 object after freeing it, but it does not make memory unlimited. A program can
 still retain too much reachable data and run out of memory.</p>
 <h2>Language meaning is not physical location</h2>
 <p>It is tempting to teach “local means stack” and “object means heap” as an
 absolute rule. That shortcut breaks under optimization, managed runtimes,
-closures, and captured variables. PYS specifies how values behave; it does
+closures, and captured variables. Typhon specifies how values behave; it does
 not currently promise where each value is physically stored.</p>
 <p>For example, class variables share an object reference, while structs have
 copy-on-assignment value behavior:</p>
-<pre><code class="language-pys"><span class="tok-kw">class</span> <span class="tok-typename">Counter</span> {
+<pre><code class="language-typhon"><span class="tok-kw">class</span> <span class="tok-typename">Counter</span> {
     <span class="tok-mod">private</span> <span class="tok-type">int</span> <span class="tok-ident">value</span>
 
     <span class="tok-mod">public</span> <span class="tok-ident">constructor</span>(<span class="tok-type">int</span> <span class="tok-ident">value</span>) {
@@ -268,7 +268,7 @@ copy-on-assignment value behavior:</p>
 is visible through the other. Assigning the struct creates an independent
 value, so changing <code>secondPoint</code> leaves <code>firstPoint</code> unchanged.</p>
 <p>This is a <strong>semantic</strong> distinction. The Python emitter may represent both with
-Python objects internally while preserving PYS&rsquo;s different assignment rules.
+Python objects internally while preserving Typhon&rsquo;s different assignment rules.
 Likewise:</p>
 <ul>
 <li><code>data</code> is an immutable value object with all-fields equality;</li>
@@ -284,7 +284,7 @@ stack or heap address.</p>
 the whole class</strong> — shared by every object of that type (and reachable without
 an instance). A <code>static</code> method has <strong>no <code>this</code></strong>: it belongs to the class,
 not to one object.</p>
-<pre><code class="language-pys"><span class="tok-kw">class</span> <span class="tok-typename">IdCounter</span> {
+<pre><code class="language-typhon"><span class="tok-kw">class</span> <span class="tok-typename">IdCounter</span> {
     <span class="tok-mod">public</span> <span class="tok-ident">static</span> <span class="tok-type">int</span> <span class="tok-ident">total</span> <span class="tok-op">=</span> <span class="tok-number">0</span>
 
     <span class="tok-mod">public</span> <span class="tok-ident">constructor</span>() {
@@ -320,7 +320,7 @@ threads in the same process can reach shared runtime data.</p>
 </figure>
 
 <p>That shared reachability creates races: two flows can read and update the same
-state in an unsafe order. PYS makes the intent visible:</p>
+state in an unsafe order. Typhon makes the intent visible:</p>
 <ul>
 <li><code>tasks</code> / <code>task</code> describe concurrent work;</li>
 <li><code>shared</code> says state is deliberately reachable from concurrent work;</li>
@@ -329,7 +329,7 @@ state in an unsafe order. PYS makes the intent visible:</p>
 <li><code>await</code> expresses dependencies between tasks.</li>
 </ul>
 <p>The current backend may implement these constructs with Python runtime
-facilities, but the PYS contract is higher-level. Code should rely on PYS&rsquo;s
+facilities, but the Typhon contract is higher-level. Code should rely on Typhon&rsquo;s
 <code>shared</code>, <code>atomic</code>, and <code>await</code> rules rather than on backend accidents such as
 one particular Python implementation&rsquo;s scheduling.</p>
 <h2>Failure modes now have a mechanical meaning</h2>
@@ -337,7 +337,7 @@ one particular Python implementation&rsquo;s scheduling.</p>
 <li><strong>Stack overflow:</strong> too many unfinished nested calls.</li>
 <li><strong>Out of memory:</strong> the process cannot obtain more memory.</li>
 <li><strong>Race condition:</strong> concurrent behavior depends on an unsafe ordering.</li>
-<li><strong>Panic:</strong> a PYS error outcome reached the entrypoint; this is a language
+<li><strong>Panic:</strong> a Typhon error outcome reached the entrypoint; this is a language
   boundary outcome, not a memory failure.</li>
 </ul>
 <p>Keeping these categories separate makes diagnostics easier to understand. A

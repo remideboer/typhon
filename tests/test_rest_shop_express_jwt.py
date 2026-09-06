@@ -11,8 +11,8 @@ from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
 JWT = ROOT / "examples" / "by-target" / "javascript" / "rest-api" / "express" / "jwt"
-MAIN = JWT / "src" / "main.pys"
-CRYPTO = JWT / "tests" / "test_jwt_crypto.pys"
+MAIN = JWT / "src" / "main.typhon"
+CRYPTO = JWT / "tests" / "test_jwt_crypto.typhon"
 
 
 def test_express_jwt_main_transpiles(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -15,7 +15,7 @@ sessions.
 4. (Stretch) Persist names to `contacts.txt` between runs using
    `from pathlib import Path` and `write_text` / `read_text`.
 5. (Stretch) Move pure helpers into a `package` module and keep the menu
-   in `app.pys`.
+   in `app.typhon`.
 
 ## Acceptance checks
 

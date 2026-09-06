@@ -7,7 +7,7 @@ Run from repo root:
 
 Gates (fail-fast):
   1. python -m pytest -q
-  2. npm test  (in pys-language/)
+  2. npm test  (in typhon-language/)
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXT = ROOT / "pys-language"
+EXT = ROOT / "typhon-language"
 
 
 def run(label: str, argv: list[str], *, cwd: Path) -> None:
@@ -37,7 +37,7 @@ def main() -> None:
     npm = shutil.which("npm")
     if npm is None:
         print(
-            "FAIL: npm not found on PATH — cannot run pys-language tests.\n"
+            "FAIL: npm not found on PATH — cannot run typhon-language tests.\n"
             "Install Node.js, then re-run: python tools/local_ci.py",
             file=sys.stderr,
         )
@@ -45,7 +45,7 @@ def main() -> None:
     if not (EXT / "package.json").is_file():
         print(f"FAIL: missing {EXT / 'package.json'}", file=sys.stderr)
         raise SystemExit(1)
-    run("pys-language npm test", [npm, "test"], cwd=EXT)
+    run("typhon-language npm test", [npm, "test"], cwd=EXT)
 
     print("\nAll local CI gates passed.")
 

@@ -1,7 +1,7 @@
 # Test Data Builder
 
 **Category:** Testing  
-**Demo:** [test_data_builder.pys](test_data_builder.pys)  
+**Demo:** [test_data_builder.typhon](test_data_builder.typhon)  
 **Wikipedia / ref:** [Test Data Builder](https://www.growingobjectorientedsoftware.com/)
 
 ## Intent
@@ -19,5 +19,5 @@ Fluent builder for one-off fixture variations.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/testing/test_data_builder.pys
+python -m transpiler run examples/patterns/testing/test_data_builder.typhon
 ```

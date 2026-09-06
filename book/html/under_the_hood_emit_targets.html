@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>12.3. Emit targets: Python and JavaScript — PYS Development Classes</title>
+  <title>12.3. Emit targets: Python and JavaScript — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -138,7 +138,7 @@
 <h1>12.3. Emit targets: Python and JavaScript</h1>
 <blockquote>
 <p><strong>Optional background.</strong> Most of the book assumes the default <strong>Python</strong>
-emit target. This chapter explains how to run the same <code>.pys</code> under
+emit target. This chapter explains how to run the same <code>.typhon</code> under
 <strong>JavaScript (Node)</strong> and what still differs.</p>
 </blockquote>
 <h2>One front end, two backends</h2>
@@ -166,35 +166,35 @@ chooses a backend:</p>
 </tbody>
 </table>
 <p>In the VS Code / Cursor extension, pick the target from the status bar
-(<code>pys.emitTarget</code>) for <strong>Run File</strong>, or set it on the project:</p>
+(<code>typhon.emitTarget</code>) for <strong>Run File</strong>, or set it on the project:</p>
 <pre><code class="language-toml">[project]
-main = &quot;main.pys&quot;
+main = &quot;main.typhon&quot;
 target = &quot;javascript&quot;
 </code></pre>
-<p><strong>Run Project</strong> (right-click <code>pys.toml</code>) uses <code>[project].target</code> (default
-<code>python</code>) and does not follow the status-bar selector. <strong>Create PYS Project</strong>
+<p><strong>Run Project</strong> (right-click <code>typhon.toml</code>) uses <code>[project].target</code> (default
+<code>python</code>) and does not follow the status-bar selector. <strong>Create Typhon Project</strong>
 also asks for this target and can prompt to install Python / Node when missing
 from PATH. CLI:</p>
-<pre><code class="language-text">python -m transpiler run examples/main.pys --target javascript
+<pre><code class="language-text">python -m transpiler run examples/main.typhon --target javascript
 </code></pre>
 <p>Without <code>--target</code>, <code>transpiler run</code> also reads <code>[project].target</code> from the
-nearest <code>pys.toml</code>.</p>
+nearest <code>typhon.toml</code>.</p>
 <p>Expected: the same prints as under Python for that showcase.</p>
 <h2>Dependencies</h2>
 <ul>
-<li><strong>Python:</strong> declare packages under <code>[dependencies]</code> in <code>pys.toml</code>; Run installs
-  into <code>~/.pys/repository</code> (central repo) using sibling <code>pys.lock</code>.</li>
+<li><strong>Python:</strong> declare packages under <code>[dependencies]</code> in <code>typhon.toml</code>; Run installs
+  into <code>~/.typhon/repository</code> (central repo) using sibling <code>typhon.lock</code>.</li>
 <li><strong>JavaScript:</strong> declare npm packages under <code>[dependencies.npm]</code> in the same
-  <code>pys.toml</code>; Run installs into <code>~/.pys/repository/npm/&lt;fingerprint&gt;/</code>. No
+  <code>typhon.toml</code>; Run installs into <code>~/.typhon/repository/npm/&lt;fingerprint&gt;/</code>. No
   silo-local <code>npm install</code> is required.</li>
 </ul>
 <p>Target-specific demos (MySQL, NodeGUI) live under
 <code>examples/by-target/</code> — see that folder’s README.</p>
 <h2>What matches today</h2>
-<p>Teaching-core programs under <code>examples/*.pys</code> — including data/struct
+<p>Teaching-core programs under <code>examples/*.typhon</code> — including data/struct
 equality, lambdas with <code>shared</code>, traits, results/<code>propagate</code>, atomics, and
 <code>tasks</code>/<code>await</code> — run under both targets.</p>
-<pre><code class="language-pys"><span class="tok-kw">data</span> <span class="tok-typename">Point</span> {
+<pre><code class="language-typhon"><span class="tok-kw">data</span> <span class="tok-typename">Point</span> {
     <span class="tok-type">int</span> <span class="tok-ident">x</span>
     <span class="tok-type">int</span> <span class="tok-ident">y</span>
 }
@@ -205,11 +205,11 @@ equality, lambdas with <code>shared</code>, traits, results/<code>propagate</cod
 <h2>Limits to remember</h2>
 <ol>
 <li><strong>Debug</strong> works for both emit targets (Python/debugpy or Node/js-debug).
-   Set <code>pys.emitTarget</code> then use <strong>PYS: Debug File</strong>; Advanced opens the
+   Set <code>typhon.emitTarget</code> then use <strong>Typhon: Debug File</strong>; Advanced opens the
    generated <code>.py</code> or <code>.mjs</code>.</li>
 <li><strong>Library decorators</strong> (e.g. FastAPI <code>@app.get</code>) fail closed on JS emit —
    use <code>--target python</code>.</li>
-<li><strong>Python stdlib / Tk / FastAPI</strong> are not JS libraries; use sibling <code>.pys</code>,
+<li><strong>Python stdlib / Tk / FastAPI</strong> are not JS libraries; use sibling <code>.typhon</code>,
    npm-mapped names (<code>mysql2</code>, <code>nodegui</code>), or the Python target.</li>
 <li>JS <code>tasks</code> run <strong>cooperatively</strong> on one thread (await trampoline). Shared
    counter “race” demos may always show the sequential total; atomics still
@@ -220,14 +220,14 @@ equality, lambdas with <code>shared</code>, traits, results/<code>propagate</cod
 </ol>
 <h2>Try it</h2>
 <ol>
-<li>Run <code>examples/js_smoke.pys</code> with <code>--target javascript</code>.</li>
-<li>Run <code>examples/data.pys</code> under both targets; confirm <code>True</code> / <code>False</code> lines
+<li>Run <code>examples/js_smoke.typhon</code> with <code>--target javascript</code>.</li>
+<li>Run <code>examples/data.typhon</code> under both targets; confirm <code>True</code> / <code>False</code> lines
    match.</li>
 <li>Open <code>examples/by-target/javascript/mysql/</code> and Run with the JS target
    (needs a MySQL server for a live query).</li>
 <li>Switch emit target to JavaScript, set a breakpoint in
-   <code>examples/debug_step.pys</code>, and <strong>Debug File</strong> — the gutter should stop on
-   the <code>.pys</code> line (same idea as Python debug).</li>
+   <code>examples/debug_step.typhon</code>, and <strong>Debug File</strong> — the gutter should stop on
+   the <code>.typhon</code> line (same idea as Python debug).</li>
 </ol>
     </main>
   </div>

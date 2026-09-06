@@ -15,9 +15,9 @@ from transpiler.transpiler import TranspileError, run_source, transpile
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "traits.pys"
+EXAMPLE = ROOT / "examples" / "traits.typhon"
 
-os.environ.setdefault("PYS_SUPPRESS_WARNINGS", "1")
+os.environ.setdefault("TYPHON_SUPPRESS_WARNINGS", "1")
 
 
 def test_example_traits_runs(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -121,7 +121,7 @@ def test_trait_sa_errors(source: str, match: str) -> None:
 
 
 def test_ide_goto_trait(tmp_path: Path) -> None:
-    path = tmp_path / "t.pys"
+    path = tmp_path / "t.typhon"
     path.write_text(
         """
 trait Printable {
@@ -181,7 +181,7 @@ trait Presenter {
     with pytest.raises(TranspileError, match=r"Did you mean `requires`|pys\.trait-require-typo|requires Type name") as ei:
         transpile(source)
     err = ei.value
-    assert getattr(err, "code", None) == "pys.trait-require-typo" or "requires" in str(err)
+    assert getattr(err, "code", None) == "typhon.trait-require-typo" or "requires" in str(err)
     assert getattr(err, "suggested_fix", None) == "requires"
 
 

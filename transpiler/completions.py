@@ -89,7 +89,7 @@ def _line_col_before(source: str, line: int, column: int) -> tuple[str, int, int
     suffix = bare[col0:]
     if prefix.rstrip().endswith("."):
         # Insert dummy member so `rm.` / `rm.s` mid-type becomes valid Member.
-        insert = "_pys_cc"
+        insert = "_typhon_cc"
         if suffix and suffix[0].isalnum():
             # Completing mid-identifier after dot: keep typed prefix as part of dummy? 
             # Use full remainder as continuing the dummy name.

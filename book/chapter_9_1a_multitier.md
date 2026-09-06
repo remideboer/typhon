@@ -144,7 +144,7 @@ honest and runnable.
 | Good for | Naming UI / app / data bands | Protecting domain from frameworks |
 
 Shops often **combine** both: multitier bands *and* a Repository port at the
-data edge ([`hexagonal.pys`](../examples/patterns/architectural/hexagonal.pys)).
+data edge ([`hexagonal.typhon`](../examples/patterns/architectural/hexagonal.typhon)).
 
 <figure class="concept-diagram" role="img" aria-label="Stack of layers versus core with ports and outside adapters">
   <div class="diagram-grid-2">
@@ -173,15 +173,15 @@ Remember **layer ≠ tier** — one process is fine for the teaching demo.”
 three Docker containers” (that is deploy tiers, not the logical lesson).
 
 **Confusion to avoid:** Multitier ≠ Hexagonal · Layer ≠ tier · Layered demo
-([`layered.pys`](../examples/patterns/architectural/layered.pys)) is the short
+([`layered.typhon`](../examples/patterns/architectural/layered.typhon)) is the short
 sibling of Multitier.
 
 ## Runnable demo
 
-[`examples/patterns/architectural/multitier.pys`](../examples/patterns/architectural/multitier.pys)
+[`examples/patterns/architectural/multitier.typhon`](../examples/patterns/architectural/multitier.typhon)
 
 ```text
-python -m transpiler run examples/patterns/architectural/multitier.pys
+python -m transpiler run examples/patterns/architectural/multitier.typhon
 ```
 
 **Output:**

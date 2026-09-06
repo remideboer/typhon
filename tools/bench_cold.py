@@ -22,9 +22,9 @@ from pathlib import Path
 sys.path.insert(0, {root!r})
 path = Path({target!r})
 text = path.read_text(encoding='utf-8')
-from transpiler.pipeline import compile_pys
+from transpiler.pipeline import compile_typhon
 start = time.perf_counter()
-compile_pys(text, source_path=path)
+compile_typhon(text, source_path=path)
 print(time.perf_counter() - start)
 """
 
@@ -53,15 +53,15 @@ def main() -> int:
     # The gui/ examples need third-party deps resolved, which dominates and stalls
     # the IDE path, so measure it on the self-contained examples only.
     targets = [
-        ROOT / "examples" / "main.pys",
-        ROOT / "examples" / "interfaces.pys",
-        ROOT / "examples" / "funcs.pys",
+        ROOT / "examples" / "main.typhon",
+        ROOT / "examples" / "interfaces.typhon",
+        ROOT / "examples" / "funcs.typhon",
     ] if args.ide else [
-        ROOT / "examples" / "gui" / "pokemontcg" / "main.pys",
-        ROOT / "examples" / "gui" / "pokemontcg" / "ui.pys",
-        ROOT / "examples" / "gui" / "PyQt" / "main.pys",
-        ROOT / "examples" / "main.pys",
-        ROOT / "examples" / "interfaces.pys",
+        ROOT / "examples" / "gui" / "pokemontcg" / "main.typhon",
+        ROOT / "examples" / "gui" / "pokemontcg" / "ui.typhon",
+        ROOT / "examples" / "gui" / "PyQt" / "main.typhon",
+        ROOT / "examples" / "main.typhon",
+        ROOT / "examples" / "interfaces.typhon",
     ]
 
     kind = "analyze_file" if args.ide else "compile"

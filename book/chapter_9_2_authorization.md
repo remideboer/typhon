@@ -38,10 +38,10 @@ Users have **roles**; roles have **permissions**.
   </figcaption>
 </figure>
 
-Demo: [`rbac.pys`](../examples/patterns/authorization/rbac.pys)
+Demo: [`rbac.typhon`](../examples/patterns/authorization/rbac.typhon)
 
 ```text
-python -m transpiler run examples/patterns/authorization/rbac.pys
+python -m transpiler run examples/patterns/authorization/rbac.typhon
 ```
 
 **Output:**
@@ -78,7 +78,7 @@ A **resource** maps to allowed **principals** (users or groups).
   </figcaption>
 </figure>
 
-Demo: [`acl.pys`](../examples/patterns/authorization/acl.pys)
+Demo: [`acl.typhon`](../examples/patterns/authorization/acl.typhon)
 
 **Output:**
 
@@ -108,7 +108,7 @@ A **policy** decides from attributes: owner, admin flag, action.
   </figcaption>
 </figure>
 
-Demo: [`abac.pys`](../examples/patterns/authorization/abac.pys)
+Demo: [`abac.typhon`](../examples/patterns/authorization/abac.typhon)
 
 **Output:**
 

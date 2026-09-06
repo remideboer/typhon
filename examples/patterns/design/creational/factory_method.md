@@ -1,7 +1,7 @@
 # Factory Method
 
 **Category:** Creational  
-**Demo:** [factory_method.pys](factory_method.pys)  
+**Demo:** [factory_method.typhon](factory_method.typhon)  
 **Wikipedia:** [Factory Method pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -65,5 +65,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/creational/factory_method.pys
+python -m transpiler run examples/patterns/design/creational/factory_method.typhon
 ```

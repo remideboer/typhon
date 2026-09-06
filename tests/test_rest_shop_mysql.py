@@ -12,7 +12,7 @@ from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
 MYSQL = ROOT / "examples" / "rest-api" / "shop" / "mysql"
-MAIN = MYSQL / "src" / "main.pys"
+MAIN = MYSQL / "src" / "main.typhon"
 
 
 def test_shop_mysql_main_transpiles(

@@ -7,7 +7,7 @@ ttkbootstrap equivalent, using the exact same layout methods
 
 ## 1. Buttons with color variants
 
-```pys
+```typhon
 import ttkbootstrap as ttkb
 
 Window window = ttkb.Window(themename="flatly")
@@ -45,7 +45,7 @@ ttkbootstrap itself.
 
 ## 2. Entries and labels
 
-```pys
+```typhon
 import ttkbootstrap as ttkb
 
 Window window = ttkb.Window(themename="flatly")
@@ -72,7 +72,7 @@ rather than solid-fill appearance — useful for a visual hierarchy where
 one action should stand out (solid) and a secondary action shouldn't
 compete with it (outline):
 
-```pys
+```typhon
 import ttkbootstrap as ttkb
 
 Window window = ttkb.Window(themename="flatly")

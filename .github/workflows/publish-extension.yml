@@ -45,16 +45,16 @@ jobs:
           node-version: "20"
 
       - name: Install locked extension toolchain
-        working-directory: pys-language
+        working-directory: typhon-language
         run: npm ci --ignore-scripts
 
       - name: Test extension helpers
-        working-directory: pys-language
+        working-directory: typhon-language
         run: npm test
 
       - name: Read extension version
         id: ver
-        working-directory: pys-language
+        working-directory: typhon-language
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -84,7 +84,7 @@ jobs:
         env:
           VERSION: ${{ steps.ver.outputs.version }}
         run: |
-          NOTES="pys-language/RELEASE_NOTES.md"
+          NOTES="typhon-language/RELEASE_NOTES.md"
           if [ ! -f "$NOTES" ]; then
             echo "Missing $NOTES — write release notes before tagging."
             exit 1
@@ -95,28 +95,28 @@ jobs:
           fi
 
       - name: Package VSIX and ELO zip
-        working-directory: pys-language
+        working-directory: typhon-language
         run: npm run package:elo
 
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: pys-language-vsix-${{ steps.ver.outputs.version }}
-          path: pys-language/*.vsix
+          name: typhon-language-vsix-${{ steps.ver.outputs.version }}
+          path: typhon-language/*.vsix
           if-no-files-found: error
 
       - name: Upload ELO zip artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: pys-student-elo-${{ steps.ver.outputs.version }}
-          path: dist/pys-student-*.zip
+          name: typhon-student-elo-${{ steps.ver.outputs.version }}
+          path: dist/typhon-student-*.zip
           if-no-files-found: error
 
       - name: Upload release notes artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: pys-release-notes-${{ steps.ver.outputs.version }}
-          path: pys-language/RELEASE_NOTES.md
+          path: typhon-language/RELEASE_NOTES.md
           if-no-files-found: error
 
   publish:
@@ -132,19 +132,19 @@ jobs:
           node-version: "20"
 
       - name: Install locked publishing tools
-        working-directory: pys-language
+        working-directory: typhon-language
         run: npm ci --ignore-scripts
 
       - name: Download VSIX artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: pys-language-vsix-${{ needs.build.outputs.version }}
+          name: typhon-language-vsix-${{ needs.build.outputs.version }}
           path: release-artifacts/vsix
 
       - name: Download ELO artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: pys-student-elo-${{ needs.build.outputs.version }}
+          name: typhon-student-elo-${{ needs.build.outputs.version }}
           path: release-artifacts/elo
 
       - name: Download release notes artifact
@@ -163,14 +163,14 @@ jobs:
             echo "---"
             echo ""
             echo "## Install"
-            echo "- **Marketplace:** \`ext install remideboer.pys-language\`"
-            echo "- **ELO / offline:** download \`pys-student-${VERSION}.zip\`, unzip, run \`install.cmd\`"
+            echo "- **Marketplace:** \`ext install remideboer.typhon-language\`"
+            echo "- **ELO / offline:** download \`typhon-student-${VERSION}.zip\`, unzip, run \`install.cmd\`"
             echo ""
             echo "Requires Python 3.10+ on PATH. Extension includes the bundled transpiler."
           } > release-artifacts/RELEASE_BODY.md
 
       - name: Publish to Visual Studio Marketplace
-        working-directory: pys-language
+        working-directory: typhon-language
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
@@ -182,7 +182,7 @@ jobs:
           npx --no-install vsce publish --packagePath "$VSIX" --pat "$VSCE_PAT"
 
       - name: Optional Open VSX publish
-        working-directory: pys-language
+        working-directory: typhon-language
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
         run: |
@@ -197,7 +197,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
-          name: PYS Language Support v${{ needs.build.outputs.version }}
+          name: Typhon Language Support v${{ needs.build.outputs.version }}
           body_path: release-artifacts/RELEASE_BODY.md
           generate_release_notes: true
           files: |

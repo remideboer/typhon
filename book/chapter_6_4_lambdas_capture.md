@@ -39,11 +39,11 @@ loop gets that iteration’s value.
 >
 > In Python, a list of `lambda: i` built in a loop often prints the *last*
 > `i` for every call (late binding). Older JavaScript `var` loops and early
-> C# `foreach` had the same “one shared binding” trap. PYS snapshots the
+> C# `foreach` had the same “one shared binding” trap. Typhon snapshots the
 > value at creation and keeps loop binders per-iteration so that class of
 > bug cannot compile into your program.
 
-```pys
+```typhon
 list<lambda<int -> int>> adders = []
 loop (int i = 0; i < 3; i++) {
     adders.append((int x) => x + i)

@@ -1,7 +1,7 @@
 # Token-based authentication
 
 **Category:** Authentication  
-**Demo:** [token_based.pys](token_based.pys)  
+**Demo:** [token_based.typhon](token_based.typhon)  
 **Wikipedia:** [Access token](https://en.wikipedia.org/wiki/Access_token) · [JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)
 
 ## Intent
@@ -53,5 +53,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/authentication/token_based.pys
+python -m transpiler run examples/patterns/authentication/token_based.typhon
 ```

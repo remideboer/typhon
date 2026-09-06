@@ -1,9 +1,0 @@
-# Shared JSON body reader for sync FastAPI routes (no PYS default-param Body()).
-# Call sites treat the body as a JSON object (dict).
-
-import anyio
-import Request from fastapi
-
-package function dict readJson(Request request) {
-    return anyio.from_thread.run(request.json)
-}

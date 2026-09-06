@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 package interface Drivable {
     start()
 }
@@ -35,7 +35,7 @@ package class BigCart inherits Cart {
 
 Bag of fields with no behavior → use a [struct](J-struct.md), not a class.
 
-Examples: [`examples/classes.pys`](../../examples/classes.pys) (classes in general),
-[`examples/interfaces.pys`](../../examples/interfaces.pys) (contracts / implements).
+Examples: [`examples/classes.typhon`](../../examples/classes.typhon) (classes in general),
+[`examples/interfaces.typhon`](../../examples/interfaces.typhon) (contracts / implements).
 
 Model: [S5](../supportive/S5-objects-as-responsibility.md)

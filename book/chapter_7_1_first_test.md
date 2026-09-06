@@ -18,8 +18,8 @@ Suppose production code offers a pure function:
   </figcaption>
 </figure>
 
-```pys
-# billing.pys
+```typhon
+# billing.typhon
 package function int addCents(int balance, int delta) {
     return balance + delta
 }
@@ -32,7 +32,7 @@ package function int addCents(int balance, int delta) {
 A test in the same package folder (or mirrored under `tests/` with source
 roots):
 
-```pys
+```typhon
 import addCents from billing
 
 int got = addCents(100, 50)
@@ -43,7 +43,7 @@ if (got != 150) {
 }
 ```
 
-*With `billing.pys` in the same folder, running this file prints:*
+*With `billing.typhon` in the same folder, running this file prints:*
 
 ```text
 OK
@@ -64,4 +64,4 @@ expose a query method on the public/`package` API instead.
 
 ---
 
-[Previous: Lambdas and capture rules](chapter_6_4_lambdas_capture.md) · [Next: Better PYS with TDD](chapter_7_2_tdd.md)
+[Previous: Lambdas and capture rules](chapter_6_4_lambdas_capture.md) · [Next: Better Typhon with TDD](chapter_7_2_tdd.md)

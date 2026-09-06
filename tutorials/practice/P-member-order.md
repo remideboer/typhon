@@ -7,7 +7,7 @@ Time-box: 5–10 minutes.
 This fails to transpile. Put kinds in the legal order (`const` → `fix` →
 fields → constructor → methods):
 
-```pys
+```typhon
 package class Counter {
     public bump() {
         this.n = this.n + 1
@@ -24,7 +24,7 @@ package class Counter {
 
 Move the import so the file parses:
 
-```pys
+```typhon
 int x = 1
 import math
 print(math.sqrt(x))
@@ -32,7 +32,7 @@ print(math.sqrt(x))
 
 ## 3. Struct fix before mutable
 
-```pys
+```typhon
 struct Hit {
     int amount
     fix string type

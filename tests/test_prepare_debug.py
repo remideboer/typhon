@@ -16,7 +16,7 @@ def test_prepare_debug_writes_py_and_maps(
 ) -> None:
     ws = tmp_path / "ws"
     ws.mkdir()
-    src = ws / "demo.pys"
+    src = ws / "demo.typhon"
     src.write_text("int x = 1\nprint(x)\n", encoding="utf-8")
     out = tmp_path / "dbg"
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(ws))
@@ -31,28 +31,28 @@ def test_prepare_debug_writes_py_and_maps(
     assert map_path.is_file()
     sidecar = json.loads(map_path.read_text(encoding="utf-8"))
     assert sidecar["version"] == 1
-    assert Path(sidecar["pys"]).resolve() == src.resolve()
+    assert Path(sidecar["typhon"]).resolve() == src.resolve()
     assert sidecar["lines"]
-    assert any(e["pys"] == 1 for e in sidecar["lines"])
+    assert any(e["typhon"] == 1 for e in sidecar["lines"])
     assert "names" in sidecar
-    assert sidecar["hidePrefixes"] == ["_pys_", "__pys_", "_Pys"]
+    assert sidecar["hidePrefixes"] == ["_typhon_", "__typhon_", "_Typhon"]
 
 
 def test_prepare_debug_prepends_deps_site_paths(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Debug launch PYTHONPATH must include pys.deps sites (parity with Run)."""
+    """Debug launch PYTHONPATH must include typhon.deps sites (parity with Run)."""
     import os
     import sys
 
     ws = tmp_path / "ws"
     ws.mkdir()
-    (ws / "pys.deps").write_text(
+    (ws / "typhon.deps").write_text(
         "[interpreter]\n\tversion: any\n"
         "[dependencies]\n\tdemo\n\t\tversion: 1.0.0\n",
         encoding="utf-8",
     )
-    src = ws / "app.pys"
+    src = ws / "app.typhon"
     src.write_text("print(1)\n", encoding="utf-8")
     out = tmp_path / "dbg"
     site = tmp_path / "fake-site"
@@ -79,7 +79,7 @@ def test_prepare_debug_includes_lambda_capture_names(
 ) -> None:
     ws = tmp_path / "ws"
     ws.mkdir()
-    src = ws / "lam.pys"
+    src = ws / "lam.typhon"
     src.write_text(
         "shared int hits = 0\n"
         "list<int> xs = [1]\n"
@@ -102,7 +102,7 @@ def test_prepare_debug_cli_json(
 ) -> None:
     ws = tmp_path / "ws"
     ws.mkdir()
-    src = ws / "a.pys"
+    src = ws / "a.typhon"
     src.write_text("print(1)\n", encoding="utf-8")
     out = tmp_path / "out"
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(ws))
@@ -118,7 +118,7 @@ def test_prepare_debug_rejects_outside_workspace(
 ) -> None:
     ws = tmp_path / "ws"
     ws.mkdir()
-    outside = tmp_path / "outside.pys"
+    outside = tmp_path / "outside.typhon"
     outside.write_text("print(1)\n", encoding="utf-8")
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(ws))
     result = prepare_debug(outside, tmp_path / "dbg")
@@ -135,7 +135,7 @@ def test_prepare_debug_javascript_writes_mjs_and_js_maps(
         pytest.skip("node not on PATH")
     ws = tmp_path / "ws"
     ws.mkdir()
-    src = ws / "demo.pys"
+    src = ws / "demo.typhon"
     src.write_text("int x = 1\nprint(x)\n", encoding="utf-8")
     out = tmp_path / "dbg"
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(ws))
@@ -154,7 +154,7 @@ def test_prepare_debug_javascript_writes_mjs_and_js_maps(
     sidecar = json.loads(map_path.read_text(encoding="utf-8"))
     assert "js" in sidecar
     assert Path(sidecar["js"]).resolve() == main.resolve()
-    assert any("js" in e and "pys" in e for e in sidecar["lines"])
+    assert any("js" in e and "typhon" in e for e in sidecar["lines"])
 
 
 def test_prepare_debug_cli_javascript_target(
@@ -166,7 +166,7 @@ def test_prepare_debug_cli_javascript_target(
         pytest.skip("node not on PATH")
     ws = tmp_path / "ws"
     ws.mkdir()
-    src = ws / "a.pys"
+    src = ws / "a.typhon"
     src.write_text("print(1)\n", encoding="utf-8")
     out = tmp_path / "out"
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(ws))

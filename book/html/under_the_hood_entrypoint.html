@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>11.1. From source file to running process — PYS Development Classes</title>
+  <title>11.1. From source file to running process — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -137,7 +137,7 @@
     <main>
 <h1>11.1. From source file to running process</h1>
 <blockquote>
-<p><strong>Optional background.</strong> You do not need this chapter to write PYS. Read it
+<p><strong>Optional background.</strong> You do not need this chapter to write Typhon. Read it
 when you want to understand what Run actually starts and why a project needs
 one unambiguous entrypoint.</p>
 </blockquote>
@@ -146,69 +146,69 @@ one unambiguous entrypoint.</p>
 system creates a <strong>process</strong>: a running environment with memory, resources, and
 an exit status. The CPU must receive one initial machine-code address. It
 cannot inspect all your source files and guess which line looks most important.</p>
-<p>There are several layers between a PYS file and that first CPU instruction:</p>
+<p>There are several layers between a Typhon file and that first CPU instruction:</p>
 <ol>
 <li>The operating system starts the Python executable at Python&rsquo;s native
    machine-code entrypoint.</li>
-<li>The PYS toolchain parses your source and emits Python.</li>
+<li>The Typhon toolchain parses your source and emits Python.</li>
 <li>Python executes the generated entrypoint module from its first statement.</li>
 <li>Imported modules provide declarations and initialization, but they do not
    become the application&rsquo;s entrypoint.</li>
 </ol>
-<figure class="concept-diagram" role="img" aria-label="The operating system starts Python, which runs the generated PYS entrypoint and loads imported modules">
+<figure class="concept-diagram" role="img" aria-label="The operating system starts Python, which runs the generated Typhon entrypoint and loads imported modules">
   <div class="diagram-flow">
     <div class="diagram-box"><strong>Operating system</strong><span>creates a process</span></div>
     <div class="diagram-arrow" aria-hidden="true">→</div>
     <div class="diagram-box"><strong>Python runtime</strong><span>starts at native machine code</span></div>
     <div class="diagram-arrow" aria-hidden="true">→</div>
-    <div class="diagram-box"><strong>PYS entrypoint</strong><span>generated module runs top to bottom</span></div>
+    <div class="diagram-box"><strong>Typhon entrypoint</strong><span>generated module runs top to bottom</span></div>
     <div class="diagram-arrow" aria-hidden="true">→</div>
     <div class="diagram-box"><strong>Imported modules</strong><span>supply declarations and initialization</span></div>
   </div>
-  <figcaption>The OS-level and PYS-level entrypoints are different layers.</figcaption>
+  <figcaption>The OS-level and Typhon-level entrypoints are different layers.</figcaption>
 </figure>
 
 <p>This distinction matters: the OS-level entrypoint belongs to the Python
-executable, while the <strong>PYS project entrypoint</strong> answers which <code>.pys</code> file is
+executable, while the <strong>Typhon project entrypoint</strong> answers which <code>.typhon</code> file is
 the application boundary.</p>
-<h2>The smallest PYS entrypoint</h2>
+<h2>The smallest Typhon entrypoint</h2>
 <p>For a single-file program, the file named in the Run command is the entrypoint:</p>
-<pre><code class="language-pys"><span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">program started</span><span class="tok-string">&quot;</span>)</code></pre>
-<p>Run it as <code>hello.pys</code>:</p>
-<pre><code class="language-shell">python -m transpiler run hello.pys
+<pre><code class="language-typhon"><span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">program started</span><span class="tok-string">&quot;</span>)</code></pre>
+<p>Run it as <code>hello.typhon</code>:</p>
+<pre><code class="language-shell">python -m transpiler run hello.typhon
 </code></pre>
 <p>Output:</p>
 <pre><code class="language-text">program started
 </code></pre>
-<p>PYS does not require a <code>main()</code> function. Top-level statements in the resolved
+<p>Typhon does not require a <code>main()</code> function. Top-level statements in the resolved
 entrypoint file are the program body. The word <strong>main</strong> is still often used as
-a role—“the main file”—not as required PYS function syntax.</p>
+a role—“the main file”—not as required Typhon function syntax.</p>
 <h2>A project records the choice</h2>
 <p>Once a project contains several files, selecting one explicitly prevents Run,
 Debug, and the editor from making different guesses:</p>
 <pre><code class="language-toml">[project]
-main = &quot;src/app.pys&quot;
+main = &quot;src/app.typhon&quot;
 # Optional: target = &quot;javascript&quot;  # default is python (Run Project / bare run)
 
 [source_roots]
 main = &quot;src&quot;
 test = &quot;tests&quot;
 </code></pre>
-<p>With this manifest, <code>src/app.pys</code> is authoritative. <strong>Run Project</strong> (right-click
-<code>pys.toml</code>) executes that file. Trying to run another file as though it were the
+<p>With this manifest, <code>src/app.typhon</code> is authoritative. <strong>Run Project</strong> (right-click
+<code>typhon.toml</code>) executes that file. Trying to run another file as though it were the
 application is rejected; the editor can update the choice with <strong>Set as
 entrypoint</strong>.</p>
 <p>The configured path must:</p>
 <ul>
-<li>name an existing <code>.pys</code> file;</li>
+<li>name an existing <code>.typhon</code> file;</li>
 <li>stay inside the project directory, including after path resolution;</li>
 <li>be the same choice used by Run and Debug.</li>
 </ul>
 <p>These rules make the starting boundary a project fact instead of an editor
 preference.</p>
 <h2>Entry files and imported files have different jobs</h2>
-<p>Suppose <code>app.pys</code> imports a function from <code>prices.pys</code>. Both files may contain
-code, but only <code>app.pys</code> is where the application hands its final outcome to
+<p>Suppose <code>app.typhon</code> imports a function from <code>prices.typhon</code>. Both files may contain
+code, but only <code>app.typhon</code> is where the application hands its final outcome to
 the runtime.</p>
 <p>That is why top-level <code>propagate</code> is legal only in the resolved entrypoint. In
 an imported file, put recoverable work in a <code>result&lt;T,E&gt;</code> function and let its
@@ -220,7 +220,7 @@ turn that helper into a second application boundary.</p>
 <li><code>0</code> conventionally means successful completion;</li>
 <li>a non-zero value means the program did not complete successfully.</li>
 </ul>
-<p>When an <code>error</code> reaches the PYS entrypoint through <code>propagate</code>, the runtime
+<p>When an <code>error</code> reaches the Typhon entrypoint through <code>propagate</code>, the runtime
 reports a panic on stderr and exits non-zero. This is not a second entrypoint
 or a <code>panic(...)</code> statement. It is the terminal outcome at the existing
 application boundary.</p>
@@ -246,7 +246,7 @@ already controls execution.</p>
 </figure>
 
 <p>Those environments still have a starting boundary, but it belongs partly to
-the host. A standalone C, C#, Java, Dart, or PYS application makes its own
+the host. A standalone C, C#, Java, Dart, or Typhon application makes its own
 application boundary more visible.</p>
 <p>The useful question is therefore not “does this language have <code>main</code>?” Ask:</p>
 <blockquote>
@@ -255,8 +255,8 @@ code that runs?</p>
 </blockquote>
 <h2>Check your understanding</h2>
 <blockquote>
-<p>A project contains <code>src/app.pys</code> and <code>src/report.pys</code>; <code>pys.toml</code> selects
-<code>src/app.pys</code>. Explain why opening <code>report.pys</code> in the editor does not make
+<p>A project contains <code>src/app.typhon</code> and <code>src/report.typhon</code>; <code>typhon.toml</code> selects
+<code>src/app.typhon</code>. Explain why opening <code>report.typhon</code> in the editor does not make
 it the entrypoint. Then name the successful and unsuccessful exit-status
 categories.</p>
 </blockquote>

@@ -1,7 +1,7 @@
 # Abstract Factory
 
 **Category:** Creational  
-**Demo:** [abstract_factory.pys](abstract_factory.pys)  
+**Demo:** [abstract_factory.typhon](abstract_factory.typhon)  
 **Wikipedia:** [Abstract Factory pattern](https://en.wikipedia.org/wiki/Abstract_factory_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -97,5 +97,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/creational/abstract_factory.pys
+python -m transpiler run examples/patterns/design/creational/abstract_factory.typhon
 ```

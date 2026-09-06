@@ -1,7 +1,7 @@
 # 2.7. Null and missing values
 
 Sometimes a drawer exists but is **empty on purpose**: “we do not have a
-value yet.” In PYS that empty marker is `null`. Ordinary types such as
+value yet.” In Typhon that empty marker is `null`. Ordinary types such as
 `string` and `int` never hold `null`. Absence must be written on the type:
 `nullable<T>`.
 
@@ -11,7 +11,7 @@ value yet.” In PYS that empty marker is `null`. Ordinary types such as
 > aanwezig is. An empty string `""` is also a present value — it is text
 > with zero characters, not “no string.”
 
-```pys
+```typhon
 nullable<string> nickname = null
 
 if (nickname == null) {
@@ -30,7 +30,7 @@ No nickname yet
 Assign a present value, then use it only after a check (or in the `else`
 branch of a null check):
 
-```pys
+```typhon
 nullable<string> nickname = null
 nickname = "Sanne"
 
@@ -47,7 +47,7 @@ SANNE
 
 Zero and empty stay distinct from absence:
 
-```pys
+```typhon
 nullable<int> number = null
 number = 0
 nullable<string> text = null
@@ -67,7 +67,7 @@ true
 
 Compile error — plain types reject `null`:
 
-```pys
+```typhon
 string city = null
 ```
 
@@ -86,7 +86,7 @@ Type 'string' does not allow null.
 > **Sidebar — databases**
 >
 > SQL `NULL` is the same idea: missing/unknown. A `VARCHAR NULL` column maps
-> to `nullable<string>` in PYS. Do not convert SQL `NULL` to `""` — students
+> to `nullable<string>` in Typhon. Do not convert SQL `NULL` to `""` — students
 > must keep absent and empty distinct. See the shop example under
 > `examples/database/`.
 

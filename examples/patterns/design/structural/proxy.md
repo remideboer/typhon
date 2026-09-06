@@ -1,7 +1,7 @@
 # Proxy
 
 **Category:** Structural  
-**Demo:** [proxy.pys](proxy.pys)  
+**Demo:** [proxy.typhon](proxy.typhon)  
 **Wikipedia:** [Proxy pattern](https://en.wikipedia.org/wiki/Proxy_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -54,5 +54,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/structural/proxy.pys
+python -m transpiler run examples/patterns/design/structural/proxy.typhon
 ```

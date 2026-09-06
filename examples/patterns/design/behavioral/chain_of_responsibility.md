@@ -1,7 +1,7 @@
 # Chain of Responsibility
 
 **Category:** Behavioral  
-**Demo:** [chain_of_responsibility.pys](chain_of_responsibility.pys)  
+**Demo:** [chain_of_responsibility.typhon](chain_of_responsibility.typhon)  
 **Wikipedia:** [Chain of Responsibility pattern](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -52,5 +52,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/chain_of_responsibility.pys
+python -m transpiler run examples/patterns/design/behavioral/chain_of_responsibility.typhon
 ```

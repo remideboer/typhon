@@ -1,0 +1,62 @@
+import ShopDatabase from db
+import ProductMapper, OrderMapper, OrderLineMapper from mappers
+import MysqlProductMapper, MysqlOrderMapper, MysqlOrderLineMapper from mappers
+import ProductRepository, OrderRepository, OrderLineRepository from repositories
+import DefaultProductRepository, DefaultOrderRepository, DefaultOrderLineRepository from repositories
+import StdConsole from console
+import Menu, ProductMenu, OrderMenu, OrderLineMenu, IdentityDemoMenu, MainMenu from menus
+import ShopGuiApp from gui
+
+# Composition root — wires adapters to ports (DIP). No business logic here.
+#
+# Credentials (local teaching DB):
+#   host=localhost  user=pys  password=123456789  database=shop
+#
+# Run: python -m transpiler run examples/database/shop_app.typhon
+# Startup asks: 1) Console  2) GUI
+
+function string askMode(StdConsole io) {
+    string mode = ""
+    loop (mode != "1" && mode != "2") {
+        io.writeLine("")
+        io.writeLine("Start with:")
+        io.writeLine("1) Console menus")
+        io.writeLine("2) Tkinter GUI")
+        mode = io.readLine("Choice: ")
+        if (mode != "1" && mode != "2") {
+            io.writeLine("Enter 1 or 2")
+        }
+    }
+    return mode
+}
+
+print("Shop — Typhon entity + MySQL (database=shop)")
+print("Schema: examples/database/shop.sql")
+print("Layers: models | db | mappers | repositories | console | menus | gui")
+
+ShopDatabase database = ShopDatabase("localhost", "typhon", "123456789", "shop")
+StdConsole io = StdConsole()
+
+ProductMapper productMapper = MysqlProductMapper(database)
+OrderMapper orderMapper = MysqlOrderMapper(database)
+OrderLineMapper lineMapper = MysqlOrderLineMapper(database)
+
+ProductRepository products = DefaultProductRepository(productMapper)
+OrderRepository orders = DefaultOrderRepository(orderMapper)
+OrderLineRepository lines = DefaultOrderLineRepository(lineMapper)
+
+string mode = askMode(io)
+if (mode == "1") {
+    Menu productMenu = ProductMenu(products, io)
+    Menu orderMenu = OrderMenu(orders, io)
+    Menu lineMenu = OrderLineMenu(lines, products, orders, io)
+    Menu demoMenu = IdentityDemoMenu(products, io)
+    MainMenu main = MainMenu(productMenu, orderMenu, lineMenu, demoMenu, io)
+    main.run()
+} else {
+    ShopGuiApp guiApp = ShopGuiApp(products, orders, lines)
+    guiApp.run()
+}
+
+database.close()
+print("Bye.")

@@ -1,6 +1,6 @@
 # Session 5 — Doing several things at once
 
-PYS has **no** Rust-style ownership/borrow checker. Concurrency is
+Typhon has **no** Rust-style ownership/borrow checker. Concurrency is
 structured around `tasks` / `task` / `await`, with explicit `shared` and
 `atomic` when tasks must mutate outer state.
 

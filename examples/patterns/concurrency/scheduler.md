@@ -1,7 +1,7 @@
 # Scheduler
 
 **Category:** Concurrency  
-**Demo:** [scheduler.pys](scheduler.pys)  
+**Demo:** [scheduler.typhon](scheduler.typhon)  
 **Wikipedia:** [Scheduler pattern](https://en.wikipedia.org/wiki/Scheduler_pattern) · [Concurrency pattern](https://en.wikipedia.org/wiki/Concurrency_pattern)
 
 ## Intent
@@ -46,5 +46,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/concurrency/scheduler.pys
+python -m transpiler run examples/patterns/concurrency/scheduler.typhon
 ```

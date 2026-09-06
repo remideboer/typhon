@@ -36,15 +36,15 @@ def _endpoints_from_idem_code(text: str) -> set[str]:
 def check(root: Path) -> list[str]:
     errors: list[str] = []
     src = root / "src"
-    if (src / "router.pys").is_file():
-        router_path = src / "router.pys"
+    if (src / "router.typhon").is_file():
+        router_path = src / "router.typhon"
         table_path = src / "idempotency.md"
-        code_path = src / "idempotency.pys"
+        code_path = src / "idempotency.typhon"
     else:
         # Flat layout (tests / older trees)
-        router_path = root / "router.pys"
+        router_path = root / "router.typhon"
         table_path = root / "idempotency.md"
-        code_path = root / "idempotency.pys"
+        code_path = root / "idempotency.typhon"
     router = router_path.read_text(encoding="utf-8")
     table = table_path.read_text(encoding="utf-8")
     code = code_path.read_text(encoding="utf-8")
@@ -54,7 +54,7 @@ def check(root: Path) -> list[str]:
     coded = _endpoints_from_idem_code(code)
 
     if not routes:
-        errors.append("No routes found in router.pys (expected req.method == ... && req.path == ...).")
+        errors.append("No routes found in router.typhon (expected req.method == ... && req.path == ...).")
 
     missing_table = sorted(routes - classified)
     if missing_table:
@@ -65,7 +65,7 @@ def check(root: Path) -> list[str]:
     missing_code = sorted(routes - coded)
     if missing_code:
         errors.append(
-            "Routes missing explicit rows in idempotency.pys: "
+            "Routes missing explicit rows in idempotency.typhon: "
             + ", ".join(f"`{e}`" for e in missing_code)
         )
 

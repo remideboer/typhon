@@ -1,7 +1,7 @@
 # Object Mother
 
 **Category:** Testing  
-**Demo:** [object_mother.pys](object_mother.pys)  
+**Demo:** [object_mother.typhon](object_mother.typhon)  
 **Wikipedia / ref:** [Object Mother](https://martinfowler.com/bliki/ObjectMother.html)
 
 ## Intent
@@ -19,5 +19,5 @@ Named factory methods that return valid fixtures.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/testing/object_mother.pys
+python -m transpiler run examples/patterns/testing/object_mother.typhon
 ```

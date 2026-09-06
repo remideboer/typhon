@@ -1,7 +1,7 @@
 # Command
 
 **Category:** Behavioral  
-**Demo:** [command.pys](command.pys)  
+**Demo:** [command.typhon](command.typhon)  
 **Wikipedia:** [Command pattern](https://en.wikipedia.org/wiki/Command_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -56,5 +56,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/command.pys
+python -m transpiler run examples/patterns/design/behavioral/command.typhon
 ```

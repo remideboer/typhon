@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2.2. Processing input — PYS Development Classes</title>
+  <title>2.2. Processing input — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -137,9 +137,9 @@
     <main>
 <h1>2.2. Processing input</h1>
 <p>Programs become useful when they react to <strong>you</strong>. Keyboard input is a
-built-in PYS function, like <code>print</code>: you call it with an optional prompt
+built-in Typhon function, like <code>print</code>: you call it with an optional prompt
 string; it waits for Enter and returns what was typed as a <code>string</code>.</p>
-<pre><code class="language-pys"><span class="tok-type">string</span> <span class="tok-ident">name</span> <span class="tok-op">=</span> <span class="tok-builtin">input</span>(<span class="tok-string">&quot;</span><span class="tok-string">What is your name? </span><span class="tok-string">&quot;</span>)
+<pre><code class="language-typhon"><span class="tok-type">string</span> <span class="tok-ident">name</span> <span class="tok-op">=</span> <span class="tok-builtin">input</span>(<span class="tok-string">&quot;</span><span class="tok-string">What is your name? </span><span class="tok-string">&quot;</span>)
 <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, </span><span class="tok-string">&quot;</span> <span class="tok-op">+</span> <span class="tok-ident">name</span> <span class="tok-op">+</span> <span class="tok-string">&quot;</span><span class="tok-string">!</span><span class="tok-string">&quot;</span>)</code></pre>
 <p><em>Sample session (your answers may differ):</em></p>
 <pre><code class="language-text">What is your name? Ada
@@ -156,17 +156,17 @@ press Enter.</p>
 <h2>Numbers from text</h2>
 <p>What you type is always text first. To use it as a number, convert it
 (see also <a href="basics_conversion.html">Conversion</a>):</p>
-<pre><code class="language-pys"><span class="tok-type">string</span> <span class="tok-ident">raw</span> <span class="tok-op">=</span> <span class="tok-builtin">input</span>(<span class="tok-string">&quot;</span><span class="tok-string">How old are you? </span><span class="tok-string">&quot;</span>)
+<pre><code class="language-typhon"><span class="tok-type">string</span> <span class="tok-ident">raw</span> <span class="tok-op">=</span> <span class="tok-builtin">input</span>(<span class="tok-string">&quot;</span><span class="tok-string">How old are you? </span><span class="tok-string">&quot;</span>)
 <span class="tok-type">int</span> <span class="tok-ident">age</span> <span class="tok-op">=</span> <span class="tok-type">int</span>(<span class="tok-ident">raw</span>)
 <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Next year you will be </span><span class="tok-string">&quot;</span> <span class="tok-op">+</span> (<span class="tok-ident">age</span> <span class="tok-op">+</span> <span class="tok-number">1</span>))</code></pre>
 <p><em>Interactive — type answers at the prompts; output depends on your input.</em></p>
 <blockquote>
 <p><strong>Sidebar — typed declarations</strong></p>
 <p><code>string name = …</code> and <code>int age = …</code> name the type on the left. That is
-the usual PYS style (more in <a href="chapter_2_2_variables.html">Session 1 — Variables</a>).
+the usual Typhon style (more in <a href="chapter_2_2_variables.html">Session 1 — Variables</a>).
 <code>var</code> still works when the right-hand side makes the type obvious.</p>
 </blockquote>
-<p><code>int(raw)</code> asks PYS/Python to parse the string as an integer. If the text
+<p><code>int(raw)</code> asks Typhon/Python to parse the string as an integer. If the text
 is not a number, the program fails at that line — prefer
 <code>parseInt</code> / <code>parseFloat</code> (same chapter family as <a href="basics_conversion.html">Conversion</a>
 and <a href="basics_outcomes.html">Expressing success and failure</a>) when you need a

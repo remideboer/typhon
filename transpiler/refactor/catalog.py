@@ -9,7 +9,7 @@ CATALOG: dict[str, dict[str, Any]] = {
         "fowler": "Rename Variable / Rename Field / Rename Function",
         "summary": "Change a name everywhere it refers to the same declaration.",
         "why": (
-            "Clear names reduce scanning load. PYS renames binding-aware sites "
+            "Clear names reduce scanning load. Typhon renames binding-aware sites "
             "only — same text in another scope is left alone (unlike a find-replace)."
         ),
     },

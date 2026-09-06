@@ -4,7 +4,7 @@ You finished the basics track: values, functions, choices, loops. This
 session slows down on **types** — the rules that catch whole classes of
 mistakes before the program runs.
 
-PYS is **statically typed**: every value has a type the compiler knows.
+Typhon is **statically typed**: every value has a type the compiler knows.
 That is the same idea you will meet in C# and Java.
 
 In this session:
@@ -17,7 +17,7 @@ In this session:
 If you still prefer top-level scripts, keep them. When you want a
 C#/Java-shaped entry habit, declare a function and **call it**:
 
-```pys
+```typhon
 function void main() {
     print("started")
 }

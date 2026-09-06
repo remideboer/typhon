@@ -2,9 +2,9 @@
 
 ## What you are learning to *do*
 
-Not “list PYS keywords”. You are learning to **deliver small working programs** that
+Not “list Typhon keywords”. You are learning to **deliver small working programs** that
 use types as contracts, keep modules honest about what they share, and stay runnable
-through the PYS → Python path.
+through the Typhon → Python path.
 
 ## The learning rule (read once)
 
@@ -33,9 +33,9 @@ Refactoring (preview + binding-aware rename): [J-refactor](jit/J-refactor.md),
 ## Setup checklist
 
 - [ ] `python -m pip install -e .` from the repo root  
-- [ ] PYS extension installed (see repo README)  
-- [ ] You can run: `python -m transpiler run tutorials/tasks/T1-sensor-log/1-worked.pys`
+- [ ] Typhon extension installed (see repo README)  
+- [ ] You can run: `python -m transpiler run tutorials/tasks/T1-sensor-log/1-worked.typhon`
 
 ## First move
 
-Go to **[T1 — Sensor log](tasks/T1-sensor-log/)** and open `1-worked.pys`.
+Go to **[T1 — Sensor log](tasks/T1-sensor-log/)** and open `1-worked.typhon`.

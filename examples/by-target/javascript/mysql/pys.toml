@@ -1,6 +1,0 @@
-[project]
-main = "main.pys"
-target = "javascript"
-
-[dependencies.npm]
-mysql2 = "^3.11.0"

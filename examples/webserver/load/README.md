@@ -9,7 +9,7 @@ Full ≥1k soak is a **manual** gate — see [`SOAK.md`](SOAK.md).
 2. From the **repo root**, start the server:
 
 ```bash
-python -m transpiler run examples/webserver/src/main.pys
+python -m transpiler run examples/webserver/src/main.typhon
 ```
 
 3. OS notes (spec §4): on Linux/macOS raise FDs before large runs (`ulimit -n 65535`).
@@ -24,10 +24,10 @@ python -m transpiler run examples/webserver/src/main.pys
 | `k6/overload.js` | B1 subset | `k6 run -e BASE_URL=http://127.0.0.1:8080 examples/webserver/load/k6/overload.js` |
 | `k6/pool_exhaust.js` | C1 subset | `k6 run -e BASE_URL=http://127.0.0.1:8080 examples/webserver/load/k6/pool_exhaust.js` |
 | `k6/soak.js` | H1 manual | See [`SOAK.md`](SOAK.md) — not CI |
-| `k6/tls_handshake.js` | A3 subset | Generate certs (`scripts/gen_dev_certs.py`), enable `cfg.tlsEnabled` in `src/main.pys`, then `k6 run -e BASE_URL=https://127.0.0.1:8080 examples/webserver/load/k6/tls_handshake.js` |
+| `k6/tls_handshake.js` | A3 subset | Generate certs (`scripts/gen_dev_certs.py`), enable `cfg.tlsEnabled` in `src/main.typhon`, then `k6 run -e BASE_URL=https://127.0.0.1:8080 examples/webserver/load/k6/tls_handshake.js` |
 | `k6/http2_multiplex.js` | A2 subset | Same TLS setup, then `k6 run -e BASE_URL=https://127.0.0.1:8080 examples/webserver/load/k6/http2_multiplex.js` |
 
-For faster pool saturation, lower `poolSize` in `src/config.pys` before starting `src/main.pys`,
+For faster pool saturation, lower `poolSize` in `src/config.typhon` before starting `src/main.typhon`,
 and prefer `/proxy/slow` (250ms mock latency).
 
 ## Metrics during load
@@ -54,5 +54,5 @@ faults without an external proxy:
 | `setFatalNext(n)` | Next *n* invokes return `fatal` (no success retry) |
 | `setLatencyMs(ms)` | Sleep; if over call budget → `retryable` timeout |
 
-Covered by `tests/test_faults.pys`. TLS + HTTP/2 remain in `tls_term.pys` /
-`http2.pys` and the HTTPS/HTTP2 e2e suites.
+Covered by `tests/test_faults.typhon`. TLS + HTTP/2 remain in `tls_term.typhon` /
+`http2.typhon` and the HTTPS/HTTP2 e2e suites.

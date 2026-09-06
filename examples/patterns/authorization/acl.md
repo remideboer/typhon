@@ -1,7 +1,7 @@
 # ACL
 
 **Category:** Authorization  
-**Demo:** [acl.pys](acl.pys)  
+**Demo:** [acl.typhon](acl.typhon)  
 **Wikipedia / ref:** [ACL](https://en.wikipedia.org/wiki/Access-control_list)
 
 ## Intent
@@ -19,5 +19,5 @@ Per-resource list of allowed principals.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/authorization/acl.pys
+python -m transpiler run examples/patterns/authorization/acl.typhon
 ```

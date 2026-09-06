@@ -3,18 +3,18 @@
 ## The idea
 
 Industrial IDEs (IntelliJ, VS Code) treat refactoring as a **previewable, reversible
-edit** — not a search-replace. PYS teaches the same habit with a small core set
+edit** — not a search-replace. Typhon teaches the same habit with a small core set
 aligned to Fowler’s [catalog](https://refactoring.com/catalog/): Rename, Extract,
 Inline, Safe Delete, Introduce Parameter.
 
 Framing:
 
-> Learn the move once in PYS; carry the same discipline into Java/C#/Python even
+> Learn the move once in Typhon; carry the same discipline into Java/C#/Python even
 > when the catalog is larger.
 
 ## Why preview matters
 
-IntelliJ shows usages and conflicts before applying. PYS does the same: review
+IntelliJ shows usages and conflicts before applying. Typhon does the same: review
 sites, exclude optional ones, then apply (`Ctrl+Z` undoes). Blind global replace
 is not a refactor.
 

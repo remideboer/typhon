@@ -19,9 +19,9 @@ tasks {
 }
 """
     out = transpile(source)
-    assert "_PysTaskGroup()" in out
+    assert "_TyphonTaskGroup()" in out
     assert ".run()" in out
-    assert "def __pys_task_" in out
+    assert "def __typhon_task_" in out
     assert "add_auto" in out
 
 
@@ -36,7 +36,7 @@ tasks {
 print(counter)
 """
     out = transpile(source)
-    assert "counter = _PysShared(0)" in out
+    assert "counter = _TyphonShared(0)" in out
     assert "counter.set(" in out
     assert "counter.value" in out
 
@@ -83,7 +83,7 @@ tasks {
 }
 """
     out = transpile(source)
-    assert "def __pys_task_double(n):" in out
+    assert "def __typhon_task_double(n):" in out
     assert "add_template" in out
     assert ".call('double', 21)" in out or '.call("double", 21)' in out
 
@@ -133,7 +133,7 @@ print(counter)
 """
     out = transpile(source)
     assert '"counter stays literal"' in out
-    assert "print(_pys_format(counter.value))" in out
+    assert "print(_typhon_format(counter.value))" in out
 
 
 def test_await_cycle_rejected() -> None:

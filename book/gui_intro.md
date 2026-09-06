@@ -42,10 +42,10 @@ events — not only as one pass from the first line to the last.
 
 Tkinter is Python's built-in GUI library — it requires no separate
 installation, which makes it a good starting point before anything more
-elaborate. PYS accesses it exactly the way it accesses any external
+elaborate. Typhon accesses it exactly the way it accesses any external
 Python package: through `import`.
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()

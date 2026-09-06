@@ -12,11 +12,11 @@ from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
 MEMORY = ROOT / "examples" / "rest-api" / "shop" / "memory"
-MAIN = MEMORY / "src" / "main.pys"
+MAIN = MEMORY / "src" / "main.typhon"
 TESTS = [
-    MEMORY / "tests" / "test_repos.pys",
-    MEMORY / "tests" / "test_router.pys",
-    MEMORY / "tests" / "test_http_e2e.pys",
+    MEMORY / "tests" / "test_repos.typhon",
+    MEMORY / "tests" / "test_router.typhon",
+    MEMORY / "tests" / "test_http_e2e.typhon",
 ]
 
 

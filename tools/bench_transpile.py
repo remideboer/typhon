@@ -1,4 +1,4 @@
-"""Benchmark the PYS compile pipeline per phase.
+"""Benchmark the Typhon compile pipeline per phase.
 
 Usage:
     python tools/bench_transpile.py                # timing table
@@ -27,9 +27,9 @@ PHASES = ("tokenize", "parse", "analyze", "emit")
 
 
 def corpus() -> list[tuple[Path, str]]:
-    """Every .pys file we can compile standalone, largest first."""
+    """Every .typhon file we can compile standalone, largest first."""
     paths = sorted(
-        {*(ROOT / "examples").rglob("*.pys"), *(ROOT / "tests" / "golden").rglob("*.pys")},
+        {*(ROOT / "examples").rglob("*.typhon"), *(ROOT / "tests" / "golden").rglob("*.typhon")},
         key=lambda p: -p.stat().st_size,
     )
     files: list[tuple[Path, str]] = []
@@ -48,7 +48,7 @@ def time_phases(path: Path, text: str) -> dict[str, float]:
     """One full compile, timing each phase separately.
 
     Lex once, then parse from tokens so the parse column is parse-only
-    (matches ``compile_pys``, which lexes once inside ``parse_program``).
+    (matches ``compile_typhon``, which lexes once inside ``parse_program``).
     """
     timings: dict[str, float] = {}
 

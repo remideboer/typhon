@@ -1,6 +1,6 @@
 # 10.1. Types and declarations
 
-| PYS | C# (typical) | Java (typical) |
+| Typhon | C# (typical) | Java (typical) |
 |-----|--------------|----------------|
 | `int x = 1` | `int x = 1;` | `int x = 1;` |
 | `var x = 1` | `var x = 1;` | `var x = 1;` (newer Java) |
@@ -12,11 +12,11 @@
 | Statements end at newline | Statements end with `;` | Statements end with `;` |
 | Top-level statements run | Need `Main` entry | Need `main` entry |
 
-## Why PYS declares one name at a time
+## Why Typhon declares one name at a time
 
-PYS keeps a declaration one-to-one:
+Typhon keeps a declaration one-to-one:
 
-```pys
+```typhon
 int x = 10
 int y = 10
 print("#i{x}, #i{y}")
@@ -56,7 +56,7 @@ The declaration itself is legal; Java reports the problem only when code
 tries to read `x`. C# locals behave similarly. For C and C++, an uninitialized
 automatic local has an indeterminate value, so reading it does not have a
 reliable output. Static-storage variables and fields follow different default-
-initialization rules, another reason not to import this syntax into PYS.
+initialization rules, another reason not to import this syntax into Typhon.
 
 Go and Python avoid that exact “only the last name” interpretation, but with
 different constructs:
@@ -84,10 +84,10 @@ Python output:
 ```
 
 Go declares names against initializer values; Python performs assignment with
-iterable unpacking and has no PYS-style type declaration here. Similar commas
+iterable unpacking and has no Typhon-style type declaration here. Similar commas
 do not create one transferable rule.
 
-PYS therefore rejects both `int x, y = 10` and the clearer
+Typhon therefore rejects both `int x, y = 10` and the clearer
 `int x = 10, y = 10`. The latter saves a line but adds no expressive power and
 would break the consistent one-name shape of `var`, `fix`, `const`, fields,
 `shared`, and `atomic`. Function parameter lists are different: every
@@ -103,7 +103,7 @@ Casing you already use:
 
 ### Exercise
 
-> Rewrite a small PYS snippet (`fix string name = "Ada"` plus a print) as
+> Rewrite a small Typhon snippet (`fix string name = "Ada"` plus a print) as
 > C# and as Java on paper, including the entry-point wrapper.
 
 ---

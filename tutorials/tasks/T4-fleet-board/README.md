@@ -6,7 +6,7 @@
 
 | Level | Folder / file | Your job |
 |-------|---------------|----------|
-| A Worked | [`1-worked/`](1-worked/) | Run `board.pys`. Name the responsibility vs the implementations. |
+| A Worked | [`1-worked/`](1-worked/) | Run `board.typhon`. Name the responsibility vs the implementations. |
 | B Completion | [`2-completion/`](2-completion/) | Finish interface + classes so the board runs. |
 | C Conventional | [`3-brief.md`](3-brief.md) | New machine family — your design. |
 

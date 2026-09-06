@@ -1,7 +1,7 @@
 # Circuit breaker
 
 **Category:** Resilience  
-**Demo:** [circuit_breaker.pys](circuit_breaker.pys)  
+**Demo:** [circuit_breaker.typhon](circuit_breaker.typhon)  
 **Wikipedia / ref:** [Circuit breaker](https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern)
 
 ## Intent
@@ -19,5 +19,5 @@ Stop calling a failing dependency (Open), then probe (HalfOpen).
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/resilience/circuit_breaker.pys
+python -m transpiler run examples/patterns/resilience/circuit_breaker.typhon
 ```

@@ -7,8 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = ROOT / ".github" / "workflows"
-PKG = ROOT / "pys-language" / "package.json"
-NOTES = ROOT / "pys-language" / "RELEASE_NOTES.md"
+PKG = ROOT / "typhon-language" / "package.json"
+NOTES = ROOT / "typhon-language" / "RELEASE_NOTES.md"
 
 
 def test_workflow_actions_use_immutable_commit_shas() -> None:
@@ -41,5 +41,5 @@ def test_release_notes_mention_package_version() -> None:
     version = json.loads(PKG.read_text(encoding="utf-8"))["version"]
     notes = NOTES.read_text(encoding="utf-8")
     assert version in notes, (
-        f"pys-language/RELEASE_NOTES.md must mention package.json version {version}"
+        f"typhon-language/RELEASE_NOTES.md must mention package.json version {version}"
     )

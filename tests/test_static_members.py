@@ -71,7 +71,7 @@ class Box {
 }
 """
         )
-    assert ei.value.code == "pys.static-this"
+    assert ei.value.code == "typhon.static-this"
     assert "static method" in str(ei.value)
     assert "Processes, threads, and memory" in str(ei.value)
 
@@ -87,7 +87,7 @@ class A {
 }
 """
         )
-    assert ei.value.code == "pys.static-extension"
+    assert ei.value.code == "typhon.static-extension"
 
 
 def test_static_override_rejected() -> None:
@@ -107,7 +107,7 @@ class Sub inherits Base {
 }
 """
         )
-    assert ei.value.code == "pys.static-extension"
+    assert ei.value.code == "typhon.static-extension"
 
 
 def test_static_constructor_rejected() -> None:
@@ -120,7 +120,7 @@ class A {
 }
 """
         )
-    assert ei.value.code == "pys.static-ctor"
+    assert ei.value.code == "typhon.static-ctor"
 
 
 def test_static_abstract_rejected() -> None:
@@ -132,4 +132,4 @@ abstract class A {
 }
 """
         )
-    assert ei.value.code == "pys.static-abstract"
+    assert ei.value.code == "typhon.static-abstract"

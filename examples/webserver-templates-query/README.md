@@ -14,7 +14,7 @@ Port **8103**.
 ## Run
 
 ```bash
-python -m transpiler run examples/webserver-templates-query/src/main.pys
+python -m transpiler run examples/webserver-templates-query/src/main.typhon
 curl "http://127.0.0.1:8103/hello?name=Ada&vip=1"
 curl "http://127.0.0.1:8103/shop?name=Remi&sale=0"
 ```
@@ -24,8 +24,8 @@ Missing `name` defaults to `friend` (hello) or `guest` (shop). Values are HTML-e
 ## Tests
 
 ```bash
-set PYS_WORKSPACE_ROOT=examples\webserver-templates-query
-set PYS_TEMPLATES_DIR=examples\webserver-templates-query\templates
-python -m transpiler run examples/webserver-templates-query/tests/test_query.pys
+set TYPHON_WORKSPACE_ROOT=examples\webserver-templates-query
+set TYPHON_TEMPLATES_DIR=examples\webserver-templates-query\templates
+python -m transpiler run examples/webserver-templates-query/tests/test_query.typhon
 python -m pytest tests/test_webserver_templates_query.py -q
 ```

@@ -1,4 +1,4 @@
-# PYS tutorials
+# Typhon tutorials
 
 This track is built with **4C/ID** (van Merriënboer), **scaffolding that fades**, and
 **just-in-time (JIT)** help. It is not a chapter list of “variables → loops → classes”.
@@ -35,14 +35,14 @@ Start: **[00 — Start here](00-start-here.md)**. Teachers: **[TEACHER.md](TEACH
 
 ```bash
 python -m pip install -e .
-python -m transpiler run tutorials/tasks/T1-sensor-log/1-worked.pys
+python -m transpiler run tutorials/tasks/T1-sensor-log/1-worked.typhon
 ```
 
-Or open the file in Cursor/VS Code with the PYS extension and use **Run**.
+Or open the file in Cursor/VS Code with the Typhon extension and use **Run**.
 
 ## Reference (not the tutorial)
 
 - Grammar: [`../docs/language.ebnf`](../docs/language.ebnf)
 - Overview: [`../docs/LANGUAGE.md`](../docs/LANGUAGE.md)
 - Architecture: [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md)
-- Showcase (dense): [`../examples/main.pys`](../examples/main.pys)
+- Showcase (dense): [`../examples/main.typhon`](../examples/main.typhon)

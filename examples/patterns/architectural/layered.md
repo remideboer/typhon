@@ -1,9 +1,9 @@
 # Layered architecture
 
 **Category:** Architectural  
-**Demo:** [layered.pys](layered.pys)  
+**Demo:** [layered.typhon](layered.typhon)  
 **Wikipedia:** [Multitier architecture](https://en.wikipedia.org/wiki/Multitier_architecture)  
-**Fuller teaching:** [multitier.pys](multitier.pys) · book §10.1a
+**Fuller teaching:** [multitier.typhon](multitier.typhon) · book §10.1a
 
 ## Intent
 
@@ -29,5 +29,5 @@ industry term ([multitier.md](multitier.md)).
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/architectural/layered.pys
+python -m transpiler run examples/patterns/architectural/layered.typhon
 ```

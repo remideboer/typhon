@@ -5,7 +5,7 @@ item in a collection has been visited.
 
 ## Count with a C-style loop
 
-```pys
+```typhon
 loop (int i = 0; i < 3; i++) {
     print(i)
 }
@@ -30,12 +30,12 @@ Reads as: start `i` at 0; while `i < 3`; after each body, do `i++`
 > **Sidebar — why `;` in the header?**
 >
 > The three parts of a C-style loop are separated by `;`, just like in
-> C#/Java `for (…; …; …)`. That matches PYS’s optional statement `;`
+> C#/Java `for (…; …; …)`. That matches Typhon’s optional statement `;`
 > (required only when two statements share one line).
 
 ## While-style loop
 
-```pys
+```typhon
 int counter = 0
 loop (counter < 3) {
     print(counter)
@@ -60,7 +60,7 @@ The C-style form is intentionally for **one** counter. Its start, condition,
 and step all name that counter, and you cannot change it in the body. For two
 or more changing values, use the while-style form you already know:
 
-```pys
+```typhon
 int x = 0
 int y = 10
 
@@ -79,12 +79,12 @@ Output:
 2, 12
 ```
 
-The two starting values and both updates are visible on their own lines. PYS
+The two starting values and both updates are visible on their own lines. Typhon
 does not hide them in a denser multi-variable loop header.
 
 ## Foreach — walk a collection
 
-```pys
+```typhon
 list<string> names = ["Ada", "Tom", "Lin"]
 loop (string name in names) {
     print("Hello, " + name)
@@ -105,7 +105,7 @@ Each pass binds `name` to the next element.
 ### Exercise
 
 > Print the numbers 1 through 5 using a C-style `loop`. Then print each
-> character of the string `"PYS"` by looping over a `list` you build, or by
+> character of the string `"Typhon"` by looping over a `list` you build, or by
 > printing indices into the string if you prefer.
 
 ---

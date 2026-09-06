@@ -12,10 +12,10 @@ Unless the user **explicitly** asks for procedural style (scripts, linear demos,
 ## Self-critique (required)
 
 Before calling teaching examples, pattern demos, or app code “done”, **critically
-review your own design** against PYS philosophy — do not rubber-stamp the first
+review your own design** against Typhon philosophy — do not rubber-stamp the first
 shape that compiles.
 
-PYS favors: explicit types and constructs, honest structure in source, program
+Typhon favors: explicit types and constructs, honest structure in source, program
 to interfaces / compose over inherit when that is the fit, and teaching demos
 that match the **named** pattern or concept — not a near-miss stand-in.
 
@@ -57,11 +57,11 @@ design back into procedural `object`/`dict` glue without that signal.
 ❌ public object cursor() { return this.conn.cursor() }
 ❌ hasattr(existing, "status_code") to mix entity and HTTP error
 ❌ abstract class Socket { public constructor() {} public abstract void go() }  // bare interface
-❌ barrier.pys that only awaits three tasks and calls that the Barrier pattern
+❌ barrier.typhon that only awaits three tasks and calls that the Barrier pattern
 
 ✅ Product productFromRow(tuple row, ShopDatabase db)
 ✅ public MySQLCursor cursor()
 ✅ nullable<Product> load…; JSONResponse only at the HTTP error edge
 ✅ interface MethodRequest { execute() }
-✅ Out-of-language table when Barrier needs arrive-and-wait PYS does not have
+✅ Out-of-language table when Barrier needs arrive-and-wait Typhon does not have
 ```

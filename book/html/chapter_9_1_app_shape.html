@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>10.1. App shape — Repository, Unit of Work, service layer, DTO / ACL — PYS Development Classes</title>
+  <title>10.1. App shape — Repository, Unit of Work, service layer, DTO / ACL — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -168,7 +168,7 @@ layer, and DTO / ACL.</p>
 <h2>Aggregate</h2>
 <p>Before you can say “repository for one aggregate,” you need the word
 <strong>Aggregate</strong> itself. It is <strong>design vocabulary</strong> (Domain-Driven Design), not a
-PYS keyword. You already know <a href="chapter_4_5_structs_data_entity.html"><code>entity</code></a> —
+Typhon keyword. You already know <a href="chapter_4_5_structs_data_entity.html"><code>entity</code></a> —
 a type with a stable identity key. An Aggregate is a <strong>cluster</strong> of domain
 objects that must stay consistent together.</p>
 <table>
@@ -181,7 +181,7 @@ objects that must stay consistent together.</p>
 <tbody>
 <tr>
 <td><strong><code>entity</code></strong></td>
-<td>PYS construct: identity equality via <code>identity(...)</code></td>
+<td>Typhon construct: identity equality via <code>identity(...)</code></td>
 </tr>
 <tr>
 <td><strong>Aggregate</strong></td>
@@ -233,7 +233,7 @@ order’s rules (totals, status, stock) need the whole cluster.</p>
 </figure>
 
 <h3>Sketch — root owns its parts</h3>
-<pre><code class="language-pys"><span class="tok-kw">data</span> <span class="tok-typename">OrderLine</span> {
+<pre><code class="language-typhon"><span class="tok-kw">data</span> <span class="tok-typename">OrderLine</span> {
     <span class="tok-type">string</span> <span class="tok-ident">sku</span>
     <span class="tok-type">int</span> <span class="tok-ident">qty</span>
 }
@@ -275,7 +275,7 @@ order’s rules (totals, status, stock) need the whole cluster.</p>
 <li><code>save(order)</code> / <code>findById(id)</code> mean load or persist the <strong>whole</strong> cluster your
   rules need.</li>
 <li>A teaching demo may show a single-entity Aggregate for brevity
-  (<a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/repository.pys"><code>repository.pys</code></a>); living
+  (<a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/repository.typhon"><code>repository.typhon</code></a>); living
   shops under <a href="https://github.com/remideboer/pys/tree/main/examples/rest-api/shop"><code>examples/rest-api/shop/</code></a> model
   orders and lines — use Aggregate vocabulary even when the demo is thin.
   The JavaScript Express twin lives under
@@ -323,12 +323,12 @@ code depends on the interface; an adapter talks to memory or MySQL.</p>
   </figcaption>
 </figure>
 
-<pre><code class="language-pys"><span class="tok-kw">interface</span> <span class="tok-typename">OrderRepository</span> {
+<pre><code class="language-typhon"><span class="tok-kw">interface</span> <span class="tok-typename">OrderRepository</span> {
     <span class="tok-ident">save</span>(<span class="tok-typename">Order</span> <span class="tok-ident">order</span>)
     <span class="tok-kw">nullable</span><span class="tok-op">&lt;</span><span class="tok-typename">Order</span><span class="tok-op">&gt;</span> <span class="tok-ident">findById</span>(<span class="tok-type">string</span> <span class="tok-ident">orderId</span>)
 }</code></pre>
-<p>Full demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/repository.pys"><code>examples/patterns/persistence/repository.pys</code></a>.</p>
-<pre><code class="language-text">python -m transpiler run examples/patterns/persistence/repository.pys
+<p>Full demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/repository.typhon"><code>examples/patterns/persistence/repository.typhon</code></a>.</p>
+<pre><code class="language-text">python -m transpiler run examples/patterns/persistence/repository.typhon
 </code></pre>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">placed:O-1
@@ -363,7 +363,7 @@ use-case takes the repository in its constructor.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/unit_of_work.pys"><code>unit_of_work.pys</code></a>.</p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/persistence/unit_of_work.typhon"><code>unit_of_work.typhon</code></a>.</p>
 <p><strong>Output (concept):</strong> first product visible after commit; second missing after
 rollback.</p>
 <pre><code class="language-text">True
@@ -389,7 +389,7 @@ ports, return a result, no HTTP/SQL.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/service_layer.pys"><code>service_layer.pys</code></a>.</p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/service_layer.typhon"><code>service_layer.typhon</code></a>.</p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">created:O-9@2026-08-08T12:00:00Z
 </code></pre>
@@ -418,7 +418,7 @@ ports, return a result, no HTTP/SQL.</p>
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/dto_acl.pys"><code>dto_acl.pys</code></a>.</p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/application/dto_acl.typhon"><code>dto_acl.typhon</code></a>.</p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">BG-001
 4599 EUR

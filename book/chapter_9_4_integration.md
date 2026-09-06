@@ -1,7 +1,7 @@
 # 10.4. Integration — events, outbox, saga, request–reply
 
-You already saw [CQRS](../examples/patterns/messaging/cqrs.pys) and
-[publish–subscribe](../examples/patterns/messaging/publish_subscribe.pys).
+You already saw [CQRS](../examples/patterns/messaging/cqrs.typhon) and
+[publish–subscribe](../examples/patterns/messaging/publish_subscribe.typhon).
 These add the names engineers use for **distributed workflows**.
 
 ## Event sourcing
@@ -24,7 +24,7 @@ thing.
   </figcaption>
 </figure>
 
-Demo: [`event_sourcing.pys`](../examples/patterns/messaging/event_sourcing.pys)
+Demo: [`event_sourcing.typhon`](../examples/patterns/messaging/event_sourcing.typhon)
 
 **Output:**
 
@@ -53,7 +53,7 @@ Write the domain change **and** an outbox row together; a relay publishes later.
   </figcaption>
 </figure>
 
-Demo: [`outbox.pys`](../examples/patterns/messaging/outbox.pys)
+Demo: [`outbox.typhon`](../examples/patterns/messaging/outbox.typhon)
 
 **Output (shape):**
 
@@ -83,7 +83,7 @@ Multi-step process with **compensations** when a later step fails.
   </figcaption>
 </figure>
 
-Demo: [`saga.pys`](../examples/patterns/messaging/saga.pys)
+Demo: [`saga.typhon`](../examples/patterns/messaging/saga.typhon)
 
 **Output:**
 
@@ -117,7 +117,7 @@ aborted:charge
   </figcaption>
 </figure>
 
-Demo: [`request_reply.pys`](../examples/patterns/messaging/request_reply.pys)
+Demo: [`request_reply.typhon`](../examples/patterns/messaging/request_reply.typhon)
 
 **Output:**
 

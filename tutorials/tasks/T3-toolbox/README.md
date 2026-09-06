@@ -6,8 +6,8 @@
 
 | Level | Folder / file | Your job |
 |-------|---------------|----------|
-| A Worked | [`1-worked/`](1-worked/) | Run `app.pys`. Trace which names cross the import door. |
-| B Completion | [`2-completion/`](2-completion/) | Fix visibility / imports so `app.pys` runs and the private helper stays private. |
+| A Worked | [`1-worked/`](1-worked/) | Run `app.typhon`. Trace which names cross the import door. |
+| B Completion | [`2-completion/`](2-completion/) | Fix visibility / imports so `app.typhon` runs and the private helper stays private. |
 | C Conventional | [`3-brief.md`](3-brief.md) | Design your own two-file toolbox. |
 
 ## JIT
@@ -20,6 +20,6 @@
 
 ## Success criteria
 
-1. `app.pys` runs via the transpiler (imports resolve).  
+1. `app.typhon` runs via the transpiler (imports resolve).  
 2. At least one name is intentionally *not* importable.  
 3. You can point to each export and say who the customer is (`package` vs `global` vs private).

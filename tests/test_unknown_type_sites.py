@@ -21,7 +21,7 @@ def _transpile(path: Path) -> str:
 def test_unknown_field_type_is_rejected(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "class Character{\n"
         "    private string name\n"
         "    private Heritage heritage\n"
@@ -29,14 +29,14 @@ def test_unknown_field_type_is_rejected(tmp_path: Path) -> None:
     )
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
 
 def test_unknown_ctor_param_type_is_rejected(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "class Character{\n"
         "    constructor(string name, Heritage heritage){\n"
         "        print(name)\n"
@@ -45,72 +45,72 @@ def test_unknown_ctor_param_type_is_rejected(tmp_path: Path) -> None:
     )
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
 
 def test_unknown_return_type_is_rejected(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "function Heritage make(){\n"
         "    return null\n"
         "}\n",
     )
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
 
 def test_unknown_nested_typed_decl_is_rejected(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "function void go(){\n"
         "    Heritage h = null\n"
         "}\n",
     )
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
 
 def test_unknown_generic_arg_is_rejected(tmp_path: Path) -> None:
-    path = _write(tmp_path, "list.pys", "list<Heritage> xs = []\n")
+    path = _write(tmp_path, "list.typhon", "list<Heritage> xs = []\n")
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
-    path2 = _write(tmp_path, "nullable.pys", "nullable<Heritage> h = null\n")
+    path2 = _write(tmp_path, "nullable.typhon", "nullable<Heritage> h = null\n")
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught2:
         _transpile(path2)
-    assert caught2.value.code == "pys.unknown-type"
+    assert caught2.value.code == "typhon.unknown-type"
     assert caught2.value.suggested_fix == "create-class"
 
 
 def test_unknown_type_name_ctor_call_is_rejected(tmp_path: Path) -> None:
-    path = _write(tmp_path, "main.pys", 'Heritage("Miner")\n')
+    path = _write(tmp_path, "main.typhon", 'Heritage("Miner")\n')
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
 
 def test_unknown_type_top_level_assign_still_rejected(tmp_path: Path) -> None:
-    path = _write(tmp_path, "main.pys", "Heritage h = null\n")
+    path = _write(tmp_path, "main.typhon", "Heritage h = null\n")
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
 
 def test_character_heritage_user_scenario_fails_closed(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "class Character{\n"
         "    private string name\n"
         "    private Heritage heritage\n"
@@ -129,36 +129,36 @@ def test_character_heritage_user_scenario_fails_closed(tmp_path: Path) -> None:
     )
     with pytest.raises(TranspileError, match="Unknown type 'Heritage'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix == "create-class"
 
 
 def test_unknown_inherits_parent_does_not_offer_create_class(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "class Child inherits MissingParent {\n"
         "    public constructor() {}\n"
         "}\n",
     )
     with pytest.raises(TranspileError, match="Unknown type 'MissingParent'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix is None
 
 
 def test_unknown_cast_type_does_not_offer_create_class(tmp_path: Path) -> None:
-    path = _write(tmp_path, "main.pys", "object x = null\nprint((MissingT) x)\n")
+    path = _write(tmp_path, "main.typhon", "object x = null\nprint((MissingT) x)\n")
     with pytest.raises(TranspileError, match="Unknown type 'MissingT'") as caught:
         _transpile(path)
-    assert caught.value.code == "pys.unknown-type"
+    assert caught.value.code == "typhon.unknown-type"
     assert caught.value.suggested_fix is None
 
 
 def test_known_local_type_field_and_ctor_allowed(tmp_path: Path) -> None:
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "class Heritage{\n"
         "    private string kind\n"
         "    constructor(string kind){\n"
@@ -185,7 +185,7 @@ def test_known_local_type_field_and_ctor_allowed(tmp_path: Path) -> None:
 
 def test_lowercase_unknown_callee_still_allowed(tmp_path: Path) -> None:
     """camelCase / lowercase callees stay library-open (not type-name calls)."""
-    path = _write(tmp_path, "main.pys", "print(1)\n")
+    path = _write(tmp_path, "main.typhon", "print(1)\n")
     _transpile(path)
 
 
@@ -199,7 +199,7 @@ def test_soft_open_unknown_type_with_imports_no_introspection(
     monkeypatch.setattr("transpiler.imports.ImportResolver._deps_paths", lambda self: [site])
     path = _write(
         tmp_path,
-        "main.pys",
+        "main.typhon",
         "import demo\n"
         "class Character{\n"
         "    private MaybeFromLib heritage\n"

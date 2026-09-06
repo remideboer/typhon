@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 package struct Damage {
     int amount
     string type

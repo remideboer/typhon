@@ -13,9 +13,9 @@ from transpiler.transpiler import TranspileError, transpile, run_source
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_EXAMPLE = ROOT / "examples" / "data.pys"
-ENTITIES_EXAMPLE = ROOT / "examples" / "entities.pys"
-SHOP_APP = ROOT / "examples" / "database" / "shop_app.pys"
+DATA_EXAMPLE = ROOT / "examples" / "data.typhon"
+ENTITIES_EXAMPLE = ROOT / "examples" / "entities.typhon"
+SHOP_APP = ROOT / "examples" / "database" / "shop_app.typhon"
 
 
 def test_example_data_runs(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -37,7 +37,7 @@ def test_example_database_shop_transpiles(
     from transpiler.transpiler import transpile_with_modules
 
     assert SHOP_APP.is_file()
-    # examples/database has pys.toml but no lock — fixture stubs mysql.connector
+    # examples/database has typhon.toml but no lock — fixture stubs mysql.connector
     # so CI compile does not need a live deps env (CER-001 §4 / §7).
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(SHOP_APP.parent))
     modules = transpile_with_modules(SHOP_APP)
@@ -54,7 +54,7 @@ def test_example_database_shop_transpiles(
     assert "class Product" in modules["models"]
     assert "class OrderLine" in modules["models"]
     assert "__eq__" in modules["models"]
-    assert "_pys_fix_fields" in modules["models"]
+    assert "_typhon_fix_fields" in modules["models"]
     assert "ProductMapper" in modules["mappers"]
     assert "MysqlProductMapper" in modules["mappers"]
     assert "ProductRepository" in modules["repositories"]
@@ -74,7 +74,7 @@ def test_example_data_emit_is_frozen_dataclass() -> None:
     py = transpile(DATA_EXAMPLE.read_text(encoding="utf-8"))
     ast.parse(py)
     assert "@dataclass(frozen=True)" in py
-    assert "_pys_struct_copy" in py
+    assert "_typhon_struct_copy" in py
 
 
 def test_example_entities_emit_identity_eq() -> None:
@@ -82,7 +82,7 @@ def test_example_entities_emit_identity_eq() -> None:
     ast.parse(py)
     assert "def __eq__(self, other):" in py
     assert "def __hash__(self):" in py
-    assert "_pys_fix_fields" in py
+    assert "_typhon_fix_fields" in py
 
 
 def test_data_equality_and_immutability(capsys: pytest.CaptureFixture[str]) -> None:

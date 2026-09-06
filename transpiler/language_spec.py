@@ -281,7 +281,7 @@ def _split_top_level_colons(content: str) -> list[str]:
 
 
 def _translate_slice_content(content: str) -> str:
-    """PYS slices include the end index; Python excludes it — bump end by 1."""
+    """Typhon slices include the end index; Python excludes it — bump end by 1."""
     parts = _split_top_level_colons(content)
     if len(parts) < 2 or len(parts) > 3:
         return content
@@ -472,7 +472,7 @@ def _translate_step(step: str) -> str:
 
 def _normalize_module_ref(module: str) -> str:
     module = module.strip()
-    module = re.sub(r"\.pys$", "", module)
+    module = re.sub(r"\.typhon$", "", module)
     module = module.replace("\\", "/").replace("/", ".")
     return module
 

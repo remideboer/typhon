@@ -2,13 +2,13 @@
 
 | Path | Role |
 |------|------|
-| `pys.toml` | `[source_roots] main=src test=tests` |
-| `src/billing/Invoice.pys` | package `billing` — production `package` types |
-| `tests/billing/InvoiceTest.pys` | same package — uses `package` exports |
-| `tests/test_utils/WrongPlaceTest.pys` | wrong package — enable import to see diagnostic + QF |
+| `typhon.toml` | `[source_roots] main=src test=tests` |
+| `src/billing/Invoice.typhon` | package `billing` — production `package` types |
+| `tests/billing/InvoiceTest.typhon` | same package — uses `package` exports |
+| `tests/test_utils/WrongPlaceTest.typhon` | wrong package — enable import to see diagnostic + QF |
 
 ```bash
-python -m transpiler run examples/source_roots/tests/billing/InvoiceTest.pys
+python -m transpiler run examples/source_roots/tests/billing/InvoiceTest.typhon
 # → Ada: 150 cents
 ```
 

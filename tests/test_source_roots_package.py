@@ -15,7 +15,7 @@ from transpiler.transpiler import TranspileError, transpile
 
 
 def _project(tmp_path: Path) -> Path:
-    (tmp_path / "pys.toml").write_text(
+    (tmp_path / "typhon.toml").write_text(
         '[source_roots]\nmain = "src"\ntest = "tests"\n',
         encoding="utf-8",
     )
@@ -27,8 +27,8 @@ def _project(tmp_path: Path) -> Path:
 
 def test_same_package_across_source_roots(tmp_path: Path) -> None:
     root = _project(tmp_path)
-    inv = root / "src" / "billing" / "Invoice.pys"
-    test = root / "tests" / "billing" / "InvoiceTest.pys"
+    inv = root / "src" / "billing" / "Invoice.typhon"
+    test = root / "tests" / "billing" / "InvoiceTest.typhon"
     inv.write_text("package class Invoice {}\n", encoding="utf-8")
     test.write_text("# test\n", encoding="utf-8")
     assert same_package(inv, test)
@@ -38,30 +38,30 @@ def test_same_package_across_source_roots(tmp_path: Path) -> None:
 
 def test_different_relative_dirs_are_not_same_package(tmp_path: Path) -> None:
     root = _project(tmp_path)
-    inv = root / "src" / "billing" / "Invoice.pys"
-    wrong = root / "tests" / "test_utils" / "InvoiceTest.pys"
+    inv = root / "src" / "billing" / "Invoice.typhon"
+    wrong = root / "tests" / "test_utils" / "InvoiceTest.typhon"
     inv.write_text("package class Invoice {}\n", encoding="utf-8")
     wrong.write_text("# test\n", encoding="utf-8")
     assert not same_package(inv, wrong)
 
 
 def test_legacy_same_folder_without_manifest(tmp_path: Path) -> None:
-    a = tmp_path / "a.pys"
-    b = tmp_path / "b.pys"
+    a = tmp_path / "a.typhon"
+    b = tmp_path / "b.typhon"
     a.write_text("x\n", encoding="utf-8")
     b.write_text("y\n", encoding="utf-8")
     assert same_package(a, b)
     other = tmp_path / "sub"
     other.mkdir()
-    c = other / "c.pys"
+    c = other / "c.typhon"
     c.write_text("z\n", encoding="utf-8")
     assert not same_package(a, c)
 
 
 def test_bare_module_resolves_across_source_roots(tmp_path: Path) -> None:
     root = _project(tmp_path)
-    inv = root / "src" / "billing" / "Invoice.pys"
-    test = root / "tests" / "billing" / "InvoiceTest.pys"
+    inv = root / "src" / "billing" / "Invoice.typhon"
+    test = root / "tests" / "billing" / "InvoiceTest.typhon"
     inv.write_text(
         "package function recalculateTotal(){\n    print(\"ok\")\n}\n",
         encoding="utf-8",
@@ -76,14 +76,14 @@ def test_bare_module_resolves_across_source_roots(tmp_path: Path) -> None:
 
 def test_import_package_export_across_mirrored_roots(tmp_path: Path) -> None:
     root = _project(tmp_path)
-    inv = root / "src" / "billing" / "Invoice.pys"
-    test = root / "tests" / "billing" / "InvoiceTest.pys"
+    inv = root / "src" / "billing" / "Invoice.typhon"
+    test = root / "tests" / "billing" / "InvoiceTest.typhon"
     inv.write_text(
         "package function recalculateTotal(){\n    print(\"ok\")\n}\n",
         encoding="utf-8",
     )
     test.write_text(
-        "import recalculateTotal from ../../src/billing/Invoice.pys\n"
+        "import recalculateTotal from ../../src/billing/Invoice.typhon\n"
         "recalculateTotal()\n",
         encoding="utf-8",
     )
@@ -93,14 +93,14 @@ def test_import_package_export_across_mirrored_roots(tmp_path: Path) -> None:
 
 def test_wrong_test_folder_diagnostic(tmp_path: Path) -> None:
     root = _project(tmp_path)
-    inv = root / "src" / "billing" / "Invoice.pys"
-    wrong = root / "tests" / "test_utils" / "InvoiceTest.pys"
+    inv = root / "src" / "billing" / "Invoice.typhon"
+    wrong = root / "tests" / "test_utils" / "InvoiceTest.typhon"
     inv.write_text(
         "package function recalculateTotal(){\n    print(\"ok\")\n}\n",
         encoding="utf-8",
     )
     wrong.write_text(
-        "import recalculateTotal from ../../src/billing/Invoice.pys\n",
+        "import recalculateTotal from ../../src/billing/Invoice.typhon\n",
         encoding="utf-8",
     )
     with pytest.raises(TranspileError, match="Did you mean to place this file") as exc:
@@ -109,9 +109,9 @@ def test_wrong_test_folder_diagnostic(tmp_path: Path) -> None:
     msg = str(err)
     assert "package 'test_utils'" in msg
     assert "package 'billing'" in msg
-    assert "tests/billing/InvoiceTest.pys" in msg.replace("\\", "/")
-    assert err.code == "pys.package-mismatch"
-    assert err.suggested_fix == "tests/billing/InvoiceTest.pys"
+    assert "tests/billing/InvoiceTest.typhon" in msg.replace("\\", "/")
+    assert err.code == "typhon.package-mismatch"
+    assert err.suggested_fix == "tests/billing/InvoiceTest.typhon"
     assert err.tips
 
 
@@ -119,33 +119,33 @@ def test_package_peer_files_across_roots(tmp_path: Path) -> None:
     from transpiler.project_manifest import package_peer_files
 
     root = _project(tmp_path)
-    inv = root / "src" / "billing" / "Invoice.pys"
-    test = root / "tests" / "billing" / "InvoiceTest.pys"
+    inv = root / "src" / "billing" / "Invoice.typhon"
+    test = root / "tests" / "billing" / "InvoiceTest.typhon"
     inv.write_text("package class Invoice {}\n", encoding="utf-8")
     test.write_text("# test\n", encoding="utf-8")
     peers = {p.name for p in package_peer_files(inv)}
-    assert peers == {"Invoice.pys", "InvoiceTest.pys"}
+    assert peers == {"Invoice.typhon", "InvoiceTest.typhon"}
 
 
 def test_wrong_place_example_reproduces_diagnostic() -> None:
     """examples/source_roots wrong-folder stub: enable import → package-mismatch."""
     root = Path(__file__).resolve().parents[1] / "examples" / "source_roots"
-    wrong = root / "tests" / "test_utils" / "WrongPlaceTest.pys"
+    wrong = root / "tests" / "test_utils" / "WrongPlaceTest.typhon"
     text = wrong.read_text(encoding="utf-8")
     text = text.replace(
-        "# import formatInvoice from ../../src/billing/Invoice.pys\n",
-        "import formatInvoice from ../../src/billing/Invoice.pys\n",
+        "# import formatInvoice from ../../src/billing/Invoice.typhon\n",
+        "import formatInvoice from ../../src/billing/Invoice.typhon\n",
     )
     with pytest.raises(TranspileError) as exc:
         transpile(text, source_path=wrong)
-    assert exc.value.code == "pys.package-mismatch"
-    assert exc.value.suggested_fix == "tests/billing/WrongPlaceTest.pys"
+    assert exc.value.code == "typhon.package-mismatch"
+    assert exc.value.suggested_fix == "tests/billing/WrongPlaceTest.typhon"
 
 
 def test_mismatch_diagnostic_helper(tmp_path: Path) -> None:
     root = _project(tmp_path)
-    inv = root / "src" / "billing" / "Invoice.pys"
-    wrong = root / "tests" / "test_utils" / "InvoiceTest.pys"
+    inv = root / "src" / "billing" / "Invoice.typhon"
+    wrong = root / "tests" / "test_utils" / "InvoiceTest.typhon"
     inv.write_text("package class Invoice {}\n", encoding="utf-8")
     wrong.write_text("#\n", encoding="utf-8")
     hint = package_mismatch_diagnostic(

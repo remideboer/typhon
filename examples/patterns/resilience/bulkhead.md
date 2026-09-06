@@ -1,7 +1,7 @@
 # Bulkhead
 
 **Category:** Resilience  
-**Demo:** [bulkhead.pys](bulkhead.pys)  
+**Demo:** [bulkhead.typhon](bulkhead.typhon)  
 **Wikipedia / ref:** [Bulkhead](https://en.wikipedia.org/wiki/Bulkhead_(computing))
 
 ## Intent
@@ -19,5 +19,5 @@ Limit concurrent slots so one workload cannot exhaust all capacity.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/resilience/bulkhead.pys
+python -m transpiler run examples/patterns/resilience/bulkhead.typhon
 ```

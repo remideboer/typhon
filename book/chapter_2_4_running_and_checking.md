@@ -3,7 +3,7 @@
 ## Run
 
 ```shell
-python -m transpiler run path/to/file.pys
+python -m transpiler run path/to/file.typhon
 ```
 
 ## Transpile only
@@ -11,12 +11,12 @@ python -m transpiler run path/to/file.pys
 See the generated Python without executing:
 
 ```shell
-python -m transpiler transpile path/to/file.pys
+python -m transpiler transpile path/to/file.typhon
 ```
 
 ## Editor feedback
 
-With the PYS extension, save the file and read diagnostics in the Problems
+With the Typhon extension, save the file and read diagnostics in the Problems
 panel. Prefer fixing **errors** first; warnings (for example enum naming
 style) still teach good habits.
 

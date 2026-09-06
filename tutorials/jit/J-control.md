@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 if (n > 0) {
     print("pos")
 } else if (n == 0) {

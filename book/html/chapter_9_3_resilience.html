@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>10.3. Resilience — when dependencies fail — PYS Development Classes</title>
+  <title>10.3. Resilience — when dependencies fail — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -156,7 +156,7 @@ how you want failure handled. Demos are <strong>in-process fakes</strong> — no
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/retry.pys"><code>retry.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/retry.typhon"><code>retry.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">ok:3
 failed:2
@@ -177,7 +177,7 @@ failed:2
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/timeout.pys"><code>timeout.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/timeout.typhon"><code>timeout.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">ok:3
 timeout:3
@@ -197,7 +197,7 @@ timeout:3
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/circuit_breaker.pys"><code>circuit_breaker.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/circuit_breaker.typhon"><code>circuit_breaker.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">err
 err
@@ -220,7 +220,7 @@ CLOSED
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/bulkhead.pys"><code>bulkhead.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/bulkhead.typhon"><code>bulkhead.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">True
 True
@@ -244,7 +244,7 @@ True
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/fallback.pys"><code>fallback.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/fallback.typhon"><code>fallback.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">45.99
 stale:BG-999
@@ -264,7 +264,7 @@ stale:BG-999
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/rate_limiting.pys"><code>rate_limiting.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/rate_limiting.typhon"><code>rate_limiting.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">True
 True
@@ -286,7 +286,7 @@ True
   </figcaption>
 </figure>
 
-<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/idempotency.pys"><code>idempotency.pys</code></a></p>
+<p>Demo: <a href="https://github.com/remideboer/pys/blob/main/examples/patterns/resilience/idempotency.typhon"><code>idempotency.typhon</code></a></p>
 <p><strong>Output:</strong></p>
 <pre><code class="language-text">created:O-1
 replay:created:O-1

@@ -1,13 +1,13 @@
 # Node MySQL silo (`mysql2`).
 
-`pys.toml` declares `mysql2` under `[dependencies.npm]` and
+`typhon.toml` declares `mysql2` under `[dependencies.npm]` and
 `target = "javascript"`. **Run** installs into
-the central npm cache (`~/.pys/repository/npm/<fingerprint>/`) — no local
+the central npm cache (`~/.typhon/repository/npm/<fingerprint>/`) — no local
 `npm install` needed.
 
 ```text
-python -m transpiler run examples/by-target/javascript/mysql/main.pys
-# or right-click pys.toml → Run Project
+python -m transpiler run examples/by-target/javascript/mysql/main.typhon
+# or right-click typhon.toml → Run Project
 ```
 
 Use the **workspace** transpiler (repo root on `PYTHONPATH`, or run from

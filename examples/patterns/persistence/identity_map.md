@@ -1,7 +1,7 @@
 # Identity Map
 
 **Category:** Persistence  
-**Demo:** [identity_map.pys](identity_map.pys)  
+**Demo:** [identity_map.typhon](identity_map.typhon)  
 **Wikipedia / ref:** [Identity Map](https://martinfowler.com/eaaCatalog/identityMap.html)
 
 ## Intent
@@ -19,5 +19,5 @@ Same id resolves to the same instance within a session.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/persistence/identity_map.pys
+python -m transpiler run examples/patterns/persistence/identity_map.typhon
 ```

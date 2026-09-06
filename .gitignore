@@ -61,13 +61,13 @@ requirements/
 
 # JS emit / npm (target-dependent examples)
 **/node_modules/
-**/.pys_js_out/
+**/.typhon_js_out/
 
-# PYS VS Code extension build output
-pys-language/bundled/
-pys-language/*.vsix
-pys-language/LICENSE
-examples/test_area/refactor.pys
+# Typhon VS Code extension build output
+typhon-language/bundled/
+typhon-language/*.vsix
+typhon-language/LICENSE
+examples/test_area/refactor.typhon
 
 # Webserver local TLS (ops/dev generate; never commit)
 examples/webserver/certs/*.pem

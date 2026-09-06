@@ -1,6 +1,6 @@
-"""Project dependency resolution via exact, hashed ``pys.lock`` environments.
+"""Project dependency resolution via exact, hashed ``typhon.lock`` environments.
 
-Resolved environments are cached by lock digest under ``~/.pys/repository`` and
+Resolved environments are cached by lock digest under ``~/.typhon/repository`` and
 shared across projects. The runner only adds validated cache paths to PYTHONPATH.
 """
 
@@ -20,13 +20,17 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
+from .brand import (
+    DEFAULT_REPO,
+    DEPS_FILENAME,
+    LOCK_FILENAME,
+    LOCK_MARKER,
+    MANIFEST_FILENAME,
+    REPO_ROOT_ENV,
+    SOURCE_EXT,
+)
 from .workspace import WORKSPACE_ROOT_ENV
 
-DEPS_FILENAME = "pys.deps"
-MANIFEST_FILENAME = "pys.toml"
-LOCK_FILENAME = "pys.lock"
-REPO_ROOT_ENV = "PYS_REPO"
-DEFAULT_REPO = Path.home() / ".pys" / "repository"
 DEFAULT_INDEX_URL = "https://pypi.org/simple"
 # Safe version tokens for pip (no spaces, options, URLs, or env markers).
 _VERSION_RE = re.compile(r"^(?=.*\d)[A-Za-z0-9][A-Za-z0-9._+-]*$")
@@ -70,7 +74,7 @@ class DepsLock:
 
 
 class DepsError(ValueError):
-    """Invalid pys.deps or dependency resolution failure."""
+    """Invalid typhon.deps or dependency resolution failure."""
 
 
 def default_repo_root() -> Path:
@@ -85,8 +89,8 @@ def _workspace_stop_at(
 ) -> Path | None:
     """Bound upward deps discovery.
 
-    Precedence: explicit ``stop_at`` → ``PYS_WORKSPACE_ROOT`` → nearest
-    ``pys.toml`` project directory (ADR-017). The env var remains what the IDE
+    Precedence: explicit ``stop_at`` → ``TYPHON_WORKSPACE_ROOT`` → nearest
+    ``typhon.toml`` project directory (ADR-017). The env var remains what the IDE
     sets for containment; CLI/run should not require it when a manifest exists.
     """
     if explicit is not None:
@@ -107,10 +111,10 @@ def _workspace_stop_at(
 
 
 def find_deps_file(start: Path, *, stop_at: Path | None = None) -> Path | None:
-    """Walk upward for ``pys.toml`` (deps sections) or legacy ``pys.deps``.
+    """Walk upward for ``typhon.toml`` (deps sections) or legacy ``typhon.deps``.
 
-    Discovery stops at ``stop_at``, ``PYS_WORKSPACE_ROOT``, or the nearest
-    ``pys.toml`` project root — whichever applies first — so a nested project
+    Discovery stops at ``stop_at``, ``TYPHON_WORKSPACE_ROOT``, or the nearest
+    ``typhon.toml`` project root — whichever applies first — so a nested project
     cannot inherit a parent lock (CER-001 §4).
     """
     bound = _workspace_stop_at(stop_at, start=start)
@@ -206,7 +210,7 @@ def _toml_has_python_deps_sections(manifest: Path) -> bool:
 
 
 def parse_deps_from_toml(text: str, *, source_path: Path | None = None) -> DepsConfig | None:
-    """Parse ``[interpreter]`` / ``[dependencies]`` from pys.toml (skip ``npm``)."""
+    """Parse ``[interpreter]`` / ``[dependencies]`` from typhon.toml (skip ``npm``)."""
     label = str(source_path) if source_path else MANIFEST_FILENAME
     data = _load_tomllib_data(text, label=label)
     deps_raw = data.get("dependencies")
@@ -228,7 +232,7 @@ def parse_deps_from_toml(text: str, *, source_path: Path | None = None) -> DepsC
             raise DepsError(
                 f"{label}: interpreter.path is not allowed in project config. "
                 "Select Python explicitly, for example: "
-                "`/path/to/python -m transpiler run main.pys`."
+                "`/path/to/python -m transpiler run main.typhon`."
             )
         for key in interpreter:
             if key != "version":
@@ -305,7 +309,7 @@ def parse_deps_from_toml(text: str, *, source_path: Path | None = None) -> DepsC
 
 
 def parse_deps_text(text: str, *, source_path: Path | None = None) -> DepsConfig:
-    """Parse the indented pys.deps format."""
+    """Parse the indented typhon.deps format."""
     config = DepsConfig(source_path=source_path)
     section: str | None = None
     current_dep: Dependency | None = None
@@ -345,7 +349,7 @@ def parse_deps_text(text: str, *, source_path: Path | None = None) -> DepsConfig
             continue
         indent = _indent_width(stripped)
         content = stripped.strip()
-        label = str(source_path) if source_path else "pys.deps"
+        label = str(source_path) if source_path else "typhon.deps"
 
         section_match = re.fullmatch(r"\[(?P<name>[A-Za-z_]\w*)\]", content)
         if section_match:
@@ -375,7 +379,7 @@ def parse_deps_text(text: str, *, source_path: Path | None = None) -> DepsConfig
                 raise DepsError(
                     f"{label}:{line_no}: interpreter.path is not allowed in project config. "
                     "Select Python explicitly, for example: "
-                    "`/path/to/python -m transpiler run main.pys`."
+                    "`/path/to/python -m transpiler run main.typhon`."
                 )
             else:
                 raise DepsError(f"{label}:{line_no}: unknown interpreter key '{key}'")
@@ -440,7 +444,7 @@ def _load_deps_from_path(path: Path) -> DepsConfig | None:
 
 
 def load_deps(start: Path, *, stop_at: Path | None = None) -> DepsConfig | None:
-    """Load Python deps from ``pys.toml`` (preferred) or legacy ``pys.deps``."""
+    """Load Python deps from ``typhon.toml`` (preferred) or legacy ``typhon.deps``."""
     start = start.expanduser()
     try:
         start = start.resolve()
@@ -507,7 +511,7 @@ def _parse_version_constraint(constraint: str | None) -> None:
     if not ok:
         running = ".".join(str(x) for x in sys.version_info[:3])
         raise DepsError(
-            f"Interpreter version {running} does not satisfy pys.deps requirement '{constraint}'."
+            f"Interpreter version {running} does not satisfy typhon.deps requirement '{constraint}'."
         )
 
 
@@ -705,7 +709,7 @@ def _lock_path(config: DepsConfig, lock_path: Path | None = None) -> Path:
     if lock_path is not None:
         return lock_path.resolve()
     if config.source_path is None:
-        raise DepsError("Cannot locate pys.lock without a source pys.toml / pys.deps path.")
+        raise DepsError("Cannot locate typhon.lock without a source typhon.toml / typhon.deps path.")
     return config.source_path.resolve().with_name(LOCK_FILENAME)
 
 
@@ -823,8 +827,8 @@ def _package_name_covers_module(package_name: str, module_top: str) -> bool:
 def lock_declares_module(start: Path, module_ref: str, build: str = "run") -> bool:
     """Recognize a locked dependency without importing or installing it.
 
-    Matches direct ``pys.deps`` pins and transitive packages listed in
-    ``pys.lock`` (e.g. ``anyio`` pulled in by FastAPI) so analysis/transpile
+    Matches direct ``typhon.deps`` pins and transitive packages listed in
+    ``typhon.lock`` (e.g. ``anyio`` pulled in by FastAPI) so analysis/transpile
     can accept imports when the lock env is not installed yet — including on
     CI where the committed lock may target another platform.
     """
@@ -856,7 +860,7 @@ def generate_lock(
     lock_path: Path | None = None,
     index_url: str = DEFAULT_INDEX_URL,
 ) -> Path:
-    """Resolve exact packages with pip's report and write a hashed pys.lock."""
+    """Resolve exact packages with pip's report and write a hashed typhon.lock."""
     if index_url != DEFAULT_INDEX_URL:
         raise DepsError(f"Only the trusted index {DEFAULT_INDEX_URL} is supported.")
     deps = _require_pinned_dependencies(config, build)
@@ -933,7 +937,7 @@ def _locked_environment_if_present(
     repo_root: Path | None = None,
 ) -> Path | None:
     target = _lock_environment_path(lock, repo_root)
-    marker = target / ".pys-lock.json"
+    marker = target / LOCK_MARKER
     if target.is_dir() and marker.is_file():
         return target
     return None
@@ -983,7 +987,7 @@ def ensure_locked_environment(
         if result.returncode != 0:
             detail = (result.stderr or result.stdout or "").strip()
             raise DepsError(f"Failed to install locked dependencies:\n{detail}")
-        (staging / ".pys-lock.json").write_text(
+        (staging / LOCK_MARKER).write_text(
             json.dumps(_lock_dict(lock), sort_keys=True),
             encoding="utf-8",
         )
@@ -1014,7 +1018,7 @@ def resolve_site_paths(
     When ``install`` is True (default), missing packages are downloaded via pip.
     When ``install`` is False, only already-cached packages are returned — never
     network or subprocess work. Use the read-only mode for IDE validation so
-    opening a project cannot trigger installs from an untrusted ``pys.deps``.
+    opening a project cannot trigger installs from an untrusted ``typhon.deps``.
     """
     deps = deps_for_build(config, build=build)
     total = len(deps)
@@ -1119,7 +1123,7 @@ def clear_filesystem_caches() -> None:
 def is_external_python_module(module_ref: str, site_paths: Iterable[Path] | None = None) -> bool:
     """True if module_ref is importable from deps site paths or the stdlib."""
     ref = module_ref.strip().strip("\"'")
-    if not ref or "/" in ref or "\\" in ref or ref.lower().endswith(".pys"):
+    if not ref or "/" in ref or "\\" in ref or ref.lower().endswith(SOURCE_EXT):
         return False
     paths = list(site_paths or [])
     if paths and module_present_on_paths(ref, paths):
@@ -1154,7 +1158,7 @@ def ensure_site_paths_for(
     install: bool = True,
     stop_at: Path | None = None,
 ) -> list[Path]:
-    """Load pys.deps near start (if any) and return site paths.
+    """Load typhon.deps near start (if any) and return site paths.
 
     Pass ``install=False`` for IDE / compile-time lookups that must not
     download packages as a side effect of opening a file.

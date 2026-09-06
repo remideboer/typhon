@@ -1,6 +1,6 @@
 """IDE helpers: symbol location, Find Usages, and highlighting.
 
-Uses the AST pipeline (parse + ImportResolver + compile_pys).
+Uses the AST pipeline (parse + ImportResolver + compile_typhon).
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ from .ast_nodes import (
 )
 from .imports import ImportResolver, module_info_from_ast, pys_import_line
 from .parse import parse_program
-from .pipeline import compile_pys
+from .pipeline import compile_typhon
 from .pytypes import (
     _find_class_in_package,
     _usage_tips_for,
@@ -39,7 +39,7 @@ from .workspace import resolve_workspace_path, workspace_root_from_env
 
 
 def format_file(source_path: Path, *, source: str | None = None) -> dict[str, Any]:
-    """Pretty-print a contained `.pys` file. Parse failure → ``ok: false`` (no text)."""
+    """Pretty-print a contained `.typhon` file. Parse failure → ``ok: false`` (no text)."""
     from .format import format_source
     from .parse import FatalParseError
 
@@ -317,22 +317,22 @@ def _collect_hints_and_types(
                     allow_runtime_imports=resolver.allow_runtime_introspection,
                 )
                 if info is not None:
-                    if info.element_type and info.pys_type in {"list", "set", "tuple", "dict"}:
+                    if info.element_type and info.typhon_type in {"list", "set", "tuple", "dict"}:
                         collection_element_types[stmt.name] = info.element_type
                     if info.from_external and info.weak and (
                         not stmt.declare_type or _base_type(stmt.declare_type) in {"list", "dict", "tuple", "set"}
                     ):
                         # Bare `list rows = …` still gets weak-library hint; generics suppress it.
                         if not (stmt.declare_type and "<" in stmt.declare_type):
-                            tips = _usage_tips_for(info.pys_type, info.element_type, stmt.name)
+                            tips = _usage_tips_for(info.typhon_type, info.element_type, stmt.name)
                             hints.append(
                                 {
                                     "line": line,
                                     "column": 1,
-                                    "code": "pys.untyped-library",
+                                    "code": "typhon.untyped-library",
                                     "message": (
                                         f"'{stmt.name}' comes from a Python library with weak/untyped "
-                                        f"return information. Prefer treating it as typed in PYS."
+                                        f"return information. Prefer treating it as typed in Typhon."
                                         + (
                                             f" Best element/row type for this API: `{info.element_type}`."
                                             if info.element_type
@@ -342,15 +342,15 @@ def _collect_hints_and_types(
                                     "tips": tips,
                                     "suggested_loop": (
                                         f"loop ({info.element_type} x in {stmt.name})"
-                                        if info.pys_type == "list" and info.element_type
+                                        if info.typhon_type == "list" and info.element_type
                                         else None
                                     ),
                                     "element_type": info.element_type,
-                                    "pys_type": info.pys_type,
+                                    "typhon_type": info.typhon_type,
                                 }
                             )
                     if not stmt.declare_type:
-                        variable_types.setdefault(stmt.name, info.pys_type)
+                        variable_types.setdefault(stmt.name, info.typhon_type)
             elif stmt.declare_type:
                 variable_types[stmt.name] = stmt.declare_type
 
@@ -366,7 +366,7 @@ def _collect_hints_and_types(
                         {
                             "line": line,
                             "column": 1,
-                            "code": "pys.untyped-loop-var",
+                            "code": "typhon.untyped-loop-var",
                             "message": (
                                 f"Loop variable '{stmt.var}' has no type; "
                                 f"collection '{coll}' elements look like `{elem}`."
@@ -431,7 +431,7 @@ def analyze_file(
     allow_runtime_introspection: bool = False,
     source: str | None = None,
 ) -> dict:
-    """Analyze a ``.pys`` path for IDE diagnostics.
+    """Analyze a ``.typhon`` path for IDE diagnostics.
 
     ``source_path`` is always used for workspace containment, manifests, and
     symbol identity. When ``source`` is provided (unsaved editor buffer), that
@@ -458,7 +458,7 @@ def analyze_file(
         manifest = find_manifest(source_path)
         configured = load_project_main(manifest) if manifest is not None else None
         is_entrypoint = configured == source_path
-        compile_pys(
+        compile_typhon(
             source,
             source_path=source_path,
             allow_runtime_introspection=allow_runtime_introspection,
@@ -598,8 +598,8 @@ def analyze_file(
     }
 
 
-def _lookup_pys_method(analysis: dict, type_name: str, method: str) -> dict | None:
-    """Find method location on a PYS class, walking parents."""
+def _lookup_typhon_method(analysis: dict, type_name: str, method: str) -> dict | None:
+    """Find method location on a Typhon class, walking parents."""
     parents = analysis.get("class_parents") or {}
     method_locations = analysis.get("method_locations") or {}
     seen: set[str] = set()
@@ -645,7 +645,7 @@ def lookup_symbol(analysis: dict, symbol: str) -> dict | None:
             elif type_name.startswith("dict<"):
                 type_name = "dict"
             base = _base_type(type_name)
-            pys_loc = _lookup_pys_method(analysis, base, member)
+            pys_loc = _lookup_typhon_method(analysis, base, member)
             if pys_loc:
                 return pys_loc
             field_loc = _lookup_struct_field(analysis, base, member)
@@ -708,7 +708,7 @@ def prepare_debug(
     *,
     target: str = "python",
 ) -> dict[str, Any]:
-    """Transpile entry + imports with ``*.pysmap.json`` sidecars for DAP.
+    """Transpile entry + imports with ``*.typhonmap.json`` sidecars for DAP.
 
     Target-neutral prepare contract (loose coupling):
     - ``main`` / ``cwd`` / ``maps`` always present on success
@@ -739,7 +739,7 @@ def prepare_debug(
             return {
                 "ok": False,
                 "error": {
-                    "message": "PYS file must resolve inside the workspace.",
+                    "message": "Typhon file must resolve inside the workspace.",
                     "line": None,
                     "column": None,
                 },
@@ -774,7 +774,7 @@ def prepare_debug(
     ):
         pys_paths[path.stem] = path
 
-    hide_prefixes = ["_pys_", "__pys_", "_Pys"]
+    hide_prefixes = ["_typhon_", "__typhon_", "_Typhon"]
 
     if target == "javascript":
         return _prepare_debug_javascript(
@@ -794,17 +794,17 @@ def prepare_debug(
         pys = pys_paths.get(stem)
         sidecar = {
             "version": 1,
-            "pys": str(pys.resolve()) if pys else "",
+            "typhon": str(pys.resolve()) if pys else "",
             "py": str(py_path),
             "lines": maps.get(stem, []),
             "names": names.get(stem, {}),
             "hidePrefixes": hide_prefixes,
         }
-        map_path = out_dir / f"{stem}.pysmap.json"
+        map_path = out_dir / f"{stem}.typhonmap.json"
         map_path.write_text(json.dumps(sidecar), encoding="utf-8")
         map_files[stem] = str(map_path)
 
-    # Same PYTHONPATH contract as run_source: temp modules first, then pys.deps sites.
+    # Same PYTHONPATH contract as run_source: temp modules first, then typhon.deps sites.
     from .deps import (
         DepsError,
         load_deps,
@@ -905,13 +905,13 @@ def _prepare_debug_javascript(
         pys = pys_paths.get(stem)
         sidecar = {
             "version": 1,
-            "pys": str(pys.resolve()) if pys else "",
+            "typhon": str(pys.resolve()) if pys else "",
             "js": str(js_path),
             "lines": maps.get(stem, []),
             "names": names.get(stem, {}),
             "hidePrefixes": hide_prefixes,
         }
-        map_path = emit_root / f"{stem}.pysmap.json"
+        map_path = emit_root / f"{stem}.typhonmap.json"
         map_path.write_text(json.dumps(sidecar), encoding="utf-8")
         map_files[stem] = str(map_path)
 
@@ -935,7 +935,7 @@ def main(argv: list[str] | None = None) -> int:
                         "ok": False,
                         "message": (
                             "Usage: python -m transpiler.ide "
-                            "--prepare-debug <outdir> <file.pys> "
+                            "--prepare-debug <outdir> <file.typhon> "
                             "[--target python|javascript]"
                         ),
                     }
@@ -964,12 +964,12 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "ok": False,
                     "message": (
-                            "Usage: python -m transpiler.ide <file.pys> [symbol] "
+                            "Usage: python -m transpiler.ide <file.typhon> [symbol] "
                             "[--library-sources] [--stdin] "
-                            "| <file.pys> --format [--stdin] "
-                            "| <file.pys> --completions --line N --column N [--stdin] "
-                            "| <file.pys> --usages <symbol> [--line N --column N] "
-                            "| --refactor-plan <op> <file.pys> ..."
+                            "| <file.typhon> --format [--stdin] "
+                            "| <file.typhon> --completions --line N --column N [--stdin] "
+                            "| <file.typhon> --usages <symbol> [--line N --column N] "
+                            "| --refactor-plan <op> <file.typhon> ..."
                         ),
                 }
             )
@@ -1040,7 +1040,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     try:
         # Diagnostics (no symbol) stay fail-closed. Symbol lookup may opt into
-        # locked pys.deps imports via --library-sources (ADR-001).
+        # locked typhon.deps imports via --library-sources (ADR-001).
         buffer_source = sys.stdin.read() if read_stdin else None
         result = analyze_file(
             path,
@@ -1072,11 +1072,11 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _cli_refactor_plan(argv: list[str]) -> int:
-    """``--refactor-plan <op> <file.pys> [--line N --column N] [--stdin] [op-args…]``."""
+    """``--refactor-plan <op> <file.typhon> [--line N --column N] [--stdin] [op-args…]``."""
     from .refactor.plan import plan_to_dict
 
     if len(argv) < 2:
-        print(json.dumps({"ok": False, "message": "Usage: --refactor-plan <op> <file.pys> ..."}))
+        print(json.dumps({"ok": False, "message": "Usage: --refactor-plan <op> <file.typhon> ..."}))
         return 2
     op = argv[0]
     path = Path(argv[1])

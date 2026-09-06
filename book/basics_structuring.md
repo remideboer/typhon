@@ -1,7 +1,7 @@
 # 2.9. Structuring code
 
-One giant file becomes hard to read. PYS lets you split code across
-`.pys` files and **import** names you mark as visible.
+One giant file becomes hard to read. Typhon lets you split code across
+`.typhon` files and **import** names you mark as visible.
 
 ## Visibility in one sentence
 
@@ -13,7 +13,7 @@ One giant file becomes hard to read. PYS lets you split code across
 
 > **Sidebar — source roots (later)**
 >
-> Larger projects can mirror `src/` and `tests/` with a `pys.toml`
+> Larger projects can mirror `src/` and `tests/` with a `typhon.toml`
 > `[source_roots]` table so the same package path exists in both trees.
 > That is Session 6: [Packages and source roots](chapter_7_3_packages_source_roots.md).
 
@@ -24,9 +24,9 @@ One giant file becomes hard to read. PYS lets you split code across
 
 ## Two files
 
-`greetings.pys`:
+`greetings.typhon`:
 
-```pys
+```typhon
 package function void greet(string name) {
     print("Hello, " + name + "!")
 }
@@ -36,15 +36,15 @@ package function void greet(string name) {
 
 
 
-`app.pys` in the **same folder**:
+`app.typhon` in the **same folder**:
 
-```pys
+```typhon
 import greet from greetings
 
 greet("Ada")
 ```
 
-*Needs the companion `.pys` file from the same section; then prints the call result.*
+*Needs the companion `.typhon` file from the same section; then prints the call result.*
 
 
 
@@ -52,15 +52,15 @@ Rules that bite beginners:
 
 1. Imports must be at the **top** of the file.
 2. You can only import names marked `package` or `global`.
-3. The module name in `from greetings` matches the file `greetings.pys`
+3. The module name in `from greetings` matches the file `greetings.typhon`
    (without the extension), for same-folder imports.
 
 > Stuck? See [Spoiler: Structuring code](basics_spoilers_structuring.md).
 
 ### Exercise
 
-> Create `mathUtils.pys` with `package function int double(int n)` that
-> returns `n * 2`. From `app.pys` in the same folder, import and print
+> Create `mathUtils.typhon` with `package function int double(int n)` that
+> returns `n * 2`. From `app.typhon` in the same folder, import and print
 > `double(21)`.
 
 ---

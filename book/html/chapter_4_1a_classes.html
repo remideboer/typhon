@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>5.1. Classes and member order — PYS Development Classes</title>
+  <title>5.1. Classes and member order — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -146,7 +146,7 @@ inside a class, those gears work together on the same state toward the
 same goal.</p>
 <p>The class text is the <em>blueprint</em>; each time you call the constructor you
 get a new <em>object</em> — its own running copy of the machine.</p>
-<pre><code class="language-pys"><span class="tok-kw">class</span> <span class="tok-typename">Counter</span> {
+<pre><code class="language-typhon"><span class="tok-kw">class</span> <span class="tok-typename">Counter</span> {
     <span class="tok-mod">public</span> <span class="tok-mod">const</span> <span class="tok-type">int</span> <span class="tok-typename">DEFAULT_STEP</span> <span class="tok-op">=</span> <span class="tok-number">1</span>
     <span class="tok-mod">private</span> <span class="tok-mod">fix</span> <span class="tok-type">string</span> <span class="tok-ident">label</span>
     <span class="tok-mod">private</span> <span class="tok-type">int</span> <span class="tok-ident">value</span>
@@ -254,7 +254,7 @@ The same wall applies inside string interpolations: <code>"score={c.value}"</cod
 is a compile error (<code>Access denied</code>); use a public method such as
 <code>"{c.getValue()}"</code> instead.</p>
 <p>Brace bodies also keep a <strong>4-space grid</strong>: a field or statement shifted by
-one extra space is an <code>Indentation error</code> (<code>pys.indent</code>), even though <code>{ }</code>
+one extra space is an <code>Indentation error</code> (<code>typhon.indent</code>), even though <code>{ }</code>
 already decide nesting.</p>
 <h2>The constructor: assembling the machine</h2>
 <p>The <strong>constructor</strong> is a special part whose job is not the day-to-day
@@ -304,7 +304,7 @@ whose purpose needs counting as a <em>sub-task</em>.</p>
 <p>Here a <code>ScoreBoard</code> keeps a team’s score. It does <strong>not</strong> re-implement
 counting; it <strong>owns</strong> a <code>Counter</code> and talks to it through that machine’s
 public channels.</p>
-<pre><code class="language-pys"><span class="tok-kw">class</span> <span class="tok-typename">Counter</span> {
+<pre><code class="language-typhon"><span class="tok-kw">class</span> <span class="tok-typename">Counter</span> {
     <span class="tok-mod">public</span> <span class="tok-mod">const</span> <span class="tok-type">int</span> <span class="tok-typename">DEFAULT_STEP</span> <span class="tok-op">=</span> <span class="tok-number">1</span>
     <span class="tok-mod">private</span> <span class="tok-mod">fix</span> <span class="tok-type">string</span> <span class="tok-ident">label</span>
     <span class="tok-mod">private</span> <span class="tok-type">int</span> <span class="tok-ident">value</span>
@@ -420,7 +420,7 @@ scoreboard; counting stays a sealed sub-task inside.</p>
 </figure>
 
 <h2>Why member order is enforced</h2>
-<p>Inside a class body, PYS requires this <strong>kind</strong> order:</p>
+<p>Inside a class body, Typhon requires this <strong>kind</strong> order:</p>
 <ol>
 <li><code>const</code> fields  </li>
 <li><code>fix</code> fields  </li>
@@ -431,7 +431,7 @@ scoreboard; counting stays a sealed sub-task inside.</p>
 <p>Visibility (<code>public</code> / <code>private</code> / …) may vary within a section, but you
 cannot put a method above a field or a mutable field above a <code>fix</code> field.
 If the order is wrong, you get a <strong>parse error</strong>, not a polite lint.</p>
-<p>Why? Good practice in C# and Java is the same order; PYS makes the habit
+<p>Why? Good practice in C# and Java is the same order; Typhon makes the habit
 impossible to skip so you learn it once.</p>
 <p>Constructor name equals the class name. Use <code>this.field</code> for members.</p>
 <h3>Exercise</h3>

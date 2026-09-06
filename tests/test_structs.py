@@ -13,7 +13,7 @@ from transpiler.transpiler import TranspileError, transpile, run_source
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "structs.pys"
+EXAMPLE = ROOT / "examples" / "structs.typhon"
 
 
 def test_example_structs_runs(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -27,8 +27,8 @@ def test_example_structs_emit_is_valid_python() -> None:
     py = transpile(EXAMPLE.read_text(encoding="utf-8"))
     ast.parse(py)
     assert "@dataclass" in py
-    assert "_pys_struct_copy" in py
-    assert "def _pys_copy(self):" in py
+    assert "_typhon_struct_copy" in py
+    assert "def _typhon_copy(self):" in py
 
 
 def test_struct_equality_and_copy_on_call(capsys: pytest.CaptureFixture[str]) -> None:
@@ -199,9 +199,9 @@ print(d.amount)
 print(u)
 """
     py = transpile(source)
-    assert "d = _pys_struct_copy(Damage(" in py or "d = _pys_struct_copy(Damage" in py
-    assert "u = _pys_struct_copy(Unit" not in py
-    assert 'Unit(_pys_struct_copy(10))' not in py
+    assert "d = _typhon_struct_copy(Damage(" in py or "d = _typhon_struct_copy(Damage" in py
+    assert "u = _typhon_struct_copy(Unit" not in py
+    assert 'Unit(_typhon_struct_copy(10))' not in py
     assert "Unit(10)" in py or "Unit(health=10)" in py or "Unit(10" in py
 
 
@@ -213,7 +213,7 @@ struct Mixed {
 }
 """
     py = transpile(source)
-    assert "_pys_fix_fields" in py
+    assert "_typhon_fix_fields" in py
     assert "__setattr__" in py
     ns: dict = {}
     exec(py, ns)
@@ -310,14 +310,14 @@ def test_struct_maturity_rejections(source: str, match: str) -> None:
 def test_package_struct_import_and_ide_types(tmp_path: Path) -> None:
     from transpiler.ide import analyze_file, lookup_symbol
 
-    lib = tmp_path / "damage_lib.pys"
+    lib = tmp_path / "damage_lib.typhon"
     lib.write_text(
         "package struct Damage {\n    int amount\n    string type\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
-        'import Damage from damage_lib.pys\nDamage d = Damage(3, "a")\nprint(d.amount)\n',
+        'import Damage from damage_lib.typhon\nDamage d = Damage(3, "a")\nprint(d.amount)\n',
         encoding="utf-8",
     )
     assert run_source(main) == 0
@@ -330,7 +330,7 @@ def test_package_struct_import_and_ide_types(tmp_path: Path) -> None:
 def test_ide_goto_struct_type_and_field(tmp_path: Path) -> None:
     from transpiler.ide import analyze_file, lookup_symbol
 
-    path = tmp_path / "s.pys"
+    path = tmp_path / "s.typhon"
     path.write_text(
         "struct Damage {\n    int amount\n    string type\n}\n"
         'Damage d = Damage(1, "a")\nprint(d.amount)\n',

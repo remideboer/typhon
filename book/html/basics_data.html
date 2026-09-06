@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2.4. Data structures — PYS Development Classes</title>
+  <title>2.4. Data structures — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -139,7 +139,7 @@
 <p>One variable holds one value. Real programs juggle <strong>collections</strong> of values.</p>
 <h2>Lists</h2>
 <p>A <code>list</code> is an ordered row of items of one element type:</p>
-<pre><code class="language-pys"><span class="tok-type">list</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">names</span> <span class="tok-op">=</span> [<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Lin</span><span class="tok-string">&quot;</span>]
+<pre><code class="language-typhon"><span class="tok-type">list</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">names</span> <span class="tok-op">=</span> [<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>, <span class="tok-string">&quot;</span><span class="tok-string">Lin</span><span class="tok-string">&quot;</span>]
 <span class="tok-builtin">print</span>(<span class="tok-ident">names</span>[<span class="tok-number">0</span>])
 <span class="tok-builtin">print</span>(<span class="tok-builtin">len</span>(<span class="tok-ident">names</span>))</code></pre>
 <p>Output:</p>
@@ -152,15 +152,15 @@
 <li><code>len(names)</code> — how many items are in the list.</li>
 </ul>
 <p>Growing a list: call <code>append</code> to add one item at the end.</p>
-<pre><code class="language-pys"><span class="tok-type">list</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">names</span> <span class="tok-op">=</span> [<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>]
+<pre><code class="language-typhon"><span class="tok-type">list</span><span class="tok-op">&lt;</span><span class="tok-type">string</span><span class="tok-op">&gt;</span> <span class="tok-ident">names</span> <span class="tok-op">=</span> [<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>]
 <span class="tok-ident">names</span>.<span class="tok-ident">append</span>(<span class="tok-string">&quot;</span><span class="tok-string">Tom</span><span class="tok-string">&quot;</span>)
 <span class="tok-builtin">print</span>(<span class="tok-builtin">len</span>(<span class="tok-ident">names</span>))</code></pre>
 <p>Output:</p>
 <pre><code class="language-text">2
 </code></pre>
 <h2>Arrays</h2>
-<p>For teaching fixed-element sequences of primitives, PYS also has arrays:</p>
-<pre><code class="language-pys"><span class="tok-type">int</span>[] <span class="tok-ident">scores</span> <span class="tok-op">=</span> [<span class="tok-number">10</span>, <span class="tok-number">20</span>, <span class="tok-number">30</span>]
+<p>For teaching fixed-element sequences of primitives, Typhon also has arrays:</p>
+<pre><code class="language-typhon"><span class="tok-type">int</span>[] <span class="tok-ident">scores</span> <span class="tok-op">=</span> [<span class="tok-number">10</span>, <span class="tok-number">20</span>, <span class="tok-number">30</span>]
 <span class="tok-builtin">print</span>(<span class="tok-ident">scores</span>[<span class="tok-number">1</span>])</code></pre>
 <p>Output:</p>
 <pre><code class="language-text">20
@@ -169,7 +169,7 @@
 you want array-shaped teaching examples. Session 2 goes deeper.</p>
 <h2>Tuples and dicts (construction)</h2>
 <p>Build them with <strong>typed literals</strong> (same forms as in the language overview):</p>
-<pre><code class="language-pys"><span class="tok-type">tuple</span><span class="tok-op">&lt;</span><span class="tok-type">string</span>, <span class="tok-type">int</span><span class="tok-op">&gt;</span> <span class="tok-ident">person</span> <span class="tok-op">=</span> (<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>, <span class="tok-number">36</span>)
+<pre><code class="language-typhon"><span class="tok-type">tuple</span><span class="tok-op">&lt;</span><span class="tok-type">string</span>, <span class="tok-type">int</span><span class="tok-op">&gt;</span> <span class="tok-ident">person</span> <span class="tok-op">=</span> (<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>, <span class="tok-number">36</span>)
 <span class="tok-builtin">print</span>(<span class="tok-ident">person</span>[<span class="tok-number">0</span>])
 <span class="tok-builtin">print</span>(<span class="tok-ident">person</span>[<span class="tok-number">1</span>])
 
@@ -185,7 +185,7 @@ you want array-shaped teaching examples. Session 2 goes deeper.</p>
 <blockquote>
 <p><strong>Sidebar — empty <code>{}</code> needs a type</strong></p>
 <p>Write <code>dict&lt;string, int&gt; ages = {}</code> (or <code>set&lt;string&gt; tags = {}</code>). Untyped
-<code>var x = {}</code> is ambiguous between dict, set, and list — PYS asks you to type
+<code>var x = {}</code> is ambiguous between dict, set, and list — Typhon asks you to type
 the binding. Keyed dicts use <code>{"Ada": 36}</code>.</p>
 </blockquote>
 <h3>Exercise</h3>

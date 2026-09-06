@@ -25,8 +25,8 @@ core language path:
 
 ## Tooling
 
-- Editor extension: `pys-language/` (install via `python -m transpiler install extension`)
-- Run a file: `python -m transpiler run path/to/file.pys`
+- Editor extension: `typhon-language/` (install via `python -m transpiler install extension`)
+- Run a file: `python -m transpiler run path/to/file.typhon`
 - Rebuild this HTML locally: `python book/build_html.py` (from `book/`)
 
 ## Online copy (GitHub Pages)
@@ -46,7 +46,7 @@ Structure and beginner tone adapted from
 ## What to learn next
 
 After this book: C# or Java with the Session 7 transfer sheet open, plus
-the JIT tutorials for any PYS topic you want to drill.
+the JIT tutorials for any Typhon topic you want to drill.
 
 ---
 

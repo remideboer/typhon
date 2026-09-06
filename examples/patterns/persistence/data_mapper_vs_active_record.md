@@ -1,7 +1,7 @@
 # Data Mapper vs Active Record
 
 **Category:** Persistence  
-**Demo:** [data_mapper_vs_active_record.pys](data_mapper_vs_active_record.pys)  
+**Demo:** [data_mapper_vs_active_record.typhon](data_mapper_vs_active_record.typhon)  
 **Wikipedia / ref:** [Data Mapper vs Active Record](https://martinfowler.com/eaaCatalog/dataMapper.html)
 
 ## Intent
@@ -19,5 +19,5 @@ Active Record saves itself; Data Mapper keeps persistence outside the domain obj
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/persistence/data_mapper_vs_active_record.pys
+python -m transpiler run examples/patterns/persistence/data_mapper_vs_active_record.typhon
 ```

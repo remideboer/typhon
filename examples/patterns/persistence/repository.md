@@ -1,9 +1,9 @@
 # Repository
 
 **Category:** Persistence  
-**Demo:** [repository.pys](repository.pys)  
+**Demo:** [repository.typhon](repository.typhon)  
 **Wikipedia:** [Repository pattern](https://en.wikipedia.org/wiki/Repository_pattern)  
-**Related:** [hexagonal](../architectural/hexagonal.md) · [Dependency Injection](../general/dependency_injection.md) · shop `repositories.pys`
+**Related:** [hexagonal](../architectural/hexagonal.md) · [Dependency Injection](../general/dependency_injection.md) · shop `repositories.typhon`
 
 ## Intent
 
@@ -55,5 +55,5 @@ the repository is the persistence API). Aggregate ≠ entity keyword (see book
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/persistence/repository.pys
+python -m transpiler run examples/patterns/persistence/repository.typhon
 ```

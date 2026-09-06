@@ -18,9 +18,9 @@ apps. **ttkbootstrap** solves this: it's a theming layer built on top of
 color-variant styling for every standard widget, without inventing a
 new, incompatible widget API the way some alternatives do.
 
-ttkbootstrap is a third-party package. In a PYS project you declare it in
-`pys.toml` and lock it (same pattern as PyQt in the examples tree), then
-run from that project folder so `PYS_WORKSPACE_ROOT` picks up the lock:
+ttkbootstrap is a third-party package. In a Typhon project you declare it in
+`typhon.toml` and lock it (same pattern as PyQt in the examples tree), then
+run from that project folder so `TYPHON_WORKSPACE_ROOT` picks up the lock:
 
 ```toml
 [interpreter]
@@ -32,7 +32,7 @@ ttkbootstrap = { version = "1.10.1", build = "run" }
 
 ```bash
 python -m transpiler deps lock
-python -m transpiler run main.pys
+python -m transpiler run main.typhon
 ```
 
 A complete silo is under
@@ -42,7 +42,7 @@ ttkbootstrap is MIT-licensed — free to use, including commercially.
 
 ## 2. Your first ttkbootstrap window
 
-```pys
+```typhon
 import ttkbootstrap as ttkb
 
 Window window = ttkb.Window(themename="flatly")

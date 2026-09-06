@@ -11,12 +11,12 @@ from pathlib import Path
 import pytest
 
 from transpiler.parse import parse_program
-from transpiler.pipeline import compile_pys
+from transpiler.pipeline import compile_typhon
 from transpiler.sem import analyze
 from transpiler.transpiler import TranspileError
 
 _REPO = Path(__file__).resolve().parents[1]
-_REKEN = _REPO / "tests" / "fixtures" / "rekenmachine.pys"
+_REKEN = _REPO / "tests" / "fixtures" / "rekenmachine.typhon"
 
 _REKENMACHINE_CLASS = """\
 class Rekenmachine {
@@ -55,13 +55,13 @@ def _deny(source: str, member: str, access: str = "private") -> None:
         _analyze(source)
 
 
-# --- Given/When/Then: Rekenmachine teaching sample (tests/fixtures/rekenmachine.pys) ---
+# --- Given/When/Then: Rekenmachine teaching sample (tests/fixtures/rekenmachine.typhon) ---
 
 
 def test_rekenmachine_fixture_compiles_without_external_private_use() -> None:
     """Given the requirements sample as written, When transpile, Then OK."""
-    assert _REKEN.is_file(), "tests/fixtures/rekenmachine.pys missing"
-    compile_pys(_REKEN.read_text(encoding="utf-8"))
+    assert _REKEN.is_file(), "tests/fixtures/rekenmachine.typhon missing"
+    compile_typhon(_REKEN.read_text(encoding="utf-8"))
 
 
 def test_rekenmachine_fixture_external_print_is_access_denied() -> None:
@@ -84,7 +84,7 @@ def test_rekenmachine_fixture_external_print_is_access_denied() -> None:
     ids=["print_read", "typed_decl", "assign", "interpolation"],
 )
 def test_rekenmachine_fixture_negative_lines_denied(commented: str, member: str) -> None:
-    """Uncomment each documented NEGATIVE line from tests/fixtures/rekenmachine.pys."""
+    """Uncomment each documented NEGATIVE line from tests/fixtures/rekenmachine.typhon."""
     raw = _REKEN.read_text(encoding="utf-8")
     assert commented in raw, f"fixture missing documented negative: {commented}"
     assert commented.startswith("# ")

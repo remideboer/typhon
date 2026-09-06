@@ -19,7 +19,7 @@ Open a card **when a task step needs a form or fix**. Do not read the whole fold
 | [J-entity](J-entity.md) | `entity` + `identity(...)`, key equality |
 | [J-lambda](J-lambda.md) | `=>` lambdas, `lambda<…>`, by-value capture |
 | [J-atomic](J-atomic.md) | `atomic` vs `shared` (race-first pedagogy) |
-| [J-debug](J-debug.md) | Breakpoints / step on `.pys` (DAP remap) |
+| [J-debug](J-debug.md) | Breakpoints / step on `.typhon` (DAP remap) |
 | [J-enum](J-enum.md) | `enum`, `.value`, same-enum `==`, naming warning |
 | [J-int-literals](J-int-literals.md) | `0b`/`0x`, width aliases, bitwise vs logical |
 | [J-library](J-library.md) | external packages, `as` alias, generics on returns |

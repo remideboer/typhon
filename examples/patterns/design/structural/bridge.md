@@ -1,7 +1,7 @@
 # Bridge
 
 **Category:** Structural  
-**Demo:** [bridge.pys](bridge.pys)  
+**Demo:** [bridge.typhon](bridge.typhon)  
 **Wikipedia:** [Bridge pattern](https://en.wikipedia.org/wiki/Bridge_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -57,5 +57,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/structural/bridge.pys
+python -m transpiler run examples/patterns/design/structural/bridge.typhon
 ```

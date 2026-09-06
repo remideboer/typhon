@@ -7,7 +7,7 @@ This is sample **3**. The probe id never changes during the run.
 
 ## Deliverable
 
-A single `.pys` file that prints one clear log line.
+A single `.typhon` file that prints one clear log line.
 
 ## Constraints
 

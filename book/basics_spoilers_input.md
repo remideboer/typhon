@@ -3,7 +3,7 @@
 Exercise: ask for a first name and a favorite number; print a sentence
 with both.
 
-```pys
+```typhon
 string firstName = input("First name: ")
 string raw = input("Favorite number: ")
 int favorite = int(raw)

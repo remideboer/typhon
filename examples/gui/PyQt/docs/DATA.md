@@ -4,7 +4,7 @@ All paths are under `examples/gui/pokemontcg/data/`.
 
 ## `catalog.json` (read-only at runtime)
 
-Produced by `fetch_catalog.pys` from [TCGdex REST v2](https://tcgdex.dev/rest).
+Produced by `fetch_catalog.typhon` from [TCGdex REST v2](https://tcgdex.dev/rest).
 
 ```json
 {

@@ -1,7 +1,7 @@
 # Cache-aside
 
 **Category:** Persistence  
-**Demo:** [cache_aside.pys](cache_aside.pys)  
+**Demo:** [cache_aside.typhon](cache_aside.typhon)  
 **Wikipedia / ref:** [Cache-aside](https://learn.microsoft.com/azure/architecture/patterns/cache-aside)
 
 ## Intent
@@ -19,5 +19,5 @@ Read cache; on miss load store and populate cache.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/persistence/cache_aside.pys
+python -m transpiler run examples/patterns/persistence/cache_aside.typhon
 ```

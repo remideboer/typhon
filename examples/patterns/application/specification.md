@@ -1,7 +1,7 @@
 # Specification
 
 **Category:** Application  
-**Demo:** [specification.pys](specification.pys)  
+**Demo:** [specification.typhon](specification.typhon)  
 **Wikipedia / ref:** [Specification](https://en.wikipedia.org/wiki/Specification_pattern)
 
 ## Intent
@@ -19,5 +19,5 @@ Composable business rules (and/or/not) over a candidate.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/application/specification.pys
+python -m transpiler run examples/patterns/application/specification.typhon
 ```

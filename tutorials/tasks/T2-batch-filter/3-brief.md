@@ -16,7 +16,7 @@ Inbound batch:
 
 ## Deliverable
 
-One `.pys` file that prints every row into the correct lane (four lines).
+One `.typhon` file that prints every row into the correct lane (four lines).
 
 ## Constraints
 

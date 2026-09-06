@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 package enum Priority {
     LOW,
     MEDIUM,

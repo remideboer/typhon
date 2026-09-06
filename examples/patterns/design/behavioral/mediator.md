@@ -1,7 +1,7 @@
 # Mediator
 
 **Category:** Behavioral  
-**Demo:** [mediator.pys](mediator.pys)  
+**Demo:** [mediator.typhon](mediator.typhon)  
 **Wikipedia:** [Mediator pattern](https://en.wikipedia.org/wiki/Mediator_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -56,5 +56,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/mediator.pys
+python -m transpiler run examples/patterns/design/behavioral/mediator.typhon
 ```

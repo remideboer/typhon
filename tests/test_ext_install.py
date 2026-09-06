@@ -10,25 +10,25 @@ from transpiler import ext_install
 
 
 def test_parse_vsix_version() -> None:
-    assert ext_install.parse_vsix_version(Path("pys-language-0.0.50.vsix")) == (0, 0, 50)
+    assert ext_install.parse_vsix_version(Path("typhon-language-0.0.50.vsix")) == (0, 0, 50)
     assert ext_install.parse_vsix_version(Path("other.vsix")) is None
 
 
 def test_latest_vsix_picks_highest_semver(tmp_path: Path) -> None:
-    (tmp_path / "pys-language-0.0.9.vsix").write_bytes(b"x")
-    (tmp_path / "pys-language-0.0.50.vsix").write_bytes(b"y")
-    (tmp_path / "pys-language-0.0.48.vsix").write_bytes(b"z")
+    (tmp_path / "typhon-language-0.0.9.vsix").write_bytes(b"x")
+    (tmp_path / "typhon-language-0.0.50.vsix").write_bytes(b"y")
+    (tmp_path / "typhon-language-0.0.48.vsix").write_bytes(b"z")
     (tmp_path / "notes.txt").write_text("nope", encoding="utf-8")
-    assert ext_install.latest_vsix(tmp_path).name == "pys-language-0.0.50.vsix"
+    assert ext_install.latest_vsix(tmp_path).name == "typhon-language-0.0.50.vsix"
 
 
 def test_latest_vsix_missing(tmp_path: Path) -> None:
-    with pytest.raises(FileNotFoundError, match="No pys-language"):
+    with pytest.raises(FileNotFoundError, match="No typhon-language"):
         ext_install.latest_vsix(tmp_path)
 
 
 def test_find_extension_dir_uses_repo(tmp_path: Path) -> None:
-    ext = tmp_path / "pys-language"
+    ext = tmp_path / "typhon-language"
     ext.mkdir()
     (ext / "package.json").write_text("{}", encoding="utf-8")
     assert ext_install.find_extension_dir(tmp_path) == ext.resolve()
@@ -70,7 +70,7 @@ def test_command_argv_unix_direct(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_install_vsix_runs_editor(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    vsix = tmp_path / "pys-language-0.0.1.vsix"
+    vsix = tmp_path / "typhon-language-0.0.1.vsix"
     vsix.write_bytes(b"vsix")
     calls: list[list[str]] = []
 
@@ -97,10 +97,10 @@ def test_install_vsix_runs_editor(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
 def test_install_extension_packages_and_installs(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    ext = tmp_path / "pys-language"
+    ext = tmp_path / "typhon-language"
     ext.mkdir()
     (ext / "package.json").write_text("{}", encoding="utf-8")
-    vsix = ext / "pys-language-0.0.1.vsix"
+    vsix = ext / "typhon-language-0.0.1.vsix"
     vsix.write_bytes(b"x")
     monkeypatch.setattr(ext_install, "build_vsix", lambda *_a, **_k: None)
     monkeypatch.setattr(ext_install, "install_vsix", lambda *_a, **_k: ["ok"])

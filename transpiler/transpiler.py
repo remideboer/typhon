@@ -1,4 +1,4 @@
-"""Public transpile / run API for the PYS → Python pipeline."""
+"""Public transpile / run API for the Typhon → Python pipeline."""
 from __future__ import annotations
 
 import os
@@ -112,9 +112,9 @@ def transpile(
     target: str = "python",
 ) -> str:
     """Convert teaching language source into the requested backend text."""
-    from .pipeline import compile_pys
+    from .pipeline import compile_typhon
 
-    return compile_pys(
+    return compile_typhon(
         source_code,
         target=target,  # type: ignore[arg-type]
         source_path=source_path,
@@ -129,7 +129,7 @@ def transpile_with_modules(
     allow_runtime_introspection: bool = False,
     target: str = "python",
 ) -> dict[str, str]:
-    """Transpile a .pys entry file and all imported .pys modules.
+    """Transpile a .typhon entry file and all imported .typhon modules.
 
     Returns a mapping of module stem -> emitted source text.
     """
@@ -149,7 +149,7 @@ def transpile_with_modules_and_maps(
 ) -> tuple[dict[str, str], dict[str, list[dict[str, int]]], dict[str, dict[str, str]]]:
     """Transpile entry + imports; return emitted text, line maps, and debug names."""
     from .imports import discover_imported_modules
-    from .pipeline import compile_pys_with_map
+    from .pipeline import compile_typhon_with_map
     from .project_manifest import resolve_entrypoint
 
     source_path = resolve_entrypoint(source_path)
@@ -161,7 +161,7 @@ def transpile_with_modules_and_maps(
     modules: dict[str, str] = {}
     maps: dict[str, list[dict[str, int]]] = {}
     names: dict[str, dict[str, str]] = {}
-    emitted, line_map, debug_names = compile_pys_with_map(
+    emitted, line_map, debug_names = compile_typhon_with_map(
         text,
         target=target,  # type: ignore[arg-type]
         source_path=source_path,
@@ -172,7 +172,7 @@ def transpile_with_modules_and_maps(
     maps[source_path.stem] = line_map
     names[source_path.stem] = debug_names
     for path in module_cache:
-        emitted, line_map, debug_names = compile_pys_with_map(
+        emitted, line_map, debug_names = compile_typhon_with_map(
             path.read_text(encoding="utf-8"),
             target=target,  # type: ignore[arg-type]
             source_path=path,
@@ -193,11 +193,11 @@ def transpile_path(
 ) -> None:
     """Transpile a file and write the output (plus imported modules)."""
     source_path = source_path.resolve()
-    if source_path.is_dir() or source_path.suffix == ".pys":
+    if source_path.is_dir() or source_path.suffix == ".typhon":
         from .project_manifest import resolve_entrypoint
 
         source_path = resolve_entrypoint(source_path)
-    if source_path.suffix == ".pys":
+    if source_path.suffix == ".typhon":
         modules = transpile_with_modules(source_path, target=target)
         ext = ".mjs" if target == "javascript" else ".py"
         target_path.parent.mkdir(parents=True, exist_ok=True)
@@ -240,7 +240,7 @@ def _resolve_js_runtime(
         if (folder / "package.json").is_file() and folder != here:
             # Stop at package root even if qode missing — fall through to node.
             break
-        if folder != here and (folder / "pys.toml").is_file():
+        if folder != here and (folder / "typhon.toml").is_file():
             break
 
     node = shutil.which("node")
@@ -261,7 +261,7 @@ def run_source(source_path: Path, *, target: str | None = None) -> int:
     """Transpile a source file and execute it (Python or Node per ``target``).
 
     When ``target`` is omitted, use ``[project].target`` from the nearest
-    ``pys.toml`` (default ``python``).
+    ``typhon.toml`` (default ``python``).
     """
     from .deps import (
         DepsError,
@@ -286,7 +286,7 @@ def run_source(source_path: Path, *, target: str | None = None) -> int:
     source_path = resolve_entrypoint(source_path)
     env = dict(os.environ)
     python_exe = sys.executable
-    # Deps stop at PYS_WORKSPACE_ROOT or nearest pys.toml (see find_deps_file).
+    # Deps stop at TYPHON_WORKSPACE_ROOT or nearest typhon.toml (see find_deps_file).
     # Python site-packages apply only to the python emit target.
     try:
         deps_config = load_deps(source_path)
@@ -297,7 +297,7 @@ def run_source(source_path: Path, *, target: str | None = None) -> int:
     except DepsError as exc:
         raise TranspileError(str(exc), source_file=source_path) from exc
 
-    if source_path.suffix == ".pys":
+    if source_path.suffix == ".typhon":
         modules = transpile_with_modules(
             source_path,
             allow_runtime_introspection=True,
@@ -306,8 +306,8 @@ def run_source(source_path: Path, *, target: str | None = None) -> int:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_root = Path(temp_dir)
             if target == "javascript":
-                # package.json → ~/.pys/repository/npm/<digest> (parity with pys.deps).
-                # pys.toml [dependencies.npm] → ~/.pys/repository/npm/<digest>.
+                # package.json → ~/.typhon/repository/npm/<digest> (parity with typhon.deps).
+                # typhon.toml [dependencies.npm] → ~/.typhon/repository/npm/<digest>.
                 npm_root: Path | None = None
                 try:
                     npm_root = resolve_npm_environment(source_path, install=True)

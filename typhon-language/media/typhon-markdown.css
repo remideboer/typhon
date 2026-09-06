@@ -1,0 +1,26 @@
+/* Typhon fenced code in Markdown preview */
+.vscode-body pre code.language-typhon,
+.vscode-body pre.hljs code.language-typhon,
+.vscode-body .typhon-md {
+  font-family: var(--vscode-editor-font-family, Consolas, monospace);
+  white-space: pre;
+  tab-size: 4;
+}
+
+.vscode-body .typhon-md .k { color: #569cd6; font-weight: 600; }      /* keyword */
+.vscode-body .typhon-md .t { color: #4ec9b0; }                        /* type */
+.vscode-body .typhon-md .s { color: #ce9178; }                        /* string */
+.vscode-body .typhon-md .c { color: #6a9955; font-style: italic; }    /* comment */
+.vscode-body .typhon-md .n { color: #b5cea8; }                        /* number */
+.vscode-body .typhon-md .b { color: #569cd6; }                        /* bool/null */
+.vscode-body .typhon-md .f { color: #dcdcaa; }                        /* builtin / call-ish */
+.vscode-body .typhon-md .p { color: #d4d4d4; }                        /* plain */
+
+.vscode-body.vscode-light .typhon-md .k { color: #0000ff; font-weight: 600; }
+.vscode-body.vscode-light .typhon-md .t { color: #267f99; }
+.vscode-body.vscode-light .typhon-md .s { color: #a31515; }
+.vscode-body.vscode-light .typhon-md .c { color: #008000; font-style: italic; }
+.vscode-body.vscode-light .typhon-md .n { color: #098658; }
+.vscode-body.vscode-light .typhon-md .b { color: #0000ff; }
+.vscode-body.vscode-light .typhon-md .f { color: #795e26; }
+.vscode-body.vscode-light .typhon-md .p { color: #000000; }

@@ -1,4 +1,4 @@
-# Teacher notes — PYS tutorial track
+# Teacher notes — Typhon tutorial track
 
 ## Design intent
 
@@ -20,7 +20,7 @@ Scaffolding inside each task class fades: **worked → completion → convention
 | Copies worked example blindly | Ask for a 60-second oral walkthrough before B |
 | Stuck on conventional brief | Offer a *completion* variant, don’t restart at A unless lost |
 | Flaky `#s` / `#i` | Part-task drill, 5 minutes, then return to task |
-| Order diagnostics (`pys.order-*`, method before fields, late import) | [J-member-order](jit/J-member-order.md); habit framing [S7](supportive/S7-order-as-habit.md) — do not claim Java/C# will reject |
+| Order diagnostics (`typhon.order-*`, method before fields, late import) | [J-member-order](jit/J-member-order.md); habit framing [S7](supportive/S7-order-as-habit.md) — do not claim Java/C# will reject |
 | “How do I rename / extract safely?” | [J-refactor](jit/J-refactor.md) + [S8](supportive/S8-refactor-as-habit.md); insist on preview, not search-replace |
 
 ## Assessment (product criteria)
@@ -49,5 +49,5 @@ assign it when inheritance debates appear.
 Ship the repo (or a classroom fork) with:
 
 - `tutorials/` (this track)
-- `pys-language` extension VSIX or install instructions
+- `typhon-language` extension VSIX or install instructions
 - `examples/` as a *reference zoo*, not the curriculum path

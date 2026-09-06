@@ -4,14 +4,14 @@ from __future__ import annotations
 import pytest
 
 from transpiler.emit.javascript import JsEmitError
-from transpiler.pipeline import compile_pys
+from transpiler.pipeline import compile_typhon
 
 
 def test_js_emit_print_and_literal() -> None:
-    js = compile_pys('print("hi")\n', target="javascript")
-    assert "console.log(_pys_format(" in js
+    js = compile_typhon('print("hi")\n', target="javascript")
+    assert "console.log(_typhon_format(" in js
     assert '"hi"' in js
-    assert "function _pys_format" in js
+    assert "function _typhon_format" in js
 
 
 def test_js_emit_if_and_vars() -> None:
@@ -23,7 +23,7 @@ if (x > 2) {
     print(0)
 }
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "let x = 3;" in js
     assert "if ((x > 2))" in js or "if (x > 2)" in js
     assert "console.log" in js
@@ -51,7 +51,7 @@ Counter c = Counter()
 c.bump()
 print(c.getValue())
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "class Counter" in js
     assert "constructor()" in js
     assert "new Counter()" in js
@@ -65,7 +65,7 @@ float f = 3.7
 int a = (int) f
 print(a)
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "Math.trunc(Number(f))" in js
     assert "let a =" in js
 
@@ -75,7 +75,7 @@ def test_js_emit_lambda_expression() -> None:
 lambda<int -> int> double = n => n * 2
 print(double(5))
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "=>" in js
     assert "double(5)" in js
 
@@ -90,9 +90,9 @@ print(t[0])
 set<int> s = {1, 2, 3}
 print(s)
 """
-    js = compile_pys(src, target="javascript")
-    assert "_pys_slice(arr, 1, 5, null)" in js
-    assert "_pys_slice(arr, 1, 6, 2)" in js
+    js = compile_typhon(src, target="javascript")
+    assert "_typhon_slice(arr, 1, 5, null)" in js
+    assert "_typhon_slice(arr, 1, 6, 2)" in js
     assert '[1, "a"]' in js or '[1, \\"a\\"]' in js
     assert "new Set([1, 2, 3])" in js
 
@@ -116,9 +116,9 @@ string label = switch (c) {
 }
 print(label)
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "Object.freeze" in js
-    assert "_pys_enum_member" in js
+    assert "_typhon_enum_member" in js
     assert "Color.Red" in js
 
 
@@ -142,35 +142,35 @@ switch (r) {
         print(e)
 }
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "class Product" in js
     assert "equals(other)" in js
-    assert "_pys_ok(" in js
+    assert "_typhon_ok(" in js
 
 
 def test_js_emit_rejects_python_package_import() -> None:
     with pytest.raises(JsEmitError, match="Python package"):
-        compile_pys("import tkinter as tk\n", target="javascript")
+        compile_typhon("import tkinter as tk\n", target="javascript")
 
 
 def test_js_emit_npm_mapped_import() -> None:
-    js = compile_pys('import nodegui as ng\nprint("x")\n', target="javascript")
+    js = compile_typhon('import nodegui as ng\nprint("x")\n', target="javascript")
     assert 'from "@nodegui/nodegui"' in js
 
 
 def test_js_emit_express_default_import() -> None:
-    js = compile_pys('import express as express\nprint("x")\n', target="javascript")
+    js = compile_typhon('import express as express\nprint("x")\n', target="javascript")
     assert 'import express from "express";' in js
     assert "import * as express" not in js
 
 
 def test_js_emit_crypto_node_builtin() -> None:
-    js = compile_pys('import crypto as crypto\nprint("x")\n', target="javascript")
+    js = compile_typhon('import crypto as crypto\nprint("x")\n', target="javascript")
     assert 'import * as crypto from "node:crypto";' in js
 
 
 def test_js_emit_json_shim() -> None:
-    js = compile_pys(
+    js = compile_typhon(
         'import json\nstring s = json.dumps(dict())\nprint(s)\n',
         target="javascript",
     )
@@ -179,7 +179,7 @@ def test_js_emit_json_shim() -> None:
 
 
 def test_js_emit_time_shim_includes_time() -> None:
-    js = compile_pys(
+    js = compile_typhon(
         'import time\nfloat t = time.time()\nprint(t)\n',
         target="javascript",
     )
@@ -204,7 +204,7 @@ package class Box {
     }
 }
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "m[this.keyOf(a)] = v;" in js
     assert "m[self.keyOf" not in js
 
@@ -220,15 +220,15 @@ loop (object k in d) {
 }
 d.pop(1)
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "let d = {};" in js or "d = {};" in js
     assert "let xs = [];" in js or "xs = [];" in js
-    assert "_pys_iter(d)" in js
-    assert "_pys_dict_pop(d, 1)" in js
+    assert "_typhon_iter(d)" in js
+    assert "_typhon_dict_pop(d, 1)" in js
 
 
 def test_js_emit_package_entity_exports() -> None:
-    js = compile_pys(
+    js = compile_typhon(
         "package entity Item identity(id) {\n"
         "    protected fix int id\n"
         "    public constructor(int id) { this.id = id }\n"
@@ -240,7 +240,7 @@ def test_js_emit_package_entity_exports() -> None:
 
 
 def test_js_emit_namespace_constructor_uses_new() -> None:
-    js = compile_pys(
+    js = compile_typhon(
         'import nodegui as ng\nobject win = ng.QMainWindow()\n',
         target="javascript",
     )
@@ -253,7 +253,7 @@ list<int> xs = [1, 2]
 xs.append(3)
 xs.loop(print)
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert ".push(3)" in js
     assert ".map(print)" in js
 
@@ -268,9 +268,9 @@ tasks {
 }
 print(n)
 """
-    js = compile_pys(src, target="javascript")
-    assert "_PysTaskGroup" in js
-    assert "_PysShared" in js
+    js = compile_typhon(src, target="javascript")
+    assert "_TyphonTaskGroup" in js
+    assert "_TyphonShared" in js
     assert "n.set(" in js or ".set(" in js
 
 
@@ -285,10 +285,10 @@ Point b = Point(1, 2)
 print(a == b)
 print(toBin(10, 8))
 """
-    js = compile_pys(src, target="javascript")
+    js = compile_typhon(src, target="javascript")
     assert "equals(other)" in js
-    assert "_pys_value_eq(" in js
-    assert "_pys_to_bin(" in js
+    assert "_typhon_value_eq(" in js
+    assert "_typhon_to_bin(" in js
 
 
 def test_js_emit_rejects_decorators() -> None:
@@ -299,10 +299,10 @@ function void hi() {
 }
 """
     with pytest.raises(JsEmitError, match="decorator"):
-        compile_pys(src, target="javascript")
+        compile_typhon(src, target="javascript")
 
 
 def test_python_target_unchanged() -> None:
-    py = compile_pys('print("hi")\n', target="python")
+    py = compile_typhon('print("hi")\n', target="python")
     assert "print(" in py
     assert "console.log" not in py

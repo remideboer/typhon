@@ -1,4 +1,4 @@
-"""Brace-mode indentation formatting (`pys.indent`)."""
+"""Brace-mode indentation formatting (`typhon.indent`)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -6,12 +6,12 @@ from pathlib import Path
 import pytest
 
 from transpiler.parse import parse_program
-from transpiler.pipeline import compile_pys
+from transpiler.pipeline import compile_typhon
 from transpiler.sem import analyze
 from transpiler.transpiler import TranspileError
 
 _REPO = Path(__file__).resolve().parents[1]
-_REKEN = _REPO / "tests" / "fixtures" / "rekenmachine.pys"
+_REKEN = _REPO / "tests" / "fixtures" / "rekenmachine.typhon"
 
 
 def _analyze(source: str):
@@ -19,7 +19,7 @@ def _analyze(source: str):
 
 
 def test_rekenmachine_fixture_compiles_when_indents_aligned() -> None:
-    compile_pys(_REKEN.read_text(encoding="utf-8"))
+    compile_typhon(_REKEN.read_text(encoding="utf-8"))
 
 
 def test_class_member_extra_space_is_indent_error() -> None:
@@ -36,7 +36,7 @@ def test_class_member_extra_space_is_indent_error() -> None:
     with pytest.raises(TranspileError, match=r"Indentation error: expected 4 spaces, found 5") as ei:
         _analyze(source)
     err = ei.value
-    assert getattr(err, "code", None) == "pys.indent"
+    assert getattr(err, "code", None) == "typhon.indent"
     assert err.suggested_fix == "    private fix int getalB"
 
 
@@ -54,7 +54,7 @@ def test_method_body_extra_space_is_indent_error() -> None:
     with pytest.raises(TranspileError, match=r"Indentation error: expected 8 spaces, found 9") as ei:
         _analyze(source)
     err = ei.value
-    assert getattr(err, "code", None) == "pys.indent"
+    assert getattr(err, "code", None) == "typhon.indent"
     assert err.suggested_fix.startswith("        this.getalA")
 
 

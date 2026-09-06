@@ -1,4 +1,4 @@
-"""Compare hot compile_pys under RD vs PEG brace engines."""
+"""Compare hot compile_typhon under RD vs PEG brace engines."""
 from __future__ import annotations
 
 import statistics
@@ -6,14 +6,14 @@ import time
 from pathlib import Path
 
 from transpiler import parse as parse_mod
-from transpiler.pipeline import compile_pys
+from transpiler.pipeline import compile_typhon
 
 FILES = [
-    Path("examples/main.pys"),
-    Path("examples/interfaces.pys"),
-    Path("examples/gui/pokemontcg/main.pys"),
-    Path("examples/gui/pokemontcg/ui.pys"),
-    Path("examples/gui/PyQt/main.pys"),
+    Path("examples/main.typhon"),
+    Path("examples/interfaces.typhon"),
+    Path("examples/gui/pokemontcg/main.typhon"),
+    Path("examples/gui/pokemontcg/ui.typhon"),
+    Path("examples/gui/PyQt/main.typhon"),
 ]
 
 
@@ -21,14 +21,14 @@ def main() -> int:
     for eng in ("rd", "peg"):
         parse_mod.set_brace_engine(eng)
         total = 0.0
-        print(f"[{eng}] hot compile_pys, median of 8")
+        print(f"[{eng}] hot compile_typhon, median of 8")
         for path in FILES:
             text = path.read_text(encoding="utf-8")
-            compile_pys(text, source_path=path)
+            compile_typhon(text, source_path=path)
             times = []
             for _ in range(8):
                 start = time.perf_counter()
-                compile_pys(text, source_path=path)
+                compile_typhon(text, source_path=path)
                 times.append(time.perf_counter() - start)
             med = statistics.median(times)
             total += med

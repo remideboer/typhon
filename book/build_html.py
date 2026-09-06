@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from pys_highlight import highlight_html_document
+from typhon_highlight import highlight_html_document
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT
@@ -101,7 +101,7 @@ main pre {
 }
 main pre code { background: transparent; padding: 0; color: inherit; }
 
-/* PYS syntax highlighting (token spans from pys_highlight.py) */
+/* Typhon syntax highlighting (token spans from typhon_highlight.py) */
 .tok-kw { color: #c792ea; font-weight: 600; }
 .tok-mod { color: #82aaff; font-weight: 600; }
 .tok-type { color: #ffcb6b; }
@@ -1148,13 +1148,13 @@ def page(title: str, nav: str, content: str, *, mermaid: bool = False) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{_esc(title)} — PYS Development Classes</title>
+  <title>{_esc(title)} — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       {nav}
     </nav>
     <main>
@@ -1199,8 +1199,8 @@ def convert() -> None:
             out_name = "index.html"
             # Prefer a landing that shows the TOC as content too
             body = (
-                "<h1>PYS Development Classes</h1>"
-                "<p>Beginner book for the PYS teaching language. "
+                "<h1>Typhon Development Classes</h1>"
+                "<p>Beginner book for the Typhon teaching language. "
                 "Use the sidebar or the outline below.</p>"
                 + body
             )

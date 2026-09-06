@@ -1,6 +1,6 @@
 # Shop example — `entity` identity + MySQL CRUD (OO / SOLID layout)
 
-App that maps [`shop.sql`](shop.sql) tables to PYS **`entity`** types and
+App that maps [`shop.sql`](shop.sql) tables to Typhon **`entity`** types and
 exercises identity equality while doing CRUD. At startup you choose **console
 menus** or a **Tkinter GUI**; both share the same repositories. Teaching
 companion to [`docs/DATA_ENTITY.md`](../../docs/DATA_ENTITY.md).
@@ -11,19 +11,19 @@ companion to [`docs/DATA_ENTITY.md`](../../docs/DATA_ENTITY.md).
 |------|----------------|
 | [`shop.sql`](shop.sql) | MySQL schema (`account` + address/payment, `product`, `order`, `order_line`) |
 | [`seed_boardgames.sql`](seed_boardgames.sql) | Reproducible Dutch board-game catalog, multicultural NL accounts, sample orders |
-| [`models.pys`](models.pys) | Domain entities (`Product`, `Order`, `OrderLine`) |
-| [`db.pys`](db.pys) | MySQL session + cell conversion (**S**) |
-| [`mappers.pys`](mappers.pys) | [Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html) contracts + MySQL mapping: SQL and tuple/entity translation |
-| [`repositories.pys`](repositories.pys) | Typed abstract [Repository](https://martinfowler.com/eaaCatalog/repository.html) contracts + mapper-backed implementations |
-| [`console.pys`](console.pys) | `Console` port + `StdConsole` adapter (**S**, **D**) |
-| [`menus.pys`](menus.pys) | Console screens (**S**); depends on repository **ports** |
-| [`gui.pys`](gui.pys) | Tkinter notebook + `ttk.Treeview` tables (**S**); same repository **ports**, no SQL |
-| [`shop_app.pys`](shop_app.pys) | Composition root — wiring + console-vs-GUI choice |
-| [`pys.toml`](pys.toml) | `[project].main = shop_app.pys` |
+| [`models.typhon`](models.typhon) | Domain entities (`Product`, `Order`, `OrderLine`) |
+| [`db.typhon`](db.typhon) | MySQL session + cell conversion (**S**) |
+| [`mappers.typhon`](mappers.typhon) | [Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html) contracts + MySQL mapping: SQL and tuple/entity translation |
+| [`repositories.typhon`](repositories.typhon) | Typed abstract [Repository](https://martinfowler.com/eaaCatalog/repository.html) contracts + mapper-backed implementations |
+| [`console.typhon`](console.typhon) | `Console` port + `StdConsole` adapter (**S**, **D**) |
+| [`menus.typhon`](menus.typhon) | Console screens (**S**); depends on repository **ports** |
+| [`gui.typhon`](gui.typhon) | Tkinter notebook + `ttk.Treeview` tables (**S**); same repository **ports**, no SQL |
+| [`shop_app.typhon`](shop_app.typhon) | Composition root — wiring + console-vs-GUI choice |
+| [`typhon.toml`](typhon.toml) | `[project].main = shop_app.typhon` |
 
 - **S**ingle responsibility: SQL/row translation stays in mappers; entity
   collection operations stay in repositories; prompts stay in menus/console;
-  widgets stay in `gui.pys`.
+  widgets stay in `gui.typhon`.
 - **O**pen/closed: add a new `Menu` implementor and one `MainMenu` case; GUI
   panels are independent classes on the same ports.
 - **L**iskov: `OrderLine` is a substitutable `Order` for identity inheritance.
@@ -57,7 +57,7 @@ password=123456789
 database=shop
 ```
 
-Requires `mysql-connector-python` (see [`examples/by-target/python/mysql/`](../by-target/python/mysql/) `pys.toml`).
+Requires `mysql-connector-python` (see [`examples/by-target/python/mysql/`](../by-target/python/mysql/) `typhon.toml`).
 
 ## Schema + seed data
 
@@ -84,14 +84,14 @@ snapshots inspired by common NL listings (bol.com, Spellenhuis.nl, Lobbes,
 
 ### Nullable columns (SQL `NULL` fidelity)
 
-`order.customer_ref` is `VARCHAR … NULL`. In PYS it is
+`order.customer_ref` is `VARCHAR … NULL`. In Typhon it is
 `nullable<string> customerRef` — not a plain `string`. Lookups such as
 `findById` / repository `get` return `nullable<Product>` (or Order / OrderLine)
 because “no row” is ordinary absence.
 
 The seed includes deliberate contrast rows:
 
-- order id `5` → SQL `NULL` customer_ref → PYS `null`
+- order id `5` → SQL `NULL` customer_ref → Typhon `null`
 - order id `6` → SQL `''` → present empty string
 
 Mappers must not convert `NULL` to `""` (or the reverse via `NULLIF`). A SQL
@@ -102,10 +102,10 @@ Mappers must not convert `NULL` to `""` (or the reverse via `NULLIF`). A SQL
 From the repo root:
 
 ```text
-python -m transpiler run examples/database/shop_app.pys
+python -m transpiler run examples/database/shop_app.typhon
 ```
 
-Or (uses `pys.toml` main):
+Or (uses `typhon.toml` main):
 
 ```text
 python -m transpiler run examples/database

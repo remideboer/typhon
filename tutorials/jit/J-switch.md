@@ -2,7 +2,7 @@
 
 ## Statement
 
-```pys
+```typhon
 switch (day) {
     case MONDAY, FRIDAY:
         continue
@@ -27,7 +27,7 @@ switch (day) {
 
 ## Expression
 
-```pys
+```typhon
 numLetters = switch (day) {
     case MONDAY, SUNDAY, FRIDAY => 6
     case WEDNESDAY => 9

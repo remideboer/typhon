@@ -1,7 +1,7 @@
 # Test doubles
 
 **Category:** Testing  
-**Demo:** [test_doubles.pys](test_doubles.pys)  
+**Demo:** [test_doubles.typhon](test_doubles.typhon)  
 **Wikipedia / ref:** [Test doubles](https://martinfowler.com/bliki/TestDouble.html)
 
 ## Intent
@@ -19,5 +19,5 @@ Dummy, Stub, Fake, Spy, Mock — five stand-ins for one port.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/testing/test_doubles.pys
+python -m transpiler run examples/patterns/testing/test_doubles.typhon
 ```

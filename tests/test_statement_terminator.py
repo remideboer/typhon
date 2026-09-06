@@ -25,7 +25,7 @@ def test_same_line_without_semi_is_fatal() -> None:
         parse_program("int x = 10 int y = 20\n")
     err = ei.value
     assert "same line" in str(err).lower() or "separated by ';'" in str(err)
-    assert getattr(err, "code", None) == "pys.same-line-statements"
+    assert getattr(err, "code", None) == "typhon.same-line-statements"
     tips = getattr(err, "tips", None) or []
     assert tips
     assert any(";" in t or "own line" in t for t in tips)
@@ -128,7 +128,7 @@ switch (e) {
 }
 """
     py_block = transpile(block_src)
-    assert any(line.strip().startswith("_pys_b") and "only_here" in line for line in py_block.splitlines()) or "_pys_b" in py_block
+    assert any(line.strip().startswith("_typhon_b") and "only_here" in line for line in py_block.splitlines()) or "_typhon_b" in py_block
 
     bare_src = """
 enum E { A, B }
@@ -144,4 +144,4 @@ print(only_here)
     py_bare = transpile(bare_src)
     # Bare arm shares enclosing scope — no brace mangling for only_here.
     assert "only_here = 1" in py_bare
-    assert "_pys_b" not in py_bare or "only_here" in py_bare.split("_pys_b")[0]
+    assert "_typhon_b" not in py_bare or "only_here" in py_bare.split("_typhon_b")[0]

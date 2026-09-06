@@ -24,7 +24,7 @@ Three ways to bundle fields without “full” class identity semantics.
 
 Fields only (no methods). Copy on assign; `==` compares fields.
 
-```pys
+```typhon
 struct Damage {
     int amount
     string type
@@ -52,7 +52,7 @@ True
 ## `data` — value object (VO)
 
 A **value object** (VO) is a bundle you treat as a *value*: two instances with
-the same fields are interchangeable. In PYS, `data` is that construct.
+the same fields are interchangeable. In Typhon, `data` is that construct.
 
 What `data` locks in for you (sometimes called the **VO ceremony** — the
 fixed rules you accept by choosing `data` instead of a plain `struct`):
@@ -61,7 +61,7 @@ fixed rules you accept by choosing `data` instead of a plain `struct`):
 2. `==` / hashing compare **all** fields
 3. no methods, no inheritance — only the value
 
-```pys
+```typhon
 data Money {
     int amountCents
     string currency
@@ -130,10 +130,10 @@ with the same id are the same customer even if the name changed — that is
 >
 > Other languages often leave this to frameworks (`@Id`, `[Key]`) and hand-
 > written `equals`/`hashCode`, which is a common source of `HashSet` bugs.
-> PYS checks `identity(...)` and immutability at compile time. Longer story
+> Typhon checks `identity(...)` and immutability at compile time. Longer story
 > with real-world cases: [`docs/DATA_ENTITY.md`](../docs/DATA_ENTITY.md).
 
-```pys
+```typhon
 entity Customer identity(customerId) {
     private fix int customerId
     public string name

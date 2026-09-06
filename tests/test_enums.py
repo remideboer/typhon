@@ -17,9 +17,9 @@ from transpiler.transpiler import TranspileError, run_source, transpile
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "enums.pys"
+EXAMPLE = ROOT / "examples" / "enums.typhon"
 
-os.environ.setdefault("PYS_SUPPRESS_WARNINGS", "1")
+os.environ.setdefault("TYPHON_SUPPRESS_WARNINGS", "1")
 
 
 def test_example_enums_runs(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -114,8 +114,8 @@ def test_enum_sa_rejections(source: str, match: str) -> None:
 def test_enum_naming_warning_still_compiles() -> None:
     source = "enum Foo {\n    low,\n    HIGH\n}\n"
     tree = analyze(parse_program(source))
-    assert any(w.code == "pys.enum-naming" for w in tree.analysis_warnings)
-    warn = next(w for w in tree.analysis_warnings if w.code == "pys.enum-naming")
+    assert any(w.code == "typhon.enum-naming" for w in tree.analysis_warnings)
+    warn = next(w for w in tree.analysis_warnings if w.code == "typhon.enum-naming")
     assert warn.suggested_fix == "LOW"
     py = transpile(source)
     assert "low = enum.auto()" in py
@@ -123,17 +123,17 @@ def test_enum_naming_warning_still_compiles() -> None:
 
 def test_analyze_file_includes_warnings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(tmp_path))
-    path = tmp_path / "e.pys"
+    path = tmp_path / "e.typhon"
     path.write_text("enum Foo {\n    low\n}\n", encoding="utf-8")
     result = analyze_file(path)
     assert result["ok"] is True
     assert result["error"] is None
-    assert any(w.get("code") == "pys.enum-naming" for w in result["warnings"])
+    assert any(w.get("code") == "typhon.enum-naming" for w in result["warnings"])
 
 
 def test_ide_goto_enum_member(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(tmp_path))
-    path = tmp_path / "e.pys"
+    path = tmp_path / "e.typhon"
     path.write_text(
         "enum HttpStatus {\n  OK = 200,\n  CREATED = 201\n}\n",
         encoding="utf-8",

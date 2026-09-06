@@ -1,7 +1,7 @@
 # RBAC
 
 **Category:** Authorization  
-**Demo:** [rbac.pys](rbac.pys)  
+**Demo:** [rbac.typhon](rbac.typhon)  
 **Wikipedia / ref:** [RBAC](https://en.wikipedia.org/wiki/Role-based_access_control)
 
 ## Intent
@@ -19,5 +19,5 @@ Map users to roles and roles to permissions; authorize by permission name.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/authorization/rbac.pys
+python -m transpiler run examples/patterns/authorization/rbac.typhon
 ```

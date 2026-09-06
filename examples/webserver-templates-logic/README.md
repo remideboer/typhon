@@ -14,7 +14,7 @@ Port **8102**.
 ## Run
 
 ```bash
-python -m transpiler run examples/webserver-templates-logic/src/main.pys
+python -m transpiler run examples/webserver-templates-logic/src/main.typhon
 curl http://127.0.0.1:8102/shop
 curl http://127.0.0.1:8102/empty
 ```
@@ -27,8 +27,8 @@ Query-string binding is a separate example:
 ## Tests
 
 ```bash
-set PYS_WORKSPACE_ROOT=examples\webserver-templates-logic
-set PYS_TEMPLATES_DIR=examples\webserver-templates-logic\templates
-python -m transpiler run examples/webserver-templates-logic/tests/test_logic.pys
+set TYPHON_WORKSPACE_ROOT=examples\webserver-templates-logic
+set TYPHON_TEMPLATES_DIR=examples\webserver-templates-logic\templates
+python -m transpiler run examples/webserver-templates-logic/tests/test_logic.typhon
 python -m pytest tests/test_webserver_templates_logic.py -q
 ```

@@ -1,7 +1,7 @@
 # Strategy
 
 **Category:** Behavioral  
-**Demo:** [strategy.pys](strategy.pys)  
+**Demo:** [strategy.typhon](strategy.typhon)  
 **Wikipedia:** [Strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -54,5 +54,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/strategy.pys
+python -m transpiler run examples/patterns/design/behavioral/strategy.typhon
 ```

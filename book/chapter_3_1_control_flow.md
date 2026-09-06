@@ -20,7 +20,7 @@ Conditions use parentheses; bodies use braces:
   </figcaption>
 </figure>
 
-```pys
+```typhon
 int x = 5
 int y = 8
 
@@ -42,7 +42,7 @@ x is less than y
 
 Logical operators combine conditions. Prefer the word forms while learning:
 
-```pys
+```typhon
 int hour = 23
 
 if (hour < 6 or hour >= 22) {
@@ -72,7 +72,7 @@ Symbols `&&` / `||` / `!` mean the same as `and` / `or` / `not`.
 
 ## `unless` / `if not`
 
-```pys
+```typhon
 int x = 50
 unless (x > 100) {
     print("not greater than 100")

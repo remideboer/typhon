@@ -1,6 +1,6 @@
 # 10.2. Classes, interfaces, and members
 
-| PYS | C# | Java |
+| Typhon | C# | Java |
 |-----|----|------|
 | `class Foo` | `class Foo` | `class Foo` |
 | `inherits Base` | `: Base` | `extends Base` |
@@ -16,12 +16,12 @@
 | `this` / `super` | `this` / `base` | `this` / `super` |
 | Enforced member order | Style / analyzers | Style / Checkstyle |
 
-Member order in PYS is **parse-enforced**. In C#/Java, teams rely on
+Member order in Typhon is **parse-enforced**. In C#/Java, teams rely on
 analyzers and code review — you already have the habit.
 
 `data` ≈ immutable record / value object patterns.  
 `entity` ≈ identity equality by key (DDD entity).  
-`struct` in PYS is a value type without methods — closer to a simple C#
+`struct` in Typhon is a value type without methods — closer to a simple C#
 `struct` or a Java record used only as data, not to C#’s full feature set.
 
 ### Exercise

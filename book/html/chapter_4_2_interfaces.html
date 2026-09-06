@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>5.3. Interfaces — PYS Development Classes</title>
+  <title>5.3. Interfaces — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -151,7 +151,7 @@ public and abstract. Omit a return type when the method returns nothing
 (same rule as classes: <code>void</code> is allowed but not required). When a method
 returns a value, write the type before the name — builtins (<code>int</code>,
 <code>string</code>, …) <strong>or</strong> another type you defined (<code>Button</code>, <code>Shape</code>, …).</p>
-<pre><code class="language-pys"><span class="tok-kw">interface</span> <span class="tok-typename">Greeter</span> {
+<pre><code class="language-typhon"><span class="tok-kw">interface</span> <span class="tok-typename">Greeter</span> {
     <span class="tok-ident">greet</span>(<span class="tok-type">string</span> <span class="tok-ident">name</span>)
 }
 
@@ -184,7 +184,7 @@ changed.</p>
 <p>Openings may name <strong>what comes out</strong> of the socket — including a type that
 is itself another interface. The factory below promises a <code>Button</code>; callers
 only need <code>GUIFactory</code>, not <code>WinFactory</code>.</p>
-<pre><code class="language-pys"><span class="tok-kw">interface</span> <span class="tok-typename">Button</span> {
+<pre><code class="language-typhon"><span class="tok-kw">interface</span> <span class="tok-typename">Button</span> {
     <span class="tok-type">string</span> <span class="tok-ident">label</span>()
 }
 

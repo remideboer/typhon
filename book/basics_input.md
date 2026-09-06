@@ -1,10 +1,10 @@
 # 2.2. Processing input
 
 Programs become useful when they react to **you**. Keyboard input is a
-built-in PYS function, like `print`: you call it with an optional prompt
+built-in Typhon function, like `print`: you call it with an optional prompt
 string; it waits for Enter and returns what was typed as a `string`.
 
-```pys
+```typhon
 string name = input("What is your name? ")
 print("Hello, " + name + "!")
 ```
@@ -30,7 +30,7 @@ press Enter.
 What you type is always text first. To use it as a number, convert it
 (see also [Conversion](basics_conversion.md)):
 
-```pys
+```typhon
 string raw = input("How old are you? ")
 int age = int(raw)
 print("Next year you will be " + (age + 1))
@@ -41,10 +41,10 @@ print("Next year you will be " + (age + 1))
 > **Sidebar — typed declarations**
 >
 > `string name = …` and `int age = …` name the type on the left. That is
-> the usual PYS style (more in [Session 1 — Variables](chapter_2_2_variables.md)).
+> the usual Typhon style (more in [Session 1 — Variables](chapter_2_2_variables.md)).
 > `var` still works when the right-hand side makes the type obvious.
 
-`int(raw)` asks PYS/Python to parse the string as an integer. If the text
+`int(raw)` asks Typhon/Python to parse the string as an integer. If the text
 is not a number, the program fails at that line — prefer
 `parseInt` / `parseFloat` (same chapter family as [Conversion](basics_conversion.md)
 and [Expressing success and failure](basics_outcomes.md)) when you need a

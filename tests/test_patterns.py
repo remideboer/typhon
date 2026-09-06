@@ -1,4 +1,4 @@
-"""Transpile gate for examples/patterns/**/*.pys."""
+"""Transpile gate for examples/patterns/**/*.typhon."""
 
 from __future__ import annotations
 
@@ -10,9 +10,9 @@ ROOT = Path(__file__).resolve().parents[1]
 PATTERNS = ROOT / "examples" / "patterns"
 
 
-def test_patterns_pys_transpile() -> None:
-    paths = sorted(PATTERNS.rglob("*.pys"))
-    assert paths, "expected examples/patterns/**/*.pys"
+def test_patterns_typhon_transpile() -> None:
+    paths = sorted(PATTERNS.rglob("*.typhon"))
+    assert paths, "expected examples/patterns/**/*.typhon"
     concurrency = [p for p in paths if "concurrency" in p.parts]
     assert len(concurrency) == 4, "expected four concurrency pattern demos"
     general = [p for p in paths if "general" in p.parts]

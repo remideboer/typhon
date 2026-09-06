@@ -1,0 +1,398 @@
+# ui.typhon — Tkinter notebook: Catalog | Collection | Decks (master–detail)
+# Selecting a list item updates the detail pane immediately.
+# Isolated silo (stdlib). PyQt twin: examples/gui/PyQt/
+
+import tkinter as tk
+import tkinter.ttk as ttk
+import tkinter.messagebox as messagebox
+import store
+import domain
+
+package class PokemonApp {
+    private AppStore appStore
+    private Tk root
+    private Notebook notebook
+
+    private Frame catalogLeft
+    private Frame catalogRight
+    private Listbox catalogList
+    private Text catalogDetail
+    private list<string> catalogIds
+
+    private Frame collectionLeft
+    private Frame collectionRight
+    private Listbox collectionList
+    private Text collectionDetail
+    private Text typeStatsBox
+    private list<string> collectionIds
+
+    private Frame decksLeft
+    private Frame decksRight
+    private Listbox deckList
+    private Listbox deckCards
+    private Text deckDetail
+    private Entry newDeckEntry
+    private list<string> deckNames
+
+    public constructor(AppStore appStore) {
+        this.appStore = appStore
+        this.catalogIds = []
+        this.collectionIds = []
+        this.deckNames = []
+
+        this.root = tk.Tk()
+        this.root.title("Typhon Pokemon TCG Demo")
+        this.root.geometry("900x560")
+
+        this.notebook = ttk.Notebook(this.root)
+        this.notebook.pack(fill="both", expand=True, padx=8, pady=8)
+
+        Frame catalogTab = ttk.Frame(this.notebook)
+        this.notebook.add(catalogTab, text="Catalog")
+        this.catalogLeft = ttk.Frame(catalogTab)
+        this.catalogLeft.pack(side="left", fill="both", expand=True)
+        this.catalogRight = ttk.Frame(catalogTab)
+        this.catalogRight.pack(side="right", fill="both", expand=True)
+        ttk.Label(this.catalogLeft, text="Cards (TCGdex extract) — click a row for detail").pack(anchor="w")
+        this.catalogList = tk.Listbox(this.catalogLeft, width=40)
+        this.catalogList.pack(fill="both", expand=True)
+        this.catalogList.bind("<<ListboxSelect>>", this.onCatalogSelect)
+        ttk.Button(this.catalogLeft, text="Add to collection", command=this.addSelectedToCollection).pack(fill="x", pady=2)
+        this.catalogDetail = tk.Text(this.catalogRight, width=50, height=30)
+        this.catalogDetail.pack(fill="both", expand=True)
+
+        Frame collectionTab = ttk.Frame(this.notebook)
+        this.notebook.add(collectionTab, text="Collection")
+        this.collectionLeft = ttk.Frame(collectionTab)
+        this.collectionLeft.pack(side="left", fill="both", expand=True)
+        this.collectionRight = ttk.Frame(collectionTab)
+        this.collectionRight.pack(side="right", fill="both", expand=True)
+        ttk.Label(this.collectionLeft, text="Owned cards — click a row for detail").pack(anchor="w")
+        this.collectionList = tk.Listbox(this.collectionLeft, width=40)
+        this.collectionList.pack(fill="both", expand=True)
+        this.collectionList.bind("<<ListboxSelect>>", this.onCollectionSelect)
+        Frame bumpRow = ttk.Frame(this.collectionLeft)
+        bumpRow.pack(fill="x")
+        ttk.Button(bumpRow, text="+1", command=this.onBumpPlus).pack(side="left", expand=True, fill="x")
+        ttk.Button(bumpRow, text="-1", command=this.onBumpMinus).pack(side="left", expand=True, fill="x")
+        ttk.Button(bumpRow, text="Remove", command=this.removeOwned).pack(side="left", expand=True, fill="x")
+        this.collectionDetail = tk.Text(this.collectionRight, width=50, height=18)
+        this.collectionDetail.pack(fill="both", expand=True)
+        ttk.Label(this.collectionRight, text="Stats by type").pack(anchor="w")
+        this.typeStatsBox = tk.Text(this.collectionRight, width=50, height=8)
+        this.typeStatsBox.pack(fill="both", expand=True)
+
+        Frame decksTab = ttk.Frame(this.notebook)
+        this.notebook.add(decksTab, text="Decks")
+        this.decksLeft = ttk.Frame(decksTab)
+        this.decksLeft.pack(side="left", fill="both", expand=True)
+        this.decksRight = ttk.Frame(decksTab)
+        this.decksRight.pack(side="right", fill="both", expand=True)
+        ttk.Label(this.decksLeft, text="Your decks — click a row for detail").pack(anchor="w")
+        this.deckList = tk.Listbox(this.decksLeft, width=40)
+        this.deckList.pack(fill="both", expand=True)
+        this.deckList.bind("<<ListboxSelect>>", this.onDeckSelect)
+        Frame newDeckRow = ttk.Frame(this.decksLeft)
+        newDeckRow.pack(fill="x", pady=4)
+        this.newDeckEntry = ttk.Entry(newDeckRow)
+        this.newDeckEntry.pack(side="left", fill="x", expand=True)
+        ttk.Button(newDeckRow, text="Create", command=this.createDeck).pack(side="left")
+        ttk.Button(this.decksLeft, text="Delete deck", command=this.deleteSelectedDeck).pack(fill="x")
+        ttk.Button(this.decksLeft, text="Add selected owned/catalog card", command=this.addOwnedToDeck).pack(fill="x")
+        ttk.Button(this.decksLeft, text="Remove selected deck card", command=this.removeCardFromDeck).pack(fill="x")
+        this.deckDetail = tk.Text(this.decksRight, width=50, height=8)
+        this.deckDetail.pack(fill="x")
+        ttk.Label(this.decksRight, text="Cards in deck").pack(anchor="w")
+        this.deckCards = tk.Listbox(this.decksRight, width=50)
+        this.deckCards.pack(fill="both", expand=True)
+
+        this.refreshCatalog()
+        this.refreshCollection()
+        this.refreshDecks()
+        if (len(this.catalogIds) > 0) {
+            this.catalogList.selection_set(0)
+            this.showCatalogDetail()
+        }
+    }
+    public refreshCatalog() {
+        this.catalogList.delete(0, "end")
+        this.catalogIds = []
+        loop (Card c in this.appStore.getCatalog().allCards()) {
+            this.catalogList.insert("end", c.listLabel())
+            this.catalogIds.append(c.getId())
+        }
+    }
+
+    public refreshCollection() {
+        this.collectionList.delete(0, "end")
+        this.collectionIds = []
+        loop (OwnedEntry e in this.appStore.getCollection().getOwned()) {
+            nullable<Card> c = this.appStore.getCatalog().get(e.getCardId())
+            int q = e.getQuantity()
+            string label = e.getCardId() + " x" + str(q)
+            if (c != null) {
+                label = c.getName() + " x" + str(q)
+            }
+            this.collectionList.insert("end", label)
+            this.collectionIds.append(e.getCardId())
+        }
+        this.typeStatsBox.delete("1.0", "end")
+        list<TypeStat> typeStats = this.appStore.getCollection().statsByType(this.appStore.getCatalog())
+        if (len(typeStats) == 0) {
+            this.typeStatsBox.insert("1.0", "No owned cards yet.")
+        }
+        else {
+            string text = "Stats by type:\n"
+            loop (TypeStat st in typeStats) {
+                text = text + st.summary() + "\n"
+            }
+            this.typeStatsBox.insert("1.0", text)
+        }
+    }
+
+    public refreshDecks() {
+        this.deckList.delete(0, "end")
+        this.deckNames = []
+        loop (Deck d in this.appStore.getDecks().getDecks()) {
+            int n = d.totalCards()
+            string label = d.getName() + " (" + str(n) + " cards)"
+            this.deckList.insert("end", label)
+            this.deckNames.append(d.getName())
+        }
+    }
+
+    public showCatalogDetail() {
+        list sel = this.catalogList.curselection()
+        if (len(sel) == 0) {
+            this.catalogDetail.delete("1.0", "end")
+            return
+        }
+        int idx = sel[0]
+        string cid = this.catalogIds[idx]
+        nullable<Card> c = this.appStore.getCatalog().get(cid)
+        this.catalogDetail.delete("1.0", "end")
+        if (c != null) {
+            this.catalogDetail.insert("1.0", c.detailText())
+        }
+    }
+
+    public onCatalogSelect(event) {
+        this.showCatalogDetail()
+    }
+
+    public addSelectedToCollection() {
+        list sel = this.catalogList.curselection()
+        if (len(sel) == 0) {
+            messagebox.showinfo("Collection", "Select a card in the catalog first.")
+            return
+        }
+        int idx = sel[0]
+        string cid = this.catalogIds[idx]
+        this.appStore.getCollection().addCard(cid, 1)
+        this.appStore.saveCollection()
+        this.refreshCollection()
+        messagebox.showinfo("Collection", "Added 1 copy to your collection.")
+    }
+
+    public showCollectionDetail() {
+        list sel = this.collectionList.curselection()
+        if (len(sel) == 0) {
+            this.collectionDetail.delete("1.0", "end")
+            return
+        }
+        int idx = sel[0]
+        string cid = this.collectionIds[idx]
+        nullable<Card> c = this.appStore.getCatalog().get(cid)
+        int qty = this.appStore.getCollection().quantityOf(cid)
+        this.collectionDetail.delete("1.0", "end")
+        string header = "Owned quantity: " + str(qty) + "\n\n"
+        if (c != null) {
+            this.collectionDetail.insert("1.0", header + c.detailText())
+        }
+        else {
+            this.collectionDetail.insert("1.0", header + "Unknown card id: " + cid)
+        }
+    }
+
+    public onCollectionSelect(event) {
+        this.showCollectionDetail()
+    }
+
+    public bumpOwned(int delta) {
+        list sel = this.collectionList.curselection()
+        if (len(sel) == 0) {
+            messagebox.showinfo("Collection", "Select an owned card first.")
+            return
+        }
+        int idx = sel[0]
+        string cid = this.collectionIds[idx]
+        this.appStore.getCollection().addCard(cid, delta)
+        this.appStore.saveCollection()
+        this.refreshCollection()
+        this.refreshDecks()
+        if (idx < len(this.collectionIds)) {
+            this.collectionList.selection_set(idx)
+            this.showCollectionDetail()
+        }
+        else {
+            this.collectionDetail.delete("1.0", "end")
+        }
+    }
+
+    public onBumpPlus() {
+        this.bumpOwned(1)
+    }
+
+    public onBumpMinus() {
+        this.bumpOwned(-1)
+    }
+
+    public removeOwned() {
+        list sel = this.collectionList.curselection()
+        if (len(sel) == 0) {
+            return
+        }
+        int idx = sel[0]
+        string cid = this.collectionIds[idx]
+        this.appStore.getCollection().removeCard(cid)
+        this.appStore.saveCollection()
+        this.refreshCollection()
+        this.refreshDecks()
+        this.collectionDetail.delete("1.0", "end")
+    }
+
+    public showDeckDetail() {
+        list sel = this.deckList.curselection()
+        this.deckCards.delete(0, "end")
+        this.deckDetail.delete("1.0", "end")
+        if (len(sel) == 0) {
+            return
+        }
+        int idx = sel[0]
+        string name = this.deckNames[idx]
+        nullable<Deck> d = this.appStore.getDecks().getByName(name)
+        if (d == null) {
+            return
+        }
+        int total = d.totalCards()
+        string text = "Deck: " + name + "\nTotal cards: " + str(total) + "\n"
+        this.deckDetail.insert("1.0", text)
+        loop (OwnedEntry e in d.getEntries()) {
+            nullable<Card> c = this.appStore.getCatalog().get(e.getCardId())
+            int q = e.getQuantity()
+            string label = e.getCardId() + " x" + str(q)
+            if (c != null) {
+                label = c.getName() + " x" + str(q)
+            }
+            this.deckCards.insert("end", label)
+        }
+    }
+
+    public onDeckSelect(event) {
+        this.showDeckDetail()
+    }
+
+    public createDeck() {
+        string name = this.newDeckEntry.get().strip()
+        if (name == "") {
+            messagebox.showinfo("Decks", "Enter a deck name.")
+            return
+        }
+        bool succeeded = this.appStore.getDecks().createDeck(name)
+        if (succeeded == false) {
+            messagebox.showerror("Decks", "A deck with that name already exists.")
+            return
+        }
+        this.appStore.saveDecks()
+        this.newDeckEntry.delete(0, "end")
+        this.refreshDecks()
+    }
+
+    public deleteSelectedDeck() {
+        list sel = this.deckList.curselection()
+        if (len(sel) == 0) {
+            return
+        }
+        int idx = sel[0]
+        string name = this.deckNames[idx]
+        this.appStore.getDecks().deleteDeck(name)
+        this.appStore.saveDecks()
+        this.refreshDecks()
+        this.deckCards.delete(0, "end")
+        this.deckDetail.delete("1.0", "end")
+    }
+
+    public addOwnedToDeck() {
+        list dsel = this.deckList.curselection()
+        if (len(dsel) == 0) {
+            messagebox.showinfo("Decks", "Select a deck first.")
+            return
+        }
+        string cardId = ""
+        list csel = this.collectionList.curselection()
+        if (len(csel) > 0) {
+            cardId = this.collectionIds[csel[0]]
+        }
+        else {
+            list catsel = this.catalogList.curselection()
+            if (len(catsel) == 0) {
+                messagebox.showinfo("Decks", "Select a card in Collection (or Catalog).")
+                return
+            }
+            cardId = this.catalogIds[catsel[0]]
+        }
+        int owned = this.appStore.getCollection().quantityOf(cardId)
+        if (owned <= 0) {
+            messagebox.showerror("Decks", "You can only add cards you own. Add it to your collection first.")
+            return
+        }
+        string name = this.deckNames[dsel[0]]
+        nullable<Deck> d = this.appStore.getDecks().getByName(name)
+        int current = 0
+        if (d != null) {
+            current = d.quantityOf(cardId)
+        }
+        int nextQty = current + 1
+        bool succeeded = this.appStore.getDecks().setDeckCard(name, cardId, nextQty, this.appStore.getCollection())
+        if (succeeded == false) {
+            messagebox.showerror("Decks", "Not enough owned copies for this deck.")
+            return
+        }
+        this.appStore.saveDecks()
+        this.refreshDecks()
+        this.deckList.selection_set(dsel[0])
+        this.showDeckDetail()
+    }
+
+    public removeCardFromDeck() {
+        list dsel = this.deckList.curselection()
+        list csel = this.deckCards.curselection()
+        if (len(dsel) == 0) {
+            return
+        }
+        if (len(csel) == 0) {
+            return
+        }
+        string name = this.deckNames[dsel[0]]
+        nullable<Deck> d = this.appStore.getDecks().getByName(name)
+        if (d == null) {
+            return
+        }
+        list<OwnedEntry> entries = d.getEntries()
+        int idx = csel[0]
+        if (idx >= len(entries)) {
+            return
+        }
+        OwnedEntry e = entries[idx]
+        int nextQty = e.getQuantity() - 1
+        this.appStore.getDecks().setDeckCard(name, e.getCardId(), nextQty, this.appStore.getCollection())
+        this.appStore.saveDecks()
+        this.refreshDecks()
+        this.deckList.selection_set(dsel[0])
+        this.showDeckDetail()
+    }
+
+    public run() {
+        this.root.mainloop()
+    }
+}

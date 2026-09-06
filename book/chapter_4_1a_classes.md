@@ -13,7 +13,7 @@ same goal.
 The class text is the *blueprint*; each time you call the constructor you
 get a new *object* — its own running copy of the machine.
 
-```pys
+```typhon
 class Counter {
     public const int DEFAULT_STEP = 1
     private fix string label
@@ -129,7 +129,7 @@ is a compile error (`Access denied`); use a public method such as
 `"{c.getValue()}"` instead.
 
 Brace bodies also keep a **4-space grid**: a field or statement shifted by
-one extra space is an `Indentation error` (`pys.indent`), even though `{ }`
+one extra space is an `Indentation error` (`typhon.indent`), even though `{ }`
 already decide nesting.
 
 ## The constructor: assembling the machine
@@ -172,7 +172,7 @@ Here a `ScoreBoard` keeps a team’s score. It does **not** re-implement
 counting; it **owns** a `Counter` and talks to it through that machine’s
 public channels.
 
-```pys
+```typhon
 class Counter {
     public const int DEFAULT_STEP = 1
     private fix string label
@@ -297,7 +297,7 @@ scoreboard; counting stays a sealed sub-task inside.
 
 ## Why member order is enforced
 
-Inside a class body, PYS requires this **kind** order:
+Inside a class body, Typhon requires this **kind** order:
 
 1. `const` fields  
 2. `fix` fields  
@@ -309,7 +309,7 @@ Visibility (`public` / `private` / …) may vary within a section, but you
 cannot put a method above a field or a mutable field above a `fix` field.
 If the order is wrong, you get a **parse error**, not a polite lint.
 
-Why? Good practice in C# and Java is the same order; PYS makes the habit
+Why? Good practice in C# and Java is the same order; Typhon makes the habit
 impossible to skip so you learn it once.
 
 Constructor name equals the class name. Use `this.field` for members.

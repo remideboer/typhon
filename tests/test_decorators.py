@@ -1,4 +1,4 @@
-"""ADR-026: library decorator application in PYS source."""
+"""ADR-026: library decorator application in Typhon source."""
 
 from __future__ import annotations
 
@@ -99,7 +99,7 @@ package class C {
 }
 """
         )
-    assert ei.value.code == "pys.decorator-target"
+    assert ei.value.code == "typhon.decorator-target"
 
 
 def test_emit_keeps_nominal_param_annotation() -> None:
@@ -122,4 +122,4 @@ function void handle(Request request) {
 int x = 1
 """
         )
-    assert ei.value.code == "pys.decorator-target"
+    assert ei.value.code == "typhon.decorator-target"

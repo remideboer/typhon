@@ -1,4 +1,4 @@
-"""Hot in-process compile_pys medians for a fixed file set."""
+"""Hot in-process compile_typhon medians for a fixed file set."""
 from __future__ import annotations
 
 import argparse
@@ -6,15 +6,15 @@ import statistics
 import time
 from pathlib import Path
 
-from transpiler.pipeline import compile_pys
+from transpiler.pipeline import compile_typhon
 
 
 DEFAULT_FILES = [
-    "examples/main.pys",
-    "examples/interfaces.pys",
-    "examples/gui/pokemontcg/main.pys",
-    "examples/gui/pokemontcg/ui.pys",
-    "examples/gui/PyQt/main.pys",
+    "examples/main.typhon",
+    "examples/interfaces.typhon",
+    "examples/gui/pokemontcg/main.typhon",
+    "examples/gui/pokemontcg/ui.typhon",
+    "examples/gui/PyQt/main.typhon",
 ]
 
 
@@ -26,15 +26,15 @@ def main() -> int:
     args = ap.parse_args()
     files = [Path(p) for p in (args.files or DEFAULT_FILES)]
     label = f"[{args.label}] " if args.label else ""
-    print(f"{label}hot compile_pys, median of {args.repeat}")
+    print(f"{label}hot compile_typhon, median of {args.repeat}")
     total = 0.0
     for path in files:
         text = path.read_text(encoding="utf-8")
-        compile_pys(text, source_path=path)  # warmup
+        compile_typhon(text, source_path=path)  # warmup
         times: list[float] = []
         for _ in range(args.repeat):
             start = time.perf_counter()
-            compile_pys(text, source_path=path)
+            compile_typhon(text, source_path=path)
             times.append(time.perf_counter() - start)
         med = statistics.median(times)
         total += med

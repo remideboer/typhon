@@ -13,8 +13,8 @@ def test_transpile_loop_with_braces() -> None:
 """
     py = transpile(source)
     assert "for i in range(0, 3):" not in py
-    assert "for _pys_b" in py and " in range(0, 3):" in py
-    assert "print(_pys_format(_pys_b" in py
+    assert "for _typhon_b" in py and " in range(0, 3):" in py
+    assert "print(_typhon_format(_typhon_b" in py
 
 
 def test_transpile_while_style_loop() -> None:
@@ -24,11 +24,11 @@ loop (y < 30) {
     y++
 }
 """
-    expected = """def _pys_format(value):
+    expected = """def _typhon_format(value):
     return "null" if value is None else str(value)
 y = 20
 while y < 30:
-    print(_pys_format(y))
+    print(_typhon_format(y))
     y += 1
 """
     assert transpile(source) == expected
@@ -218,23 +218,23 @@ def test_transpile_nested_brace_blocks() -> None:
 }
 """
     expected = (
-        'def _pys_format(value):\n'
+        'def _typhon_format(value):\n'
         '    return "null" if value is None else str(value)\n'
         'if x < 0:\n'
-        '    print(_pys_format("negative"))\n'
+        '    print(_typhon_format("negative"))\n'
         'else:\n'
-        '    print(_pys_format("non-negative"))\n'
+        '    print(_typhon_format("non-negative"))\n'
     )
     assert transpile(source) == expected
 
 
 def test_transpile_import_from() -> None:
-    source = """import Car from example.pys\nprint Car\n"""
+    source = """import Car from example.typhon\nprint Car\n"""
     expected = (
-        'def _pys_format(value):\n'
+        'def _typhon_format(value):\n'
         '    return "null" if value is None else str(value)\n'
         'from example import Car\n'
-        'print(_pys_format(Car))\n'
+        'print(_typhon_format(Car))\n'
     )
     assert transpile(source) == expected
 
@@ -249,7 +249,7 @@ def test_transpile_multi_name_import_from(tmp_path: Path, monkeypatch: pytest.Mo
         "transpiler.imports.ImportResolver._deps_paths",
         lambda self: [site],
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import QApplication, QWidget from PyQt6.QtWidgets\nprint(QApplication)\n",
         encoding="utf-8",
@@ -286,7 +286,7 @@ def test_subclass_can_call_library_parent_methods(
         "transpiler.imports.ImportResolver._deps_paths",
         lambda self: [site],
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import QMainWindow, QPushButton from PyQt6.QtWidgets\n"
         "package class MainWindow inherits QMainWindow {\n"
@@ -325,7 +325,7 @@ def test_subclass_rejects_unknown_library_parent_method(
         "transpiler.imports.ImportResolver._deps_paths",
         lambda self: [site],
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import QMainWindow from PyQt6.QtWidgets\n"
         "package class MainWindow inherits QMainWindow {\n"
@@ -359,7 +359,7 @@ def test_subclass_allows_library_parent_when_module_unloadable(
         "transpiler.imports.ImportResolver._deps_paths",
         lambda self: [site],
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import QMainWindow from PyQt6.QtWidgets\n"
         "package class MainWindow inherits QMainWindow {\n"
@@ -377,7 +377,7 @@ def test_subclass_allows_library_parent_when_module_unloadable(
 
 def test_library_type_member_via_package_import(tmp_path: Path) -> None:
     """``Frame`` via ``import tkinter.ttk as ttk`` must allow ``.pack`` (hasattr)."""
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import tkinter.ttk as ttk\n"
         "function build(){\n"
@@ -391,7 +391,7 @@ def test_library_type_member_via_package_import(tmp_path: Path) -> None:
 
 
 def test_library_type_rejects_absent_member_via_package_import(tmp_path: Path) -> None:
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "import tkinter.ttk as ttk\n"
         "function build(){\n"
@@ -405,7 +405,7 @@ def test_library_type_rejects_absent_member_via_package_import(tmp_path: Path) -
 
 
 def test_import_all_resolves_visible_exports(tmp_path: Path) -> None:
-    (tmp_path / "funcs.pys").write_text(
+    (tmp_path / "funcs.typhon").write_text(
         "package function greet(name){\n"
         "    print(name)\n"
         "}\n"
@@ -419,8 +419,8 @@ def test_import_all_resolves_visible_exports(tmp_path: Path) -> None:
         "}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
-    main.write_text("import all from funcs.pys\ngreet(\"student\")\nhello()\n", encoding="utf-8")
+    main = tmp_path / "main.typhon"
+    main.write_text("import all from funcs.typhon\ngreet(\"student\")\nhello()\n", encoding="utf-8")
     modules = transpile_with_modules(main)
     assert modules["main"].startswith("from funcs import greet, hello\n")
     assert "def greet(name):" in modules["funcs"]
@@ -429,11 +429,11 @@ def test_import_all_resolves_visible_exports(tmp_path: Path) -> None:
 
 
 def test_import_module_same_as_import_all(tmp_path: Path) -> None:
-    (tmp_path / "funcs.pys").write_text(
+    (tmp_path / "funcs.typhon").write_text(
         "package function greet(name){\n    print(name)\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import funcs\ngreet(\"x\")\n", encoding="utf-8")
     assert transpile(main.read_text(encoding="utf-8"), source_path=main) == (
         "from funcs import greet\ngreet(\"x\")\n"
@@ -441,12 +441,12 @@ def test_import_module_same_as_import_all(tmp_path: Path) -> None:
 
 
 def test_import_rejects_module_private(tmp_path: Path) -> None:
-    (tmp_path / "funcs.pys").write_text(
+    (tmp_path / "funcs.typhon").write_text(
         "function secret(){\n    print(\"no\")\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
-    main.write_text("import secret from funcs.pys\n", encoding="utf-8")
+    main = tmp_path / "main.typhon"
+    main.write_text("import secret from funcs.typhon\n", encoding="utf-8")
     with pytest.raises(TranspileError, match="module-scoped"):
         transpile(main.read_text(encoding="utf-8"), source_path=main)
 
@@ -456,37 +456,37 @@ def test_package_export_not_visible_from_other_folder(tmp_path: Path) -> None:
     other = tmp_path / "other"
     pkg.mkdir()
     other.mkdir()
-    (pkg / "funcs.pys").write_text(
+    (pkg / "funcs.typhon").write_text(
         "package function greet(name){\n    print(name)\n}\n"
         "global function hello(){\n    print(\"hi\")\n}\n",
         encoding="utf-8",
     )
-    main = other / "main.pys"
-    main.write_text("import all from ../pkg/funcs.pys\n", encoding="utf-8")
+    main = other / "main.typhon"
+    main.write_text("import all from ../pkg/funcs.typhon\n", encoding="utf-8")
     py = transpile(main.read_text(encoding="utf-8"), source_path=main)
     assert py == "from funcs import hello\n"
 
 
 def test_call_to_module_private_seen_name_is_access_error(tmp_path: Path) -> None:
-    (tmp_path / "funcs.pys").write_text(
+    (tmp_path / "funcs.typhon").write_text(
         "global function hello(){\n    print(\"hi\")\n}\n"
         "function doei(){\n    print(\"bye\")\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import funcs\nhello()\ndoei()\n", encoding="utf-8")
     with pytest.raises(TranspileError, match="Access denied: 'doei'.*not accessible"):
         transpile(main.read_text(encoding="utf-8"), source_path=main)
 
 
 def test_call_to_visible_but_not_imported_name(tmp_path: Path) -> None:
-    (tmp_path / "funcs.pys").write_text(
+    (tmp_path / "funcs.typhon").write_text(
         "global function hello(){\n    print(\"hi\")\n}\n"
         "package function greet(name){\n    print(name)\n}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
-    main.write_text("import hello from funcs.pys\ngreet(\"x\")\n", encoding="utf-8")
+    main = tmp_path / "main.typhon"
+    main.write_text("import hello from funcs.typhon\ngreet(\"x\")\n", encoding="utf-8")
     with pytest.raises(TranspileError, match="was not imported"):
         transpile(main.read_text(encoding="utf-8"), source_path=main)
 
@@ -533,11 +533,11 @@ const int Y = x
 
 
 def test_global_const_is_importable(tmp_path: Path) -> None:
-    (tmp_path / "mathy.pys").write_text(
+    (tmp_path / "mathy.typhon").write_text(
         "global const float PI = 3.14159265358979323846\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text("import mathy\nprint(PI)\n", encoding="utf-8")
     py = transpile(main.read_text(encoding="utf-8"), source_path=main)
     assert "from mathy import PI" in py
@@ -587,11 +587,11 @@ def test_transpile_class_method() -> None:
     }
 }
 """
-    expected = """def _pys_format(value):
+    expected = """def _typhon_format(value):
     return "null" if value is None else str(value)
 class Car:
     def drive(self):
-        print(_pys_format("driving"))
+        print(_typhon_format("driving"))
 
     def name(self):
         return "car"
@@ -667,7 +667,7 @@ def test_comments_do_not_break_brace_indentation() -> None:
 }
 """
     transpiled = transpile(source)
-    assert 'print(_pys_format("driving"))' in transpiled
+    assert 'print(_typhon_format("driving"))' in transpiled
 
 
 def test_private_field_access_denied_outside_class() -> None:

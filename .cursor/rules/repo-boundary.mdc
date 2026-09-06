@@ -17,7 +17,7 @@ All file creates, edits, deletes, and moves must stay inside this workspace:
 
 ## Forbidden outside the repo
 
-- Writing, editing, deleting, or generating files (including `pys.deps`, `pys.lock`, examples)
+- Writing, editing, deleting, or generating files (including `typhon.deps`, `typhon.lock`, examples)
 - “Fixing” a user’s other project by mutating it — explain the steps; let them run the commands
 
 If an external project needs a lock or config change, give the exact commands and leave execution to the user.

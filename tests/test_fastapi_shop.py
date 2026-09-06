@@ -12,13 +12,13 @@ from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOP = ROOT / "library-tests" / "fastapi-shop"
-MAIN = SHOP / "src" / "main.pys"
-SMOKE = SHOP / "tests" / "smoke_live.pys"
+MAIN = SHOP / "src" / "main.typhon"
+SMOKE = SHOP / "tests" / "smoke_live.typhon"
 
 
 def test_fastapi_shop_main_transpiles(monkeypatch: pytest.MonkeyPatch) -> None:
     assert MAIN.is_file()
-    # Bound workspace only for this test — never leave PYS_WORKSPACE_ROOT set
+    # Bound workspace only for this test — never leave TYPHON_WORKSPACE_ROOT set
     # (raw os.environ leaks poison later tmp_path / example transpile tests on CI).
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(SHOP.resolve()))
     modules = transpile_with_modules(MAIN)
@@ -45,7 +45,7 @@ def _mysql_reachable() -> bool:
     try:
         conn = mysql.connector.connect(
             host="localhost",
-            user="pys",
+            user="typhon",
             password="123456789",
             database="shop",
             connection_timeout=2,
@@ -59,7 +59,7 @@ def _mysql_reachable() -> bool:
 @pytest.mark.skipif(not _mysql_reachable(), reason="MySQL shop DB not available (CI)")
 def test_fastapi_shop_live_smoke(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(SHOP.resolve()))
-    # smoke_live.pys is an alternate runner under the silo; bypass [project].main gate.
+    # smoke_live.typhon is an alternate runner under the silo; bypass [project].main gate.
     monkeypatch.setattr(
         "transpiler.project_manifest.resolve_entrypoint",
         lambda selected: selected.expanduser().resolve(),

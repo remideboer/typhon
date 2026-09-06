@@ -19,7 +19,7 @@ Return type sits after `function`:
   </figcaption>
 </figure>
 
-```pys
+```typhon
 function int multiply(int a, int b) {
     return a * b
 }
@@ -43,7 +43,7 @@ structuring chapter.
 
 > **Library decorators.** You may write `@expr` above a `function`, `class`, or
 > method to apply a **library** callable (for example a web framework route).
-> Do not invent new PYS features with `@` — missing language ideas get real
+> Do not invent new Typhon features with `@` — missing language ideas get real
 > keywords instead. See [LANGUAGE.md](../docs/LANGUAGE.md) and ADR-026.
 
 ### Exercise

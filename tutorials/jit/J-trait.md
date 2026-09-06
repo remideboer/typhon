@@ -2,7 +2,7 @@
 
 ## Form
 
-```pys
+```typhon
 trait Printable {
     requires string name
 

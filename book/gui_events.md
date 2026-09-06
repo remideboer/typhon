@@ -12,7 +12,7 @@
 A `tk.Button` accepts a `command` argument: a value of type
 `lambda<void>`, called exactly once per click.
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()
@@ -52,7 +52,7 @@ Run it, click the button, and the label's text changes from
 
 Combining this with widgets that hold input:
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()
@@ -96,7 +96,7 @@ Because the callback **assigns** to that variable, mark it `shared`
 (captured names are read-only unless `shared` or `atomic` — Session 5
 covers this in depth for tasks; the same rule applies to GUI lambdas):
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()
@@ -134,7 +134,7 @@ chapters, showing up again here in a GUI.
 events — a key pressed inside an `Entry`, the mouse entering a widget —
 Tkinter uses `.bind()` with an event name string:
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()

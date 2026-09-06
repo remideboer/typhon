@@ -1,7 +1,7 @@
 # API key authentication
 
 **Category:** Authentication  
-**Demo:** [api_key.pys](api_key.pys)  
+**Demo:** [api_key.typhon](api_key.typhon)  
 **Wikipedia:** [Application programming interface key](https://en.wikipedia.org/wiki/Application_programming_interface_key)
 
 ## Intent
@@ -51,5 +51,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/authentication/api_key.pys
+python -m transpiler run examples/patterns/authentication/api_key.typhon
 ```

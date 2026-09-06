@@ -25,7 +25,7 @@
 > Those deserve their own walkthrough — see
 > [`docs/CONCURRENCY.md`](../docs/CONCURRENCY.md) when you need them.
 
-```pys
+```typhon
 atomic int counter = 0
 
 tasks {

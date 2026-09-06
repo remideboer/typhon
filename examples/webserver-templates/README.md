@@ -12,7 +12,7 @@ For query-string → template binding, use
 ## Run
 
 ```bash
-python -m transpiler run examples/webserver-templates/src/main.pys
+python -m transpiler run examples/webserver-templates/src/main.typhon
 curl http://127.0.0.1:8101/hello
 ```
 
@@ -21,8 +21,8 @@ Expected body contains `Hello, <strong>Ada</strong>!`.
 ## Tests
 
 ```bash
-set PYS_WORKSPACE_ROOT=examples\webserver-templates
-set PYS_TEMPLATES_DIR=examples\webserver-templates\templates
-python -m transpiler run examples/webserver-templates/tests/test_templates.pys
+set TYPHON_WORKSPACE_ROOT=examples\webserver-templates
+set TYPHON_TEMPLATES_DIR=examples\webserver-templates\templates
+python -m transpiler run examples/webserver-templates/tests/test_templates.typhon
 python -m pytest tests/test_webserver_templates.py -q
 ```

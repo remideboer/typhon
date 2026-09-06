@@ -17,7 +17,7 @@ obvious (`var` is a declaration form, not a type name).
 
 ## Casts
 
-```pys
+```typhon
 float speed = 12.9
 int whole = (int) speed
 print(whole)
@@ -38,7 +38,7 @@ strict languages.
 Aliases like `byte`, `nibble`, and `int16` teach bit-sized ranges. They
 still emit as Python `int`, but **out-of-range literals are rejected**.
 
-```pys
+```typhon
 byte flags = 0b1011_1101
 nibble n = 0xA
 int16 port = 8080

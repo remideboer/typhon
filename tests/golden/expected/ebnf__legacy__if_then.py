@@ -1,7 +1,7 @@
-def _pys_format(value):
+def _typhon_format(value):
     return "null" if value is None else str(value)
 x = 1
 if x > 0:
-    print(_pys_format("pos"))
+    print(_typhon_format("pos"))
 else:
-    print(_pys_format("nonpos"))
+    print(_typhon_format("nonpos"))

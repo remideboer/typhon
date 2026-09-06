@@ -1,7 +1,7 @@
 # Visitor
 
 **Category:** Behavioral  
-**Demo:** [visitor.pys](visitor.pys)  
+**Demo:** [visitor.typhon](visitor.typhon)  
 **Wikipedia:** [Visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -66,5 +66,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/behavioral/visitor.pys
+python -m transpiler run examples/patterns/design/behavioral/visitor.typhon
 ```

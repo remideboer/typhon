@@ -23,7 +23,7 @@ product on the shelf until a concrete class fills every open slot.
 > but not to unrelated code. Compare: `private` = this class only;
 > `public` = anyone.
 
-```pys
+```typhon
 abstract class AbstractList {
     protected int size
 

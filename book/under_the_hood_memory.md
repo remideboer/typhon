@@ -1,7 +1,7 @@
 # 11.2. Processes, calls, and memory
 
 > **Optional background.** This chapter gives you a useful mental model, not a
-> promise about the exact byte address of every PYS value. PYS currently emits
+> promise about the exact byte address of every Typhon value. Typhon currently emits
 > Python, so Python and the operating system decide many physical storage
 > details.
 
@@ -37,7 +37,7 @@ with roles such as:
 </figure>
 
 Real layouts vary by operating system, CPU, runtime, and optimization. Treat
-these names as a map for reasoning, not as a PYS storage guarantee.
+these names as a map for reasoning, not as a Typhon storage guarantee.
 
 ## Function calls form a stack
 
@@ -46,7 +46,7 @@ which arguments were passed, and which local names belong to that call. This
 record is a **stack frame**. A later call sits above its caller and finishes
 first: last in, first out.
 
-```pys
+```typhon
 function int addOne(int number) {
     int result = number + 1
     return result
@@ -97,9 +97,9 @@ Data often needs to outlive the function that created it or have a size that
 is known only while the program runs. Runtimes commonly manage such data in
 heap storage.
 
-Python—and therefore the current PYS backend—uses automatic memory
+Python—and therefore the current Typhon backend—uses automatic memory
 management. When an object is no longer reachable, the runtime may reclaim
-its storage. You do not write `free(...)` in PYS.
+its storage. You do not write `free(...)` in Typhon.
 
 Garbage collection prevents common manual-memory mistakes such as using an
 object after freeing it, but it does not make memory unlimited. A program can
@@ -109,13 +109,13 @@ still retain too much reachable data and run out of memory.
 
 It is tempting to teach “local means stack” and “object means heap” as an
 absolute rule. That shortcut breaks under optimization, managed runtimes,
-closures, and captured variables. PYS specifies how values behave; it does
+closures, and captured variables. Typhon specifies how values behave; it does
 not currently promise where each value is physically stored.
 
 For example, class variables share an object reference, while structs have
 copy-on-assignment value behavior:
 
-```pys
+```typhon
 class Counter {
     private int value
 
@@ -162,7 +162,7 @@ is visible through the other. Assigning the struct creates an independent
 value, so changing `secondPoint` leaves `firstPoint` unchanged.
 
 This is a **semantic** distinction. The Python emitter may represent both with
-Python objects internally while preserving PYS's different assignment rules.
+Python objects internally while preserving Typhon's different assignment rules.
 Likewise:
 
 - `data` is an immutable value object with all-fields equality;
@@ -181,7 +181,7 @@ the whole class** — shared by every object of that type (and reachable without
 an instance). A `static` method has **no `this`**: it belongs to the class,
 not to one object.
 
-```pys
+```typhon
 class IdCounter {
     public static int total = 0
 
@@ -226,7 +226,7 @@ threads in the same process can reach shared runtime data.
 </figure>
 
 That shared reachability creates races: two flows can read and update the same
-state in an unsafe order. PYS makes the intent visible:
+state in an unsafe order. Typhon makes the intent visible:
 
 - `tasks` / `task` describe concurrent work;
 - `shared` says state is deliberately reachable from concurrent work;
@@ -235,7 +235,7 @@ state in an unsafe order. PYS makes the intent visible:
 - `await` expresses dependencies between tasks.
 
 The current backend may implement these constructs with Python runtime
-facilities, but the PYS contract is higher-level. Code should rely on PYS's
+facilities, but the Typhon contract is higher-level. Code should rely on Typhon's
 `shared`, `atomic`, and `await` rules rather than on backend accidents such as
 one particular Python implementation's scheduling.
 
@@ -244,7 +244,7 @@ one particular Python implementation's scheduling.
 - **Stack overflow:** too many unfinished nested calls.
 - **Out of memory:** the process cannot obtain more memory.
 - **Race condition:** concurrent behavior depends on an unsafe ordering.
-- **Panic:** a PYS error outcome reached the entrypoint; this is a language
+- **Panic:** a Typhon error outcome reached the entrypoint; this is a language
   boundary outcome, not a memory failure.
 
 Keeping these categories separate makes diagnostics easier to understand. A

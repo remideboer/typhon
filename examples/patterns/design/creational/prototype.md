@@ -1,7 +1,7 @@
 # Prototype
 
 **Category:** Creational  
-**Demo:** [prototype.pys](prototype.pys)  
+**Demo:** [prototype.typhon](prototype.typhon)  
 **Wikipedia:** [Prototype pattern](https://en.wikipedia.org/wiki/Prototype_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -54,5 +54,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/creational/prototype.pys
+python -m transpiler run examples/patterns/design/creational/prototype.typhon
 ```

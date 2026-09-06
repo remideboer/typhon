@@ -12,7 +12,7 @@ from transpiler.transpiler import TranspileError, transpile_with_modules
 
 def test_foreach_binder_does_not_leak_to_outer_declaration(tmp_path: Path) -> None:
     """After `loop (T x in …) { }`, outer `int x = …` is a fresh binding."""
-    src = tmp_path / "loop_scope.pys"
+    src = tmp_path / "loop_scope.typhon"
     src.write_text(
         "list<int> xs = [1, 2]\n"
         "loop (int x in xs) {\n"
@@ -25,11 +25,11 @@ def test_foreach_binder_does_not_leak_to_outer_declaration(tmp_path: Path) -> No
     py = transpile_with_modules(src)["loop_scope"]
     assert "for x in" not in py
     assert "x = 10" in py
-    assert "print(_pys_format(x))" in py
+    assert "print(_typhon_format(x))" in py
 
 
 def test_foreach_binder_not_visible_after_loop(tmp_path: Path) -> None:
-    src = tmp_path / "use_after.pys"
+    src = tmp_path / "use_after.typhon"
     src.write_text(
         "list<int> xs = [1]\n"
         "loop (int x in xs) {\n"
@@ -43,7 +43,7 @@ def test_foreach_binder_not_visible_after_loop(tmp_path: Path) -> None:
 
 
 def test_block_local_decl_in_if_does_not_leak(tmp_path: Path) -> None:
-    src = tmp_path / "if_scope.pys"
+    src = tmp_path / "if_scope.typhon"
     src.write_text(
         "if (true) {\n"
         "    int y = 1\n"
@@ -55,14 +55,14 @@ def test_block_local_decl_in_if_does_not_leak(tmp_path: Path) -> None:
     )
     py = transpile_with_modules(src)["if_scope"]
     assert "y = 2" in py
-    assert "_pys_" in py
+    assert "_typhon_" in py
     assert re.search(r"(?m)^\s*y = 1\s*$", py) is None
-    assert re.search(r"(?m)^\s*_pys_\w+_y = 1\s*$", py) is not None
+    assert re.search(r"(?m)^\s*_typhon_\w+_y = 1\s*$", py) is not None
 
 
 def test_foreach_binder_rewritten_in_indexed_assign(tmp_path: Path) -> None:
     """`this.map[c.key()] = c` must mangle every use of loop binder `c` (CER-015)."""
-    src = tmp_path / "index_assign.pys"
+    src = tmp_path / "index_assign.typhon"
     src.write_text(
         "class Item {\n"
         "    private string id\n"
@@ -82,4 +82,4 @@ def test_foreach_binder_rewritten_in_indexed_assign(tmp_path: Path) -> None:
     )
     py = transpile_with_modules(src)["index_assign"]
     assert "self.byId[c.getId()]" not in py
-    assert re.search(r"self\.byId\[_pys_b\d+_c\.getId\(\)\] = _pys_b\d+_c", py)
+    assert re.search(r"self\.byId\[_typhon_b\d+_c\.getId\(\)\] = _typhon_b\d+_c", py)

@@ -65,9 +65,9 @@ escape character \ standard escaped, but \# should be added as escape for the ty
 int z = (int) y;
 
 # top level import statements (file = module)
-# import funcs                 # same as import all from funcs.pys
-# import all from funcs.pys    # bring visible exports into scope
-# import greet from funcs.pys  # single export
+# import funcs                 # same as import all from funcs.typhon
+# import all from funcs.typhon    # bring visible exports into scope
+# import greet from funcs.typhon  # single export
 import
 
 # top-level visibility (optional; default is module-private)
@@ -92,7 +92,7 @@ function int my_returning_function():
 # method overloading based on signature
 # real private class members, no name mangling
 # access modifiers private, protected (so acces to own class and subclass only), module (acces only in the file, like pyhton does) public
-# file example.pys
+# file example.typhon
 class Car{
 	# attribute declaration
 	private string brand;
@@ -134,8 +134,8 @@ c1.drive();
 t1.drive(); 
 print("brand of the truck is {t1.brand()");
 
------ file other.pys
-import Car from example.pys
+----- file other.typhon
+import Car from example.typhon
 
 Car c1 = Car("Toyota");
 c1.drive();
@@ -144,9 +144,9 @@ print("brand of the car is {c1.brand()"); # error, access to c1.brand() is restr
 
 
 # dependency management like gradle / maven
-# not using venv — runner refers to central repo (~/.pys/repository) like maven .m2
+# not using venv — runner refers to central repo (~/.typhon/repository) like maven .m2
 # flyweight: each package/version installed once, shared across projects
-# file: pys.deps (read by transpiler/runner; pip downloads into the central repo)
+# file: typhon.deps (read by transpiler/runner; pip downloads into the central repo)
 [interpreter]
 	version: [default any| >=3.9 | < 3.5]
 	path: [for specific path]

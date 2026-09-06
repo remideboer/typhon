@@ -18,13 +18,13 @@ def test_transpile_warning_to_dict() -> None:
         2,
         3,
         "low",
-        code="pys.enum-naming",
+        code="typhon.enum-naming",
         suggested_fix="LOW",
         tips=["Rename"],
     )
     d = w.to_dict()
     assert d["message"] == "demo"
-    assert d["code"] == "pys.enum-naming"
+    assert d["code"] == "typhon.enum-naming"
     assert d["suggested_fix"] == "LOW"
     assert "warning:" in str(w)
 
@@ -38,9 +38,9 @@ def test_warnings_do_not_fail_compile() -> None:
 
 def test_analyze_file_warnings_json(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(WORKSPACE_ROOT_ENV, str(tmp_path))
-    path = tmp_path / "w.pys"
+    path = tmp_path / "w.typhon"
     path.write_text("enum E {\n    soft\n}\n", encoding="utf-8")
     result = analyze_file(path)
     assert result["ok"] is True
     assert isinstance(result["warnings"], list)
-    assert result["warnings"][0]["code"] == "pys.enum-naming"
+    assert result["warnings"][0]["code"] == "typhon.enum-naming"

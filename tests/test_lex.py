@@ -38,7 +38,7 @@ def test_tokenize_rejects_bad_numeric_literals(source: str) -> None:
 
 
 def test_from_is_keyword() -> None:
-    toks = tokenize("import A, B from mod.pys\n")
+    toks = tokenize("import A, B from mod.typhon\n")
     from_toks = [t for t in toks if t.text == "from"]
     assert len(from_toks) == 1
     assert from_toks[0].kind == TokenKind.KEYWORD
@@ -80,8 +80,8 @@ def test_tokenize_blank_after_rbrace_only() -> None:
 
 def test_all_golden_sources_lex() -> None:
     root = __import__("pathlib").Path(__file__).resolve().parent / "golden"
-    for pys in sorted(root.rglob("*.pys")):
-        tokenize(pys.read_text(encoding="utf-8"))
+    for typhon in sorted(root.rglob("*.typhon")):
+        tokenize(typhon.read_text(encoding="utf-8"))
 
 
 def test_tokenize_with_flags_detects_brace_mode() -> None:

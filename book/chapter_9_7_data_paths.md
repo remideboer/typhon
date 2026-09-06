@@ -20,7 +20,7 @@ Read cache → miss → load store → populate cache.
   </figcaption>
 </figure>
 
-Demo: [`cache_aside.pys`](../examples/patterns/persistence/cache_aside.pys)
+Demo: [`cache_aside.typhon`](../examples/patterns/persistence/cache_aside.typhon)
 
 **Output:**
 
@@ -52,7 +52,7 @@ Carry a **version**; reject stale updates.
   </figcaption>
 </figure>
 
-Demo: [`optimistic_concurrency.pys`](../examples/patterns/persistence/optimistic_concurrency.pys)
+Demo: [`optimistic_concurrency.typhon`](../examples/patterns/persistence/optimistic_concurrency.typhon)
 
 **Output:**
 
@@ -97,7 +97,7 @@ v1
   </figcaption>
 </figure>
 
-Demo: [`data_mapper_vs_active_record.pys`](../examples/patterns/persistence/data_mapper_vs_active_record.pys)
+Demo: [`data_mapper_vs_active_record.typhon`](../examples/patterns/persistence/data_mapper_vs_active_record.typhon)
 
 **Output:**
 
@@ -126,7 +126,7 @@ Within one session, same id → **same instance**.
   </figcaption>
 </figure>
 
-Demo: [`identity_map.pys`](../examples/patterns/persistence/identity_map.pys)
+Demo: [`identity_map.typhon`](../examples/patterns/persistence/identity_map.typhon)
 
 **Output:**
 

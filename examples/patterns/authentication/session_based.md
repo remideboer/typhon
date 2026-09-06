@@ -1,7 +1,7 @@
 # Session-based authentication
 
 **Category:** Authentication  
-**Demo:** [session_based.pys](session_based.pys)  
+**Demo:** [session_based.typhon](session_based.typhon)  
 **Wikipedia:** [Session](https://en.wikipedia.org/wiki/Session_%28computer_science%29) · [HTTP cookie](https://en.wikipedia.org/wiki/HTTP_cookie)
 
 ## Intent
@@ -55,5 +55,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/authentication/session_based.pys
+python -m transpiler run examples/patterns/authentication/session_based.typhon
 ```

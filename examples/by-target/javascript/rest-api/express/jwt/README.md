@@ -11,14 +11,14 @@ HS256 via Node `crypto` (not `jsonwebtoken`), matching the Python stdlib JWT les
 ## Run
 
 ```bash
-python -m transpiler run examples/by-target/javascript/rest-api/express/jwt/src/main.pys
+python -m transpiler run examples/by-target/javascript/rest-api/express/jwt/src/main.typhon
 ```
 
 ## Tests
 
 ```bash
-set PYS_WORKSPACE_ROOT=examples\by-target\javascript\rest-api\express\jwt
-python -m transpiler run examples/by-target/javascript/rest-api/express/jwt/tests/test_jwt_crypto.pys --target javascript
+set TYPHON_WORKSPACE_ROOT=examples\by-target\javascript\rest-api\express\jwt
+python -m transpiler run examples/by-target/javascript/rest-api/express/jwt/tests/test_jwt_crypto.typhon --target javascript
 ```
 
 ## Curl

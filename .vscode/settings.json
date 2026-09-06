@@ -1,10 +1,10 @@
 {
   "files.associations": {
-    "*.pys": "pys"
+    "*.typhon": "typhon"
   },
   "npm.exclude": [
-    "**/pys-language",
-    "**/pys-language/**"
+    "**/typhon-language",
+    "**/typhon-language/**"
   ],
   "python.analysis.extraPaths": [
     "${workspaceFolder}"

@@ -1,7 +1,7 @@
 # Event-driven architecture
 
 **Category:** Messaging  
-**Demo:** [event_driven.pys](event_driven.pys)  
+**Demo:** [event_driven.typhon](event_driven.typhon)  
 **Wikipedia:** [Event-driven architecture](https://en.wikipedia.org/wiki/Event-driven_architecture)
 
 ## Intent
@@ -49,5 +49,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/messaging/event_driven.pys
+python -m transpiler run examples/patterns/messaging/event_driven.typhon
 ```

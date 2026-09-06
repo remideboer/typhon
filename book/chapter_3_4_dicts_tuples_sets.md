@@ -2,7 +2,7 @@
 
 Use typed literals (see also [Data structures](basics_data.md)):
 
-```pys
+```typhon
 dict<string, int> ages = {}
 ages["Ada"] = 36
 print(ages["Ada"])

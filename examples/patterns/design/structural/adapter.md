@@ -1,7 +1,7 @@
 # Adapter
 
 **Category:** Structural  
-**Demo:** [adapter.pys](adapter.pys)  
+**Demo:** [adapter.typhon](adapter.typhon)  
 **Wikipedia:** [Adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -57,5 +57,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/structural/adapter.pys
+python -m transpiler run examples/patterns/design/structural/adapter.typhon
 ```

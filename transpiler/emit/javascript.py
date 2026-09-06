@@ -1,9 +1,9 @@
-"""JavaScript (Node/ESM) emitter for PYS AST.
+"""JavaScript (Node/ESM) emitter for Typhon AST.
 
 Teaching-core parity with the Python backend: control flow, OO, collections,
 switch/enum/entity/data/struct, result, lambdas, shared/atomic/tasks/await
 (cooperative), and trait `uses` flattening. Fail-closed: third-party Python
-packages (use ``pys.toml`` ``[dependencies.npm]`` + central npm for JS libraries) and library
+packages (use ``typhon.toml`` ``[dependencies.npm]`` + central npm for JS libraries) and library
 decorators (no silent drop).
 """
 from __future__ import annotations
@@ -97,15 +97,15 @@ def emit_with_map(
 ) -> tuple[str, list[dict[str, int]], dict[str, str]]:
     """Emit JavaScript, a statement-level line map, and debug display names.
 
-    Map entries use ``{"js": int, "pys": int}`` (1-based). ``names`` maps
-    emitted locals → PYS display names.
+    Map entries use ``{"js": int, "typhon": int}`` (1-based). ``names`` maps
+    emitted locals → Typhon display names.
     """
     emitter = _JsEmitter(source_path=source_path, is_entrypoint=is_entrypoint)
     text, origins = emitter.emit_module_with_origins(module)
     line_map: list[dict[str, int]] = []
     for i, orig in enumerate(origins):
         if orig is not None:
-            line_map.append({"js": i + 1, "pys": orig})
+            line_map.append({"js": i + 1, "typhon": orig})
     return text, line_map, dict(emitter.debug_names)
 
 
@@ -167,7 +167,7 @@ class _JsEmitter:
             text += "\n"
         return text, list(self.origins)
 
-    def _pys_line(self, stmt) -> int | None:
+    def _typhon_line(self, stmt) -> int | None:
         span = getattr(stmt, "span", None)
         if span is None:
             return None
@@ -189,7 +189,7 @@ class _JsEmitter:
         )
 
     def _stmt(self, stmt, indent: int) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         if isinstance(stmt, BlankStmt):
             self._append_raw("", pys_line=None)
         elif isinstance(stmt, CommentStmt):
@@ -202,7 +202,7 @@ class _JsEmitter:
         elif isinstance(stmt, PrintStmt):
             self._emit(
                 indent,
-                f"console.log(_pys_format({self._expr(stmt.value)}));",
+                f"console.log(_typhon_format({self._expr(stmt.value)}));",
                 pys_line=pys,
             )
         elif isinstance(stmt, AssignStmt):
@@ -261,14 +261,14 @@ class _JsEmitter:
             self.shared_vars.add(stmt.name)
             self._emit(
                 indent,
-                f"let {stmt.name} = new _PysShared({self._expr(stmt.value)});",
+                f"let {stmt.name} = new _TyphonShared({self._expr(stmt.value)});",
                 pys_line=pys,
             )
         elif isinstance(stmt, AtomicDecl):
             self.atomic_vars.add(stmt.name)
             self._emit(
                 indent,
-                f"let {stmt.name} = new _PysAtomic({self._expr(stmt.value)});",
+                f"let {stmt.name} = new _TyphonAtomic({self._expr(stmt.value)});",
                 pys_line=pys,
             )
         elif isinstance(stmt, TasksBlock):
@@ -309,7 +309,7 @@ class _JsEmitter:
         elif isinstance(stmt, ForEachStmt):
             self._emit(
                 indent,
-                f"for (const {stmt.var} of _pys_iter({self._expr(stmt.iterable)})) {{",
+                f"for (const {stmt.var} of _typhon_iter({self._expr(stmt.iterable)})) {{",
                 pys_line=pys,
             )
             self._block(stmt.body, indent + 1)
@@ -414,7 +414,7 @@ class _JsEmitter:
 
     def _if(self, stmt: IfStmt, indent: int, *, first: bool) -> None:
         kw = "if" if first else "else if"
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         cond = self._expr(stmt.cond)
         if stmt.negated:
             cond = f"!({cond})"
@@ -436,10 +436,10 @@ class _JsEmitter:
         self._emit(indent, "}", pys_line=None)
 
     def _repeat(self, stmt: RepeatStmt, indent: int) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         serial = self._repeat_serial
         self._repeat_serial += 1
-        var = f"_pys_rep_{serial}"
+        var = f"_typhon_rep_{serial}"
         self._emit(
             indent,
             f"for (let {var} = 0; {var} < {self._expr(stmt.count)}; {var}++) {{",
@@ -449,7 +449,7 @@ class _JsEmitter:
         self._emit(indent, "}", pys_line=None)
 
     def _function(self, stmt: FunctionDef, indent: int) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         params = ", ".join(stmt.params)
         prev = self._current_function
         self._current_function = stmt.name
@@ -458,13 +458,13 @@ class _JsEmitter:
         if self._base_type(stmt.return_type) == "result":
             self._emit(indent + 1, "try {", pys_line=pys)
             self._block(stmt.body, indent + 2)
-            self._emit(indent + 1, "} catch (_pys_signal) {", pys_line=None)
+            self._emit(indent + 1, "} catch (_typhon_signal) {", pys_line=None)
             self._emit(
                 indent + 2,
-                "if (_pys_signal && _pys_signal._pys_propagate) return _pys_signal.result;",
+                "if (_typhon_signal && _typhon_signal._typhon_propagate) return _typhon_signal.result;",
                 pys_line=None,
             )
-            self._emit(indent + 2, "throw _pys_signal;", pys_line=None)
+            self._emit(indent + 2, "throw _typhon_signal;", pys_line=None)
             self._emit(indent + 1, "}", pys_line=None)
         else:
             self._block(stmt.body, indent + 1)
@@ -472,37 +472,37 @@ class _JsEmitter:
         self._current_function = prev
 
     def _tasks(self, stmt: TasksBlock, indent: int) -> None:
-        pys = self._pys_line(stmt)
-        tg = f"_pys_tg_{stmt.group_id}"
+        pys = self._typhon_line(stmt)
+        tg = f"_typhon_tg_{stmt.group_id}"
         prev = self.tg_name
         self.tg_name = tg
-        self._emit(indent, f"const {tg} = new _PysTaskGroup();", pys_line=pys)
+        self._emit(indent, f"const {tg} = new _TyphonTaskGroup();", pys_line=pys)
         for task in stmt.tasks:
             self._task_def(task, indent, tg)
         self._emit(indent, f"{tg}.run();", pys_line=pys)
         self.tg_name = prev
 
     def _task_def(self, task: TaskDef, indent: int, tg: str) -> None:
-        pys = self._pys_line(task)
+        pys = self._typhon_line(task)
         params = ", ".join(task.params)
-        self._emit(indent, f"function __pys_task_{task.name}({params}) {{", pys_line=pys)
+        self._emit(indent, f"function __typhon_task_{task.name}({params}) {{", pys_line=pys)
         self._block(task.body, indent + 1)
         self._emit(indent, "}", pys_line=None)
         if task.is_template:
             self._emit(
                 indent,
-                f"{tg}.add_template({task.name!r}, __pys_task_{task.name});",
+                f"{tg}.add_template({task.name!r}, __typhon_task_{task.name});",
                 pys_line=pys,
             )
         else:
             self._emit(
                 indent,
-                f"{tg}.add_auto({task.name!r}, __pys_task_{task.name});",
+                f"{tg}.add_auto({task.name!r}, __typhon_task_{task.name});",
                 pys_line=pys,
             )
 
     def _class(self, stmt: ClassDef, indent: int) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         # `inherits` → extends; interface `implements` stay duck-typed (no runtime base).
         extends = f" extends {stmt.parent}" if stmt.parent else ""
         exp = "export " if stmt.visibility in ("global", "package") else ""
@@ -580,7 +580,7 @@ class _JsEmitter:
                 params.append(f"{name} = {defaults[i]}")
             else:
                 params.append(name)
-        pys = self._pys_line(primary)
+        pys = self._typhon_line(primary)
         prev = self._current_function
         self._current_function = "constructor"
         self._emit(indent, f"constructor({', '.join(params)}) {{", pys_line=pys)
@@ -606,14 +606,14 @@ class _JsEmitter:
     def _emit_method_overloads(
         self, name: str, group: list[MethodDef], indent: int
     ) -> None:
-        pys = self._pys_line(group[0])
+        pys = self._typhon_line(group[0])
         static = "static " if group[0].is_static else ""
-        self._emit(indent, f"{static}{name}(..._pys_args) {{", pys_line=pys)
+        self._emit(indent, f"{static}{name}(..._typhon_args) {{", pys_line=pys)
         for m in sorted(group, key=lambda x: len(x.params)):
             n = len(m.params)
-            self._emit(indent + 1, f"if (_pys_args.length === {n}) {{", pys_line=pys)
+            self._emit(indent + 1, f"if (_typhon_args.length === {n}) {{", pys_line=pys)
             for i, p in enumerate(m.params):
-                self._emit(indent + 2, f"const {p} = _pys_args[{i}];", pys_line=pys)
+                self._emit(indent + 2, f"const {p} = _typhon_args[{i}];", pys_line=pys)
             prev = self._current_function
             self._current_function = name
             self._block(m.body, indent + 2)
@@ -622,7 +622,7 @@ class _JsEmitter:
             self._emit(indent + 1, "}", pys_line=None)
         self._emit(
             indent + 1,
-            f"throw new Error('no overload of {name} for ' + _pys_args.length + ' args');",
+            f"throw new Error('no overload of {name} for ' + _typhon_args.length + ' args');",
             pys_line=pys,
         )
         self._emit(indent, "}", pys_line=None)
@@ -645,7 +645,7 @@ class _JsEmitter:
     def _method_body(
         self, m: MethodDef, indent: int, *, emit_name: str | None = None
     ) -> None:
-        pys = self._pys_line(m)
+        pys = self._typhon_line(m)
         prev = self._current_function
         name = emit_name or m.name
         self._current_function = name
@@ -678,7 +678,7 @@ class _JsEmitter:
     def _data_or_struct(
         self, stmt: DataDef | StructDef, indent: int, *, kind: str
     ) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         fields = stmt.fields
         self.struct_field_types[stmt.name] = {f.name: f.type_name for f in fields}
         params = ", ".join(f.name for f in fields)
@@ -698,7 +698,7 @@ class _JsEmitter:
             )
         else:
             checks = " && ".join(
-                f"_pys_value_eq(this.{f.name}, other.{f.name})" for f in fields
+                f"_typhon_value_eq(this.{f.name}, other.{f.name})" for f in fields
             )
             self._emit(
                 indent + 2,
@@ -706,12 +706,12 @@ class _JsEmitter:
                 pys_line=pys,
             )
         self._emit(indent + 1, "}", pys_line=None)
-        self._emit(indent + 1, "_pys_copy() {", pys_line=pys)
+        self._emit(indent + 1, "_typhon_copy() {", pys_line=pys)
         if not fields:
             self._emit(indent + 2, f"return new {stmt.name}();", pys_line=pys)
         else:
             copy_args = ", ".join(
-                f"_pys_struct_copy(this.{f.name})" for f in fields
+                f"_typhon_struct_copy(this.{f.name})" for f in fields
             )
             self._emit(
                 indent + 2,
@@ -731,7 +731,7 @@ class _JsEmitter:
         return keys
 
     def _entity(self, stmt: EntityDef, indent: int) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         extends = f" extends {stmt.parent}" if stmt.parent else ""
         self._emit(indent, f"class {stmt.name}{extends} {{", pys_line=pys)
         for f in stmt.fields:
@@ -757,14 +757,14 @@ class _JsEmitter:
             self._emit(
                 indent + 2,
                 f"return other instanceof {stmt.name} && "
-                f"_pys_eq_tuple([{key_self}], [{key_other}]);",
+                f"_typhon_eq_tuple([{key_self}], [{key_other}]);",
                 pys_line=pys,
             )
             self._emit(indent + 1, "}", pys_line=None)
             self._emit(indent + 1, "hashCode() {", pys_line=pys)
             self._emit(
                 indent + 2,
-                f"return _pys_hash_tuple([{key_self}]);",
+                f"return _typhon_hash_tuple([{key_self}]);",
                 pys_line=pys,
             )
             self._emit(indent + 1, "}", pys_line=None)
@@ -775,14 +775,14 @@ class _JsEmitter:
             self._emit(indent, f"export {{ {stmt.name} }};", pys_line=pys)
 
     def _enum(self, stmt: EnumDef, indent: int) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         parts: list[str] = []
         for i, m in enumerate(stmt.members):
             if m.value is None:
                 val = str(i)
             else:
                 val = self._expr(m.value)
-            parts.append(f'{m.name}: _pys_enum_member({m.name!r}, {val})')
+            parts.append(f'{m.name}: _typhon_enum_member({m.name!r}, {val})')
         body = ", ".join(parts)
         self._emit(
             indent,
@@ -795,7 +795,7 @@ class _JsEmitter:
     def _sibling_export_names(self, module: str) -> list[str]:
         if self.source_path is None:
             return []
-        path = self.source_path.parent / f"{module}.pys"
+        path = self.source_path.parent / f"{module}.typhon"
         if not path.is_file():
             return []
         from ..imports import _parse_module
@@ -806,7 +806,7 @@ class _JsEmitter:
         )
 
     def _import(self, stmt: ImportStmt, indent: int) -> None:
-        pys = self._pys_line(stmt)
+        pys = self._typhon_line(stmt)
         module = stmt.module or ""
         # Minimal stdlib shims used by teaching demos (no Node package).
         if module == "time" and stmt.kind in ("module", "as"):
@@ -838,7 +838,7 @@ class _JsEmitter:
         if npm is None and ("." in module or module in {"tkinter", "sys", "os", "re", "math"}):
             raise JsEmitError(
                 f"JavaScript emitter cannot import Python package {module!r}; "
-                "use --target python, a sibling .pys module, or an npm-mapped "
+                "use --target python, a sibling .typhon module, or an npm-mapped "
                 "name (nodegui, mysql2, express, crypto, buffer)."
             )
         if npm is not None:
@@ -982,14 +982,14 @@ class _JsEmitter:
         first = True
         for labels, body in groups:
             if labels is None:
-                self._emit(indent, "else {", pys_line=self._pys_line(stmt))
+                self._emit(indent, "else {", pys_line=self._typhon_line(stmt))
                 self._block(body, indent + 1)
                 self._emit(indent, "}", pys_line=None)
                 first = False
                 continue
             cond = self._switch_labels_cond(subject, labels)
             head = f"if ({cond}) {{" if first else f"else if ({cond}) {{"
-            self._emit(indent, head, pys_line=self._pys_line(stmt))
+            self._emit(indent, head, pys_line=self._typhon_line(stmt))
             self._block(body, indent + 1)
             self._emit(indent, "}", pys_line=None)
             first = False
@@ -997,8 +997,8 @@ class _JsEmitter:
     def _result_switch_stmt(self, stmt: SwitchStmt, indent: int) -> None:
         serial = self._result_switch_serial
         self._result_switch_serial += 1
-        subject = f"_pys_result_{serial}"
-        pys = self._pys_line(stmt)
+        subject = f"_typhon_result_{serial}"
+        pys = self._typhon_line(stmt)
         self._emit(
             indent, f"const {subject} = {self._expr(stmt.subject)};", pys_line=pys
         )
@@ -1010,7 +1010,7 @@ class _JsEmitter:
             head = "if" if index == 0 else "else if"
             self._emit(
                 indent,
-                f"{head} ({subject}._pys_result_kind === {pattern.kind!r}) {{",
+                f"{head} ({subject}._typhon_result_kind === {pattern.kind!r}) {{",
                 pys_line=pys,
             )
             if pattern.binding:
@@ -1058,7 +1058,7 @@ class _JsEmitter:
     def _result_switch_expr(self, expr: SwitchExpr) -> str:
         serial = self._result_switch_serial
         self._result_switch_serial += 1
-        name = f"_pys_result_switch_{serial}"
+        name = f"_typhon_result_switch_{serial}"
         subject = self._expr(expr.subject)
         parts = [f"(function({name}) {{"]
         patterns = [case for case in expr.cases if not case.is_default]
@@ -1071,7 +1071,7 @@ class _JsEmitter:
             if pattern.binding:
                 bind = f"const {pattern.binding} = {name}.value; "
             parts.append(
-                f"{head} ({name}._pys_result_kind === {pattern.kind!r}) {{ "
+                f"{head} ({name}._typhon_result_kind === {pattern.kind!r}) {{ "
                 f"{bind}return {self._expr(case.value)}; }}"
             )
         if default is not None:
@@ -1159,14 +1159,14 @@ class _JsEmitter:
             return self._array_alloc(expr)
         if isinstance(expr, ResultCtor):
             if expr.kind == "ok" and expr.value is None:
-                return "_pys_ok()"
-            return f"_pys_{expr.kind}({self._expr(expr.value)})"
+                return "_typhon_ok()"
+            return f"_typhon_{expr.kind}({self._expr(expr.value)})"
         if isinstance(expr, PropagateExpr):
             span = expr.span
             file = str(self.source_path) if self.source_path is not None else "<memory>"
             line = span.line if span else 1
             return (
-                f"_pys_propagate({self._expr(expr.operand)}, {file!r}, "
+                f"_typhon_propagate({self._expr(expr.operand)}, {file!r}, "
                 f"{line}, {self._current_function!r})"
             )
         if isinstance(expr, SwitchExpr):
@@ -1179,16 +1179,16 @@ class _JsEmitter:
         return ""
 
     def _await(self, expr: AwaitExpr) -> str:
-        tg = self.tg_name or "_pys_tg_0"
+        tg = self.tg_name or "_typhon_tg_0"
         target = expr.target
         if isinstance(target, Call) and isinstance(target.callee, Identifier):
             args = ", ".join(self._expr(a) for a in target.args)
             if args:
-                return f"_pys_await({tg}.call({target.callee.name!r}, {args}))"
-            return f"_pys_await({tg}.call({target.callee.name!r}))"
+                return f"_typhon_await({tg}.call({target.callee.name!r}, {args}))"
+            return f"_typhon_await({tg}.call({target.callee.name!r}))"
         if isinstance(target, Identifier):
-            return f"_pys_await({tg}.futures[{target.name!r}])"
-        return f"_pys_await({self._expr(target)})"
+            return f"_typhon_await({tg}.futures[{target.name!r}])"
+        return f"_typhon_await({self._expr(target)})"
 
     def _base_type(self, type_name: str) -> str:
         return type_name.split("<", 1)[0].strip() if type_name else ""
@@ -1220,7 +1220,7 @@ class _JsEmitter:
         if self._expr_is_struct_value(expr) or (
             expected_type and self._is_struct_type(expected_type)
         ):
-            return f"_pys_struct_copy({code})"
+            return f"_typhon_struct_copy({code})"
         return code
 
     def _lambda(self, expr: LambdaExpr) -> str:
@@ -1251,7 +1251,7 @@ class _JsEmitter:
         start = self._expr(expr.start) if expr.start is not None else "null"
         stop = self._expr(expr.stop) if expr.stop is not None else "null"
         step = self._expr(expr.step) if expr.step is not None else "null"
-        return f"_pys_slice({obj}, {start}, {stop}, {step})"
+        return f"_typhon_slice({obj}, {start}, {stop}, {step})"
 
     def _array_alloc(self, expr: ArrayAlloc) -> str:
         default = self._js_default(expr.elem_type)
@@ -1271,7 +1271,7 @@ class _JsEmitter:
         return nest(list(expr.dims))
 
     def _call(self, expr: Call) -> str:
-        # All-keyword call → options object for foreign APIs; positional for PYS types.
+        # All-keyword call → options object for foreign APIs; positional for Typhon types.
         all_kw = bool(expr.args) and all(isinstance(a, KeywordArg) for a in expr.args)
         kw_map = (
             {a.name: self._maybe_copy_struct(a.value) for a in expr.args if isinstance(a, KeywordArg)}
@@ -1330,7 +1330,7 @@ class _JsEmitter:
                 return f"{recv}.push({arg_s})"
             if method == "pop":
                 if arg_s:
-                    return f"_pys_dict_pop({recv}, {arg_s})"
+                    return f"_typhon_dict_pop({recv}, {arg_s})"
                 return f"{recv}.pop()"
             if method == "loop" and len(expr.args) == 1:
                 return f"{recv}.map({self._expr(expr.args[0])})"
@@ -1371,7 +1371,7 @@ class _JsEmitter:
             if name == "set" and not arg_s:
                 return "new Set()"
             if name == "str":
-                return f"_pys_format({arg_s})"
+                return f"_typhon_format({arg_s})"
             if name == "int":
                 return f"(Math.trunc(Number({arg_s})))"
             if name == "float":
@@ -1379,27 +1379,27 @@ class _JsEmitter:
             if name == "bool":
                 return f"Boolean({arg_s})"
             if name == "ok":
-                return f"_pys_ok({arg_s})" if arg_s else "_pys_ok()"
+                return f"_typhon_ok({arg_s})" if arg_s else "_typhon_ok()"
             if name == "error":
-                return f"_pys_error({arg_s})"
+                return f"_typhon_error({arg_s})"
             if name in ("parseFloat", "parseInt"):
                 helper = (
-                    "_pys_parse_float"
+                    "_typhon_parse_float"
                     if name == "parseFloat"
-                    else "_pys_parse_int"
+                    else "_typhon_parse_int"
                 )
                 return f"{helper}({arg_s})"
             if name in ("toBin", "toHex", "toOct"):
                 helper = {
-                    "toBin": "_pys_to_bin",
-                    "toHex": "_pys_to_hex",
-                    "toOct": "_pys_to_oct",
+                    "toBin": "_typhon_to_bin",
+                    "toHex": "_typhon_to_hex",
+                    "toOct": "_typhon_to_oct",
                 }[name]
                 return f"{helper}({arg_s})"
             if name == "panic":
-                return f"_pys_panic({arg_s})"
-            if name == "_pys_keep_alive":
-                return f"_pys_keep_alive({arg_s})"
+                return f"_typhon_panic({arg_s})"
+            if name == "_typhon_keep_alive":
+                return f"_typhon_keep_alive({arg_s})"
             return f"{name}({arg_s})"
         return f"{self._expr(expr.callee)}({arg_s})"
 
@@ -1419,7 +1419,7 @@ class _JsEmitter:
                 or self._infer_kind(expr.right) == "string"
             ):
                 return f"String({left}) + String({right})"
-            # list/array concat (PYS `a + b` on lists) — avoid JS string coercion
+            # list/array concat (Typhon `a + b` on lists) — avoid JS string coercion
             if self._infer_kind(expr.left) == "array" or self._infer_kind(
                 expr.right
             ) == "array" or isinstance(expr.left, (ArrayLiteral, BraceLiteral, TupleLiteral)) or isinstance(
@@ -1430,7 +1430,7 @@ class _JsEmitter:
         elif op in ("==", "!="):
             left = self._expr(expr.left)
             right = self._expr(expr.right)
-            eq = f"_pys_value_eq({left}, {right})"
+            eq = f"_typhon_value_eq({left}, {right})"
             return f"!({eq})" if op == "!=" else eq
         left = self._expr(expr.left)
         right = self._expr(expr.right)
@@ -1492,17 +1492,17 @@ class _JsEmitter:
 
 
 JS_RUNTIME_PREAMBLE = """\
-function _pys_format(value) {
+function _typhon_format(value) {
   if (value === null || value === undefined) return "null";
   if (value instanceof Set) return JSON.stringify([...value]);
   if (Array.isArray(value)) return JSON.stringify(value);
-  if (typeof value === "object" && value._pys_result_kind) {
-    return value._pys_result_kind + "(" + _pys_format(value.value) + ")";
+  if (typeof value === "object" && value._typhon_result_kind) {
+    return value._typhon_result_kind + "(" + _typhon_format(value.value) + ")";
   }
   if (typeof value === "boolean") return value ? "True" : "False";
   return String(value);
 }
-function _pys_slice(obj, start, stop, step) {
+function _typhon_slice(obj, start, stop, step) {
   const s = start == null ? 0 : start;
   const exclusive = stop == null ? undefined : (stop + 1);
   const st = step == null ? 1 : step;
@@ -1523,32 +1523,32 @@ function _pys_slice(obj, start, stop, step) {
   }
   return typeof obj === "string" ? out.join("") : out;
 }
-class _PysResult {
+class _TyphonResult {
   constructor(kind, value, sites) {
-    this._pys_result_kind = kind;
+    this._typhon_result_kind = kind;
     this.value = value;
     this.sites = sites ? [...sites] : [];
   }
 }
-function _pys_ok(value) { return new _PysResult("ok", value === undefined ? null : value); }
-function _pys_error(value) { return new _PysResult("error", value); }
-function _pys_propagate(result, file, line, functionName) {
-  if (result && result._pys_result_kind === "ok") return result.value;
-  if (!result || result._pys_result_kind !== "error") {
-    throw new TypeError("propagate expected a PYS result value");
+function _typhon_ok(value) { return new _TyphonResult("ok", value === undefined ? null : value); }
+function _typhon_error(value) { return new _TyphonResult("error", value); }
+function _typhon_propagate(result, file, line, functionName) {
+  if (result && result._typhon_result_kind === "ok") return result.value;
+  if (!result || result._typhon_result_kind !== "error") {
+    throw new TypeError("propagate expected a Typhon result value");
   }
   const sites = [...(result.sites || []), [file, line, functionName]];
-  const err = new Error("PYS propagate");
-  err._pys_propagate = true;
-  err.result = new _PysResult("error", result.value, sites);
+  const err = new Error("Typhon propagate");
+  err._typhon_propagate = true;
+  err.result = new _TyphonResult("error", result.value, sites);
   throw err;
 }
-function _pys_eq_tuple(a, b) {
+function _typhon_eq_tuple(a, b) {
   if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) if (!_pys_value_eq(a[i], b[i])) return false;
+  for (let i = 0; i < a.length; i++) if (!_typhon_value_eq(a[i], b[i])) return false;
   return true;
 }
-function _pys_hash_tuple(parts) {
+function _typhon_hash_tuple(parts) {
   let h = 0;
   for (const p of parts) {
     const s = String(p);
@@ -1556,36 +1556,36 @@ function _pys_hash_tuple(parts) {
   }
   return h;
 }
-function _pys_enum_member(name, value) {
+function _typhon_enum_member(name, value) {
   return Object.freeze({ name, value });
 }
 function print(value) {
-  console.log(_pys_format(value));
+  console.log(_typhon_format(value));
 }
-function _pys_iter(obj) {
+function _typhon_iter(obj) {
   if (obj == null) return [];
   if (typeof obj[Symbol.iterator] === "function") return obj;
   return Object.keys(obj);
 }
-function _pys_dict_pop(obj, key) {
+function _typhon_dict_pop(obj, key) {
   const v = obj[key];
   delete obj[key];
   return v;
 }
-function _pys_keep_alive(value) {
-  globalThis.__pys_keep = globalThis.__pys_keep || [];
-  globalThis.__pys_keep.push(value);
+function _typhon_keep_alive(value) {
+  globalThis.__typhon_keep = globalThis.__typhon_keep || [];
+  globalThis.__typhon_keep.push(value);
   return value;
 }
-function _pys_parse_float(text) {
+function _typhon_parse_float(text) {
   const n = Number(String(text).trim());
-  if (Number.isNaN(n)) return _pys_error("invalid float");
-  return _pys_ok(n);
+  if (Number.isNaN(n)) return _typhon_error("invalid float");
+  return _typhon_ok(n);
 }
-function _pys_parse_int(text) {
+function _typhon_parse_int(text) {
   const n = parseInt(String(text).trim(), 10);
-  if (Number.isNaN(n)) return _pys_error("invalid int");
-  return _pys_ok(n);
+  if (Number.isNaN(n)) return _typhon_error("invalid int");
+  return _typhon_ok(n);
 }
 """ + JS_VALUE_HELPERS + JS_CONCURRENCY_PREAMBLE
 

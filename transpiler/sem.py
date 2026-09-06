@@ -443,7 +443,7 @@ def _check_brace_indentation(module: Module) -> None:
             line,
             node.span.column,
             code_line,
-            code="pys.indent",
+            code="typhon.indent",
             suggested_fix=suggested,
             tips=[
                 "Use 4 spaces per nested `{ }` level; keep siblings aligned.",
@@ -793,7 +793,7 @@ def _check_int_ops(
     walk(body)
 
 
-def _pys_import_line(stmt: ImportStmt) -> str:
+def _typhon_import_line(stmt: ImportStmt) -> str:
     if stmt.kind == "module":
         return f"import {stmt.module}"
     if stmt.kind == "as":
@@ -833,7 +833,7 @@ def _seed_imports(
     for stmt in module.body:
         if not isinstance(stmt, ImportStmt):
             continue
-        line = _pys_import_line(stmt)
+        line = _typhon_import_line(stmt)
         if not line:
             continue
         try:
@@ -1003,17 +1003,17 @@ def _reject_unknown_type_name(
             continue
         _transpile_error(
             f"Unknown type '{atom}'. Declare a class/interface, or import a library "
-            f"that defines it (via pys.deps).",
+            f"that defines it (via typhon.deps).",
             line,
             column,
             code_line or type_name,
-            code="pys.unknown-type",
+            code="typhon.unknown-type",
             suggested_fix="create-class" if offer_create_class else None,
         )
 
 
 def _looks_like_type_callee(name: str) -> bool:
-    """PYS type/ctor names are PascalCase; camelCase/lowercase stay library-open."""
+    """Typhon type/ctor names are PascalCase; camelCase/lowercase stay library-open."""
     return bool(name) and name[0].isupper() and name[0].isalpha()
 
 
@@ -1408,12 +1408,12 @@ def _check_library_types(
         if stmt.declare_type:
             local_types[stmt.name] = stmt.declare_type
             continue
-        if info.from_external and info.pys_type:
-            tips = _usage_tips_for(info.pys_type, info.element_type, stmt.name)
+        if info.from_external and info.typhon_type:
+            tips = _usage_tips_for(info.typhon_type, info.element_type, stmt.name)
             rhs = f"{recv}.{method}()" if method else f"{recv}()"
-            suggested = f"{info.pys_type} {stmt.name} = {rhs}"
+            suggested = f"{info.typhon_type} {stmt.name} = {rhs}"
             msg = (
-                f"Missing type for '{stmt.name}'. Library call returns `{info.pys_type}` "
+                f"Missing type for '{stmt.name}'. Library call returns `{info.typhon_type}` "
                 f"(weak/untyped boundary)."
             )
             _transpile_error(
@@ -1421,7 +1421,7 @@ def _check_library_types(
                 line,
                 col,
                 f"{stmt.name} = ...",
-                code="pys.missing-type",
+                code="typhon.missing-type",
                 suggested_fix=suggested,
                 tips=tips,
             )
@@ -1579,7 +1579,7 @@ def _check_fn_returns(return_type: str, body: Block | None, line: int) -> None:
                         stmt.span.line if stmt.span else line,
                         stmt.span.column if stmt.span else 1,
                         "return",
-                        code="pys.void-return",
+                        code="typhon.void-return",
                     )
                 elif not return_type:
                     _transpile_error(
@@ -1674,7 +1674,7 @@ def _check_brace_literal_assign(
     if not expected or expected == "var":
         shape = "{}" if not value.elements else "{…}"
         _transpile_error(
-            f"Ambiguous brace literal `{shape}` — PYS needs a typed binding to "
+            f"Ambiguous brace literal `{shape}` — Typhon needs a typed binding to "
             "choose dict, set, list, or array.",
             line,
             col,
@@ -1874,7 +1874,7 @@ def _check_nullability(
             line,
             col,
             path,
-            code="pys.nullable-use-before-check",
+            code="typhon.nullable-use-before-check",
             suggested_fix=(
                 f"if ({path} != null) {{\n    # use {path} here\n}}"
                 if isinstance(expr, Identifier) and path not in shared_names
@@ -1921,7 +1921,7 @@ def _check_nullability(
                 line,
                 col,
                 path,
-                code="pys.null-redundant-check",
+                code="typhon.null-redundant-check",
                 tips=[
                     "Remove the check, or make the declaration nullable if absence is intentional."
                 ],
@@ -2065,7 +2065,7 @@ def _check_nullability(
                                     value.span.line if value.span else 1,
                                     value.span.column if value.span else 1,
                                     "argument",
-                                    code="pys.argument-type",
+                                    code="typhon.argument-type",
                                 )
                     walk_expr(value, env, present)
             else:
@@ -2384,8 +2384,8 @@ def _check_results(
         fail(
             f"'{name}' is a reserved result constructor and cannot be redeclared.",
             node,
-            code="pys.result-reserved",
-            tips=["Choose a domain name that does not shadow PYS result syntax."],
+            code="typhon.result-reserved",
+            tips=["Choose a domain name that does not shadow Typhon result syntax."],
         )
 
     def expr_type(
@@ -2415,7 +2415,7 @@ def _check_results(
                 fail(
                     f"`{expr.kind}(...)` needs an expected `result<T, E>` type.",
                     expr,
-                    code="pys.result-context",
+                    code="typhon.result-context",
                     tips=[
                         "Declare a `result<T, E>` binding or return it from a "
                         "`result<T, E>` function."
@@ -2429,7 +2429,7 @@ def _check_results(
                             f"`ok()` is only valid for `result<void, E>`, not "
                             f"`{expected_result}`.",
                             expr,
-                            code="pys.result-ok-value",
+                            code="typhon.result-ok-value",
                             tips=[f"Pass a value of type `{success_type}` to `ok(...)`."],
                         )
                 else:
@@ -2453,7 +2453,7 @@ def _check_results(
                             f"Result success payload has type {actual or 'unknown'}, "
                             f"expected {success_type}.",
                             expr,
-                            code="pys.result-success-type",
+                            code="typhon.result-success-type",
                         )
             else:
                 actual = expr_type(
@@ -2472,7 +2472,7 @@ def _check_results(
                     fail(
                         f"Result error payload has type {actual}, expected {error_type}.",
                         expr,
-                        code="pys.result-error-type",
+                        code="typhon.result-error-type",
                     )
             return expected_result
         if isinstance(expr, PropagateExpr):
@@ -2489,14 +2489,14 @@ def _check_results(
                     f"`propagate` only applies to result values, not "
                     f"{operand_type or 'an unknown type'}.",
                     expr,
-                    code="pys.propagate-type",
+                    code="typhon.propagate-type",
                     tips=["Remove `propagate` or make the expression return `result<T, E>`."],
                 )
             if scope_kind == "task":
                 fail(
                     "`propagate` cannot cross a task boundary.",
                     expr,
-                    code="pys.propagate-task",
+                    code="typhon.propagate-task",
                     tips=["Handle the result inside the task body."],
                 )
             success_type, error_type = operand_parts
@@ -2508,7 +2508,7 @@ def _check_results(
                         f"Entrypoint propagation mixes error type {error_type} "
                         f"with {entry_error_type}.",
                         expr,
-                        code="pys.propagate-error-type",
+                        code="typhon.propagate-error-type",
                         tips=["Use exactly one error type at the entrypoint boundary."],
                     )
                 return success_type
@@ -2518,7 +2518,7 @@ def _check_results(
                     "`propagate` requires an enclosing function that returns "
                     "`result<T, E>`.",
                     expr,
-                    code="pys.propagate-return",
+                    code="typhon.propagate-return",
                     tips=["Change the function return type or handle the result with `switch`."],
                 )
             enclosing_error = enclosing_parts[1]
@@ -2527,7 +2527,7 @@ def _check_results(
                     f"Cannot propagate error type {error_type} from a function "
                     f"returning error type {enclosing_error}.",
                     expr,
-                    code="pys.propagate-error-type",
+                    code="typhon.propagate-error-type",
                     tips=["Use exactly the same error type on both result types."],
                 )
             return success_type
@@ -2597,7 +2597,7 @@ def _check_results(
                     fail(
                         "`input` takes at most one string prompt argument.",
                         expr,
-                        code="pys.input-arity",
+                        code="typhon.input-arity",
                         tips=['Use `input()` or `input("prompt")`.'],
                     )
                 if fname in {"toBin", "toHex", "toOct"}:
@@ -2606,7 +2606,7 @@ def _check_results(
                         fail(
                             f"`{fname}` takes one value and an optional width.",
                             expr,
-                            code="pys.base-display-arity",
+                            code="typhon.base-display-arity",
                             tips=[
                                 f'Use `{fname}(value)` or `{fname}(value, width)`.'
                             ],
@@ -2673,7 +2673,7 @@ def _check_results(
                                 f"`{expr.callee.name}` {kind} must be int-like "
                                 f"(int / byte / nibble / …), got {actual_arg}.",
                                 value,
-                                code="pys.base-display-type",
+                                code="typhon.base-display-type",
                                 tips=["Width aliases such as `byte` are allowed."],
                             )
                     if (
@@ -2695,7 +2695,7 @@ def _check_results(
                             f"Argument '{pname}' has type {actual_arg}, expected "
                             f"{expected_param}.",
                             value,
-                            code="pys.result-argument-type",
+                            code="typhon.result-argument-type",
                             tips=(
                                 [
                                     "Handle the result with `propagate` or `switch` first."
@@ -2820,13 +2820,13 @@ def _check_results(
                 f"Result type mismatch: cannot use {actual} where "
                 f"{expected_result} is required.",
                 owner,
-                code="pys.result-type",
+                code="typhon.result-type",
             )
         if expected and not expected_result and _result_type_parts(actual):
             fail(
                 f"A {actual} value must be handled before it can be used as {expected}.",
                 owner,
-                code="pys.result-unhandled",
+                code="typhon.result-unhandled",
                 tips=["Use postfix `propagate` or an exhaustive `switch`."],
             )
         if (
@@ -2844,7 +2844,7 @@ def _check_results(
             fail(
                 f"Propagated success value has type {actual}, expected {expected}.",
                 owner,
-                code="pys.propagate-success-type",
+                code="typhon.propagate-success-type",
             )
         return actual
 
@@ -2879,7 +2879,7 @@ def _check_results(
                         fail(
                             f"A function returning {return_type} must return a result value.",
                             stmt,
-                            code="pys.result-return",
+                            code="typhon.result-return",
                         )
                     check_value(
                         stmt.value,
@@ -2903,7 +2903,7 @@ def _check_results(
                             f"A function returning {return_type or 'no value'} cannot "
                             f"return {actual}; the result must be handled.",
                             stmt,
-                            code="pys.result-unhandled",
+                            code="typhon.result-unhandled",
                         )
             elif isinstance(stmt, (PrintStmt, ExprStmt)):
                 value = stmt.value if isinstance(stmt, PrintStmt) else stmt.expr
@@ -3097,7 +3097,7 @@ def _check_foreach_binder(stmt: ForEachStmt, types: dict[str, str]) -> None:
             f"Foreach loop variable '{stmt.var}' requires a type.",
             line,
             col,
-            code="pys.foreach-type-required",
+            code="typhon.foreach-type-required",
             tips=["Write `loop (T name in collection)` with T matching the element type."],
             suggested_fix=f"loop (T {stmt.var} in …)",
         )
@@ -3114,7 +3114,7 @@ def _check_foreach_binder(stmt: ForEachStmt, types: dict[str, str]) -> None:
             f"but elements of '{it_hint}' are {elem}.",
             line,
             col,
-            code="pys.foreach-type",
+            code="typhon.foreach-type",
             suggested_fix=f"loop ({elem} {stmt.var} in {it_hint})",
             tips=[
                 f"Use `loop ({elem} {stmt.var} in {it_hint})`, or change the collection's element type.",
@@ -3187,7 +3187,7 @@ def _raise_assignment_mismatch(
             line,
             col,
             f"{declared_type} {name} = null",
-            code="pys.null-non-nullable",
+            code="typhon.null-non-nullable",
             suggested_fix=suggested,
             tips=[
                 f"Change the declaration to `nullable<{declared_type}>` if absence is intentional, "
@@ -3279,7 +3279,7 @@ def _check_bindings(
                             line,
                             col,
                             f"var {stmt.name} = null",
-                            code="pys.null-infer",
+                            code="typhon.null-infer",
                             tips=[
                                 f"Write `nullable<T> {stmt.name} = null` with the intended type."
                             ],
@@ -3906,7 +3906,7 @@ def _check_oop(body: list[Any], *, types: dict[str, str], resolver: Any | None =
                     line,
                     1,
                     f"class {stmt.name}",
-                    code="pys.closed-inherit",
+                    code="typhon.closed-inherit",
                     tips=[f"Remove `closed` from `{b}`, or stop inheriting from it."],
                 )
 
@@ -3917,7 +3917,7 @@ def _check_oop(body: list[Any], *, types: dict[str, str], resolver: Any | None =
     site_paths: list[Path] = list(resolver._deps_paths()) if resolver is not None else []
 
     def library_member_status(type_name: str, member: str) -> str:
-        """See ``library_type_member_status`` — PYS types are never introspected here."""
+        """See ``library_type_member_status`` — Typhon types are never introspected here."""
         if type_name in class_members or type_name in interfaces:
             return "not_library"
         if resolver is None:
@@ -4029,7 +4029,7 @@ def _check_oop(body: list[Any], *, types: dict[str, str], resolver: Any | None =
             # Environment cannot introspect the library; do not invent an error.
             return
         if defining_cls is None or access is None:
-            # Strict missing-member errors only for types declared in PYS source.
+            # Strict missing-member errors only for types declared in Typhon source.
             if recv_t in class_members or recv_t in interfaces:
                 if type_level and as_call and recv_t in class_names:
                     _transpile_error(
@@ -4037,7 +4037,7 @@ def _check_oop(body: list[Any], *, types: dict[str, str], resolver: Any | None =
                         line,
                         column,
                         code or f"{recv}.{member}",
-                        code="pys.undefined-static-method",
+                        code="typhon.undefined-static-method",
                         suggested_fix="create-static-method",
                         tips=[
                             f"Add `public static … {member}(…)` to class {recv_t}, "
@@ -4088,7 +4088,7 @@ def _check_oop(body: list[Any], *, types: dict[str, str], resolver: Any | None =
                         line,
                         column,
                         code or f"{recv}.{member}",
-                        code="pys.instance-member-via-type",
+                        code="typhon.instance-member-via-type",
                         tips=[
                             f"Call it on an instance of {recv_t}, or declare the "
                             f"member `static` on class {recv_t}.",
@@ -4243,7 +4243,7 @@ def _check_abstract_classes(body: list[Any]) -> None:
                     m.span.line if m.span else line,
                     m.span.column if m.span else 1,
                     m.name,
-                    code="pys.abstract-method",
+                    code="typhon.abstract-method",
                     suggested_fix=f"abstract class {cls.name}",
                     tips=[f"Change to `abstract class {cls.name}` or give '{m.name}' a body."],
                 )
@@ -4296,7 +4296,7 @@ def _check_abstract_classes(body: list[Any]) -> None:
                     line,
                     1,
                     mname,
-                    code="pys.abstract-impl",
+                    code="typhon.abstract-impl",
                     tips=[f"Add `public override {ret or 'void'} {mname}(...) {{ … }}` on {cls.name}."],
                 )
             got_ret, got_arity, _ = provided[mname]
@@ -4318,7 +4318,7 @@ def _check_abstract_classes(body: list[Any]) -> None:
                     impl.span.line if impl.span else line,
                     impl.span.column if impl.span else 1,
                     mname,
-                    code="pys.missing-override",
+                    code="typhon.missing-override",
                     tips=[f"Write `override` before the return type of '{mname}'."],
                 )
             if got_arity != arity:
@@ -4328,7 +4328,7 @@ def _check_abstract_classes(body: list[Any]) -> None:
                     line,
                     1,
                     mname,
-                    code="pys.abstract-impl",
+                    code="typhon.abstract-impl",
                 )
             want = _base_type_name(ret)
             got = _base_type_name(got_ret)
@@ -4348,7 +4348,7 @@ def _check_abstract_classes(body: list[Any]) -> None:
                     expr.span.line if expr.span else 1,
                     expr.span.column if expr.span else 1,
                     expr.callee.name,
-                    code="pys.abstract-new",
+                    code="typhon.abstract-new",
                     tips=[f"Use a class that `inherits {expr.callee.name}`."],
                 )
         for attr in (
@@ -4461,7 +4461,7 @@ def _check_open_override_closed(body: list[Any]) -> None:
                     mline,
                     mcol,
                     m.name,
-                    code="pys.private-extension",
+                    code="typhon.private-extension",
                     tips=[
                         "Remove the extension modifier, or change access to "
                         "`protected`/`public` if subclasses should see it."
@@ -4475,7 +4475,7 @@ def _check_open_override_closed(body: list[Any]) -> None:
                     mline,
                     mcol,
                     m.name,
-                    code="pys.open-in-closed-class",
+                    code="typhon.open-in-closed-class",
                     tips=[
                         f"Remove `open` from '{m.name}', or remove `closed` "
                         f"from class {cls.name}."
@@ -4524,7 +4524,7 @@ def _check_open_override_closed(body: list[Any]) -> None:
                         mline,
                         mcol,
                         m.name,
-                        code="pys.override-no-socket",
+                        code="typhon.override-no-socket",
                         tips=[
                             f"Mark the base method `open`, or remove `override` "
                             f"from {cls.name}.{m.name}."
@@ -4539,7 +4539,7 @@ def _check_open_override_closed(body: list[Any]) -> None:
                         mline,
                         mcol,
                         m.name,
-                        code="pys.override-closed-socket",
+                        code="typhon.override-closed-socket",
                         tips=[
                             f"Mark {ancestor_cls_name}.{m.name} as `open`, or "
                             f"remove the subclass method."
@@ -4554,7 +4554,7 @@ def _check_open_override_closed(body: list[Any]) -> None:
                     mline,
                     mcol,
                     m.name,
-                    code="pys.missing-override",
+                    code="typhon.missing-override",
                     tips=[
                         f"Write `override` on {cls.name}.{m.name}, and `open` on "
                         f"{ancestor_cls_name}.{m.name} if it is not abstract."
@@ -4569,7 +4569,7 @@ def _check_open_override_closed(body: list[Any]) -> None:
                         mline,
                         mcol,
                         m.name,
-                        code="pys.missing-override",
+                        code="typhon.missing-override",
                         tips=[f"Write `public override … {m.name}(...)`."],
                     )
 
@@ -4706,7 +4706,7 @@ def _check_static_members(body: list[Any]) -> None:
                     mline,
                     mcol,
                     m.name,
-                    code="pys.static-extension",
+                    code="typhon.static-extension",
                     tips=[
                         "Remove `open`/`override`, or make the method an instance method.",
                     ],
@@ -4717,7 +4717,7 @@ def _check_static_members(body: list[Any]) -> None:
                     mline,
                     mcol,
                     m.name,
-                    code="pys.static-this",
+                    code="typhon.static-this",
                     tips=[tip],
                 )
 
@@ -4792,7 +4792,7 @@ def _check_explicit_this_fields(body: list[Any]) -> None:
                     expr.span.line if expr.span else 1,
                     expr.span.column if expr.span else 1,
                     name,
-                    code="pys.this-field",
+                    code="typhon.this-field",
                     tips=[f"Write `this.{name}` instead of bare `{name}`."],
                     suggested_fix=f"this.{name}",
                 )
@@ -4856,7 +4856,7 @@ def _check_explicit_this_fields(body: list[Any]) -> None:
                         stmt.span.line if stmt.span else 1,
                         stmt.span.column if stmt.span else 1,
                         stmt.name,
-                        code="pys.this-field",
+                        code="typhon.this-field",
                         tips=[f"Write `this.{stmt.name} = …`."],
                         suggested_fix=f"this.{stmt.name}",
                     )
@@ -5087,7 +5087,7 @@ def _check_fix_ctor_assignment(body: list[Any]) -> None:
                     line,
                     1,
                     names,
-                    code="pys.fix-ctor",
+                    code="typhon.fix-ctor",
                     tips=[
                         "Assign each uninitialized `fix` field exactly once in every "
                         "constructor path, including after `super(...)`."
@@ -5235,7 +5235,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                         line,
                         col,
                         name,
-                        code="pys.trait-this",
+                        code="typhon.trait-this",
                         tips=[
                             f"Add `requires … {name}` to trait {trait.name}, "
                             f"or remove the access."
@@ -5255,7 +5255,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                     line,
                     1,
                     b,
-                    code="pys.trait-not-interface",
+                    code="typhon.trait-not-interface",
                     tips=[f"Change `implements {b}` to `uses {b}`."],
                     suggested_fix=None,
                 )
@@ -5275,7 +5275,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                     line,
                     1,
                     tname,
-                    code="pys.trait-unknown",
+                    code="typhon.trait-unknown",
                 )
             req_by_name = {r.name: r for r in trait.requires}
             method_names = {m.name for m in trait.methods}
@@ -5288,7 +5288,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                         line,
                         1,
                         left,
-                        code="pys.trait-remap",
+                        code="typhon.trait-remap",
                     )
                 if left not in req_by_name:
                     if left in method_names:
@@ -5299,7 +5299,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                             line,
                             1,
                             left,
-                            code="pys.trait-remap",
+                            code="typhon.trait-remap",
                             tips=[
                                 "Remap only `requires` names: "
                                 f"`uses {tname}(requirement: hostMember)`.",
@@ -5315,7 +5315,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                         line,
                         1,
                         left,
-                        code="pys.trait-remap",
+                        code="typhon.trait-remap",
                         tips=[
                             f"Remap entries must name a `requires` item of {tname}."
                         ],
@@ -5344,7 +5344,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                             rline,
                             rcol,
                             host_name,
-                            code="pys.trait-requires",
+                            code="typhon.trait-requires",
                         )
                     got = _base_type_name(host_fields[host_name] or "")
                     want = _base_type_name(req.type_name or "")
@@ -5355,7 +5355,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                             rline,
                             rcol,
                             host_name,
-                            code="pys.trait-requires",
+                            code="typhon.trait-requires",
                         )
                 else:
                     if host_name not in host_methods:
@@ -5371,7 +5371,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                             rline,
                             rcol,
                             host_name,
-                            code="pys.trait-requires",
+                            code="typhon.trait-requires",
                         )
                     ret, arity, _ptypes = host_methods[host_name]
                     if arity != len(req.params):
@@ -5382,7 +5382,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                             rline,
                             rcol,
                             host_name,
-                            code="pys.trait-requires",
+                            code="typhon.trait-requires",
                         )
                     want_ret = _base_type_name(req.type_name or "")
                     got_ret = _base_type_name(ret or "")
@@ -5393,7 +5393,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                             rline,
                             rcol,
                             host_name,
-                            code="pys.trait-requires",
+                            code="typhon.trait-requires",
                         )
             for m in trait.methods:
                 method_owners.setdefault(m.name, []).append(tname)
@@ -5409,7 +5409,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                     line,
                     1,
                     mname,
-                    code="pys.trait-collision",
+                    code="typhon.trait-collision",
                     tips=[
                         f"Add `public … {mname}(...) {{ … }}` on {stmt.name} "
                         f"that chooses which trait method to call."
@@ -5428,7 +5428,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                     expr.span.line if expr.span else 1,
                     expr.span.column if expr.span else 1,
                     expr.callee.name,
-                    code="pys.trait-not-type",
+                    code="typhon.trait-not-type",
                 )
         for attr in (
             "left",
@@ -5463,7 +5463,7 @@ def _check_traits(body: list[Any], *, types: dict[str, str]) -> None:
                         stmt.span.line if stmt.span else 1,
                         stmt.span.column if stmt.span else 1,
                         stmt.declare_type,
-                        code="pys.trait-not-type",
+                        code="typhon.trait-not-type",
                     )
                 walk_expr(stmt.value)
             elif isinstance(stmt, (PrintStmt, ReturnStmt, ExprStmt, AugAssignStmt)):
@@ -5652,7 +5652,7 @@ def _check_struct_field_assign(
             line,
             col,
             lvalue,
-            code="pys.data-immutable" if kind == "data" else None,
+            code="typhon.data-immutable" if kind == "data" else None,
         )
     if root in fixed:
         _transpile_error(
@@ -5735,7 +5735,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                 line,
                 1,
                 stmt.name,
-                code="pys.entity-identity",
+                code="typhon.entity-identity",
                 tips=[
                     f"Example: `entity {stmt.name} identity(id) {{ private fix int id … }}`."
                 ],
@@ -5754,7 +5754,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                     line,
                     1,
                     stmt.parent,
-                    code="pys.entity-inherits",
+                    code="typhon.entity-inherits",
                     tips=["Change the parent to an `entity`, or use `class` instead."],
                 )
         for key in stmt.identity:
@@ -5766,7 +5766,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                     line,
                     1,
                     key,
-                    code="pys.entity-identity",
+                    code="typhon.entity-identity",
                     tips=[f"Add `private fix <type> {key}` (or another access) in `{stmt.name}`."],
                 )
             elif not fld.is_fix:
@@ -5775,7 +5775,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                     fld.span.line if fld.span else line,
                     fld.span.column if fld.span else 1,
                     key,
-                    code="pys.entity-fix",
+                    code="typhon.entity-fix",
                     tips=[
                         f"Write `private fix <type> {key}` — mutable keys corrupt hash-based collections."
                     ],
@@ -5786,7 +5786,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                     fld.span.line if fld.span else line,
                     fld.span.column if fld.span else 1,
                     key,
-                    code="pys.nullable-identity",
+                    code="typhon.nullable-identity",
                     tips=[
                         "Use a non-null identity type and supply the key before constructing the entity."
                     ],
@@ -5799,7 +5799,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                 line,
                 1,
                 stmt.name,
-                code="pys.entity-ctor",
+                code="typhon.entity-ctor",
             )
         for m in stmt.methods:
             if m.is_constructor:
@@ -5811,7 +5811,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                     m.span.line if m.span else line,
                     m.span.column if m.span else 1,
                     m.name,
-                    code="pys.entity-equals",
+                    code="typhon.entity-equals",
                     tips=["Remove the method; use `==` which compares identity fields only."],
                 )
 
@@ -5843,7 +5843,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                     stmt.span.line if stmt.span else 1,
                     stmt.span.column if stmt.span else 1,
                     member,
-                    code="pys.entity-fix",
+                    code="typhon.entity-fix",
                 )
             return
         et = _base_type_name(types.get(root, ""))
@@ -5853,7 +5853,7 @@ def _check_data_and_entities(body: list[Any], *, types: dict[str, str]) -> None:
                 stmt.span.line if stmt.span else 1,
                 stmt.span.column if stmt.span else 1,
                 member,
-                code="pys.entity-fix",
+                code="typhon.entity-fix",
             )
 
     def walk(stmts: list[Any], *, in_entity_ctor: bool = False, entity_type: str = "") -> None:
@@ -6177,7 +6177,7 @@ def _enum_info_map(
                     m.span.line if m.span else line,
                     m.span.column if m.span else col,
                     m.name,
-                    code="pys.enum-naming",
+                    code="typhon.enum-naming",
                     suggested_fix=suggested,
                     tips=[
                         "Rename the member to SCREAMING_SNAKE_CASE "
@@ -6279,7 +6279,7 @@ def _validate_switch_label(
             line,
             col,
             "null",
-            code="pys.switch-label",
+            code="typhon.switch-label",
         )
     if subject_type in enum_info:
         members = set(enum_info[subject_type]["members"])
@@ -6291,7 +6291,7 @@ def _validate_switch_label(
                     line,
                     col,
                     label.object.name,
-                    code="pys.switch-label",
+                    code="typhon.switch-label",
                 )
             if label.name not in members:
                 _transpile_error(
@@ -6299,7 +6299,7 @@ def _validate_switch_label(
                     line,
                     col,
                     label.name,
-                    code="pys.switch-label",
+                    code="typhon.switch-label",
                     tips=[f"Known members: {', '.join(enum_info[subject_type]['members'])}."],
                 )
             return
@@ -6310,7 +6310,7 @@ def _validate_switch_label(
                     line,
                     col,
                     label.name,
-                    code="pys.switch-label",
+                    code="typhon.switch-label",
                     tips=[
                         f"Use a member of {subject_type}, or qualify as "
                         f"{subject_type}.{label.name}."
@@ -6323,7 +6323,7 @@ def _validate_switch_label(
             line,
             col,
             getattr(label, "text", None) or getattr(label, "name", "label"),
-            code="pys.switch-label",
+            code="typhon.switch-label",
         )
     # Primitive / int-like subjects: require compatible literals.
     expected_kind = "int" if subject_type in _INT_LIKE else subject_type
@@ -6338,14 +6338,14 @@ def _validate_switch_label(
             line,
             col,
             label.text,
-            code="pys.switch-label",
+            code="typhon.switch-label",
         )
     _transpile_error(
         f"Switch on {subject_type} requires {expected_kind} literal case labels.",
         line,
         col,
         getattr(label, "name", None) or "label",
-        code="pys.switch-label",
+        code="typhon.switch-label",
     )
 
 
@@ -6368,7 +6368,7 @@ def _check_one_switch(
             subject.span.line if subject and subject.span else span_line,
             subject.span.column if subject and subject.span else span_col,
             "switch",
-            code="pys.switch-subject",
+            code="typhon.switch-subject",
             tips=["Declare the subject with a type (enum, int, string, char, or bool)."],
         )
     result_parts = _result_type_parts(subject_type)
@@ -6401,7 +6401,7 @@ def _check_one_switch(
                         line,
                         col,
                         "default",
-                        code="pys.switch-default",
+                        code="typhon.switch-default",
                     )
                 has_default = True
                 if is_expr:
@@ -6416,7 +6416,7 @@ def _check_one_switch(
                     line,
                     col,
                     "case",
-                    code="pys.result-pattern",
+                    code="typhon.result-pattern",
                     tips=["Use `case ok(value)` or `case error(message)`."],
                 )
             pattern = case.labels[0]
@@ -6426,7 +6426,7 @@ def _check_one_switch(
                     pattern.span.line if pattern.span else line,
                     pattern.span.column if pattern.span else col,
                     pattern.kind,
-                    code="pys.switch-duplicate",
+                    code="typhon.switch-duplicate",
                 )
             seen_patterns.add(pattern.kind)
             if pattern.binding in {"ok", "error"}:
@@ -6435,7 +6435,7 @@ def _check_one_switch(
                     pattern.span.line if pattern.span else line,
                     pattern.span.column if pattern.span else col,
                     pattern.binding,
-                    code="pys.result-reserved",
+                    code="typhon.result-reserved",
                 )
             if pattern.kind == "ok":
                 if success_type == "void" and pattern.binding:
@@ -6444,7 +6444,7 @@ def _check_one_switch(
                         line,
                         col,
                         pattern.binding,
-                        code="pys.result-pattern",
+                        code="typhon.result-pattern",
                     )
                 if success_type != "void" and not pattern.binding:
                     _transpile_error(
@@ -6453,7 +6453,7 @@ def _check_one_switch(
                         line,
                         col,
                         "ok",
-                        code="pys.result-pattern",
+                        code="typhon.result-pattern",
                     )
             elif not pattern.binding:
                 _transpile_error(
@@ -6461,7 +6461,7 @@ def _check_one_switch(
                     line,
                     col,
                     "error",
-                    code="pys.result-pattern",
+                    code="typhon.result-pattern",
                 )
             if case.fallthrough:
                 _transpile_error(
@@ -6469,7 +6469,7 @@ def _check_one_switch(
                     line,
                     col,
                     "continue",
-                    code="pys.result-pattern",
+                    code="typhon.result-pattern",
                 )
             if is_expr:
                 arm_value_types.append(result_arm_type(case))
@@ -6482,7 +6482,7 @@ def _check_one_switch(
                 span_line,
                 span_col,
                 "switch",
-                code="pys.switch-exhaustive",
+                code="typhon.switch-exhaustive",
                 tips=["Handle both success and failure explicitly."],
             )
         if is_expr:
@@ -6492,7 +6492,7 @@ def _check_one_switch(
                     span_line,
                     span_col,
                     "switch",
-                    code="pys.switch-type",
+                    code="typhon.switch-type",
                 )
             first = arm_value_types[0] if arm_value_types else None
             if any(t != first for t in arm_value_types):
@@ -6501,7 +6501,7 @@ def _check_one_switch(
                     span_line,
                     span_col,
                     "switch",
-                    code="pys.switch-type",
+                    code="typhon.switch-type",
                 )
         return
     nullable_subject = _nullable_inner(subject_type)
@@ -6514,7 +6514,7 @@ def _check_one_switch(
             subject.span.line if subject and subject.span else span_line,
             subject.span.column if subject and subject.span else span_col,
             subject_type,
-            code="pys.switch-subject",
+            code="typhon.switch-subject",
         )
 
     seen_keys: set[tuple[str, str]] = set()
@@ -6531,7 +6531,7 @@ def _check_one_switch(
                 line,
                 col,
                 "continue",
-                code="pys.switch-fallthrough",
+                code="typhon.switch-fallthrough",
             )
         if case.is_default:
             if has_default:
@@ -6540,7 +6540,7 @@ def _check_one_switch(
                     line,
                     col,
                     "default",
-                    code="pys.switch-default",
+                    code="typhon.switch-default",
                 )
             has_default = True
             if is_expr:
@@ -6568,7 +6568,7 @@ def _check_one_switch(
                     label.span.line if label.span else line,
                     label.span.column if label.span else col,
                     "case",
-                    code="pys.switch-label",
+                    code="typhon.switch-label",
                 )
             if key in seen_keys:
                 _transpile_error(
@@ -6576,7 +6576,7 @@ def _check_one_switch(
                     label.span.line if label.span else line,
                     label.span.column if label.span else col,
                     key[1],
-                    code="pys.switch-duplicate",
+                    code="typhon.switch-duplicate",
                 )
             seen_keys.add(key)
             new_label = _resolve_switch_label(
@@ -6600,7 +6600,7 @@ def _check_one_switch(
                 span_line,
                 span_col,
                 "switch",
-                code="pys.switch-type",
+                code="typhon.switch-type",
             )
         first = arm_value_types[0]
         if any(t != first for t in arm_value_types):
@@ -6610,7 +6610,7 @@ def _check_one_switch(
                 span_line,
                 span_col,
                 "switch",
-                code="pys.switch-type",
+                code="typhon.switch-type",
             )
         if subject_type in enum_info:
             missing = [
@@ -6623,7 +6623,7 @@ def _check_one_switch(
                     span_line,
                     span_col,
                     "switch",
-                    code="pys.switch-exhaustive",
+                    code="typhon.switch-exhaustive",
                     tips=["Expression switches must yield a value on every path."],
                 )
         elif not has_default:
@@ -6632,7 +6632,7 @@ def _check_one_switch(
                 span_line,
                 span_col,
                 "switch",
-                code="pys.switch-default",
+                code="typhon.switch-default",
             )
     else:
         # Statement: warn when not proven exhaustive and no default.
@@ -6651,7 +6651,7 @@ def _check_one_switch(
                         span_line,
                         span_col,
                         "switch",
-                        code="pys.switch-exhaustive",
+                        code="typhon.switch-exhaustive",
                         tips=[
                             "Statement switches warn when cases may not cover all members."
                         ],
@@ -6663,7 +6663,7 @@ def _check_one_switch(
                     span_line,
                     span_col,
                     "switch",
-                    code="pys.switch-exhaustive",
+                    code="typhon.switch-exhaustive",
                     tips=["Add a `default` arm for values not listed in `case` labels."],
                 )
 
@@ -7098,7 +7098,7 @@ def _infer_lambda_params(expr: LambdaExpr, target_type: str) -> None:
             line,
             col,
             "=>",
-            code="pys.lambda-arity",
+            code="typhon.lambda-arity",
         )
     for i, t in enumerate(param_types):
         if i < len(expr.param_types) and not expr.param_types[i]:
@@ -7135,7 +7135,7 @@ def _check_lambdas(body: list[Any], *, types: dict[str, str]) -> None:
             line,
             col,
             f"{name}{op}" if op != "=" else f"{name} = ...",
-            code="pys.lambda-capture",
+            code="typhon.lambda-capture",
             tips=[
                 f"Write `shared <type> {name} = …` or `atomic <type> {name} = …` "
                 f"at the outer scope."
@@ -7373,7 +7373,7 @@ def _check_atomics(body: list[Any], *, types: dict[str, str]) -> None:
                             line,
                             col,
                             f"{mem.object.name}.get(...)",
-                            code="pys.atomic-op",
+                            code="typhon.atomic-op",
                             tips=["Write `name.get()` with an empty argument list."],
                         )
                 elif mem.name == "compareAndSet":
@@ -7384,7 +7384,7 @@ def _check_atomics(body: list[Any], *, types: dict[str, str]) -> None:
                             line,
                             col,
                             f"{mem.object.name}.compareAndSet(...)",
-                            code="pys.atomic-op",
+                            code="typhon.atomic-op",
                             tips=[
                                 "Write `name.compareAndSet(expected, newValue)` "
                                 "and retry in a loop when it returns false."
@@ -7397,7 +7397,7 @@ def _check_atomics(body: list[Any], *, types: dict[str, str]) -> None:
                         line,
                         col,
                         f"{mem.object.name}.{mem.name}",
-                        code="pys.atomic-op",
+                        code="typhon.atomic-op",
                     )
                 for a in expr.args:
                     if isinstance(a, KeywordArg):
@@ -7416,7 +7416,7 @@ def _check_atomics(body: list[Any], *, types: dict[str, str]) -> None:
                     line,
                     col,
                     f"{expr.object.name}.{expr.name}",
-                    code="pys.atomic-op",
+                    code="typhon.atomic-op",
                 )
         for attr in (
             "left",
@@ -7470,7 +7470,7 @@ def _check_atomics(body: list[Any], *, types: dict[str, str]) -> None:
                         line,
                         col,
                         f"{stmt.name} {stmt.op}",
-                        code="pys.atomic-op",
+                        code="typhon.atomic-op",
                         tips=[
                             "Read with `name.get()`, then "
                             "`name.compareAndSet(expected, newValue)` until it succeeds."
@@ -7744,7 +7744,7 @@ def _check_seen_name_calls(body: list[Any], resolver: Any) -> None:
             )
         where = {
             "module": "only within its own module",
-            "package": "only within its package (same folder, or same root-relative path under pys.toml source_roots)",
+            "package": "only within its package (same folder, or same root-relative path under typhon.toml source_roots)",
             "global": "across the whole project",
         }.get(visibility, f"as {visibility}")
         _transpile_error(

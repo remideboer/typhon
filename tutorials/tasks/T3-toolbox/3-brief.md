@@ -2,7 +2,7 @@
 
 ## Situation
 
-Team A owns `measures.pys`. Team B owns `report.pys` in the **same folder**.
+Team A owns `measures.typhon`. Team B owns `report.typhon` in the **same folder**.
 
 Team B must:
 
@@ -13,7 +13,7 @@ Team A also has an experimental helper that must remain file-private.
 
 ## Deliverable
 
-Two `.pys` files meeting the situation. Run `report.pys` as the entry file.
+Two `.typhon` files meeting the situation. Run `report.typhon` as the entry file.
 
 ## Done when
 

@@ -8,12 +8,12 @@ From this folder (so the local lock is used):
 ```bash
 cd examples/gui/temperature_ttkbootstrap
 python -m transpiler deps lock
-python -m transpiler run main.pys
+python -m transpiler run main.typhon
 ```
 
 Or from the repo root with an explicit workspace:
 
 ```bash
-set PYS_WORKSPACE_ROOT=%CD%\examples\gui\temperature_ttkbootstrap
-python -m transpiler run examples/gui/temperature_ttkbootstrap/main.pys
+set TYPHON_WORKSPACE_ROOT=%CD%\examples\gui\temperature_ttkbootstrap
+python -m transpiler run examples/gui/temperature_ttkbootstrap/main.typhon
 ```

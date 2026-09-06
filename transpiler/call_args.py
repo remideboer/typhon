@@ -61,7 +61,7 @@ def classify_call_args(
             bl,
             bc,
             "argument",
-            code="pys.call-arg-mix",
+            code="typhon.call-arg-mix",
             tips=[
                 "Write either `f(a, b)` or `f(x=a, y=b)` — not both in one call.",
             ],
@@ -96,7 +96,7 @@ def bind_call_arguments(
                 line,
                 column,
                 label,
-                code="pys.call-arg-missing",
+                code="typhon.call-arg-missing",
             )
         return [(n, None) for n in names]
 
@@ -107,7 +107,7 @@ def bind_call_arguments(
                 line,
                 column,
                 label,
-                code="pys.call-arg-arity",
+                code="typhon.call-arg-arity",
             )
         bound: list[tuple[str, Expr | None]] = []
         for i, name in enumerate(names):
@@ -121,7 +121,7 @@ def bind_call_arguments(
                     line,
                     column,
                     label,
-                    code="pys.call-arg-missing",
+                    code="typhon.call-arg-missing",
                 )
         return bound
 
@@ -136,7 +136,7 @@ def bind_call_arguments(
                 al,
                 ac,
                 arg.name,
-                code="pys.call-arg-duplicate",
+                code="typhon.call-arg-duplicate",
             )
         if arg.name not in names:
             _error(
@@ -144,7 +144,7 @@ def bind_call_arguments(
                 al,
                 ac,
                 arg.name,
-                code="pys.call-arg-unknown",
+                code="typhon.call-arg-unknown",
                 tips=[f"Expected parameter name(s): {', '.join(names) or '(none)'}."],
             )
         seen[arg.name] = arg.value
@@ -156,7 +156,7 @@ def bind_call_arguments(
             line,
             column,
             label,
-            code="pys.call-arg-missing",
+            code="typhon.call-arg-missing",
         )
     return [(n, seen.get(n)) for n in names]
 
@@ -186,13 +186,13 @@ def pick_overload(
             line,
             column,
             label,
-            code="pys.call-arg-overload",
+            code="typhon.call-arg-overload",
         )
     _error(
         f"Ambiguous {label} for this argument list.",
         line,
         column,
         label,
-        code="pys.call-arg-overload",
+        code="typhon.call-arg-overload",
     )
     raise AssertionError("unreachable")

@@ -17,7 +17,7 @@ Two reasons this matters — both at once:
    Code that expects a counting machine can use either; when it calls
    `bump()`, the **special rule of the plugged-in machine** runs.
 
-```pys
+```typhon
 class Counter {
     protected int value
 

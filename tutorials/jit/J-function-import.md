@@ -2,7 +2,7 @@
 
 ## Function forms
 
-```pys
+```typhon
 global function hello() {
     print("hi")
 }
@@ -18,7 +18,7 @@ function hidden() {
 
 ## Import forms
 
-```pys
+```typhon
 import toolbox
 import greet from toolbox
 import all from toolbox
@@ -26,8 +26,8 @@ import math
 import tkinter as tk
 ```
 
-`.pys` modules: local file / same-folder discovery.  
-Python packages: stdlib or `pys.deps`. Alias `as` is for those packages.
+`.typhon` modules: local file / same-folder discovery.  
+Python packages: stdlib or `typhon.deps`. Alias `as` is for those packages.
 
 **All imports first** in the file (before declarations/statements) —
 [J-member-order](J-member-order.md).

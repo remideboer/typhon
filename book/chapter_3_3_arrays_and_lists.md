@@ -31,7 +31,7 @@ slot; `numbers[2]` means “two steps past the start.”
   </figcaption>
 </figure>
 
-```pys
+```typhon
 int[] numbers = [1, 2, 3, 4, 5]
 print(numbers[0])
 print(numbers[1])
@@ -51,13 +51,13 @@ Output:
 
 > **Sidebar — inclusive slice end**
 >
-> PYS also allows slices like `numbers[1:3]`. The end index is **inclusive**
-> in PYS source (the transpiler adjusts for Python). Prefer indexing while
+> Typhon also allows slices like `numbers[1:3]`. The end index is **inclusive**
+> in Typhon source (the transpiler adjusts for Python). Prefer indexing while
 > learning; revisit slices when you need a sub-range.
 
 Multi-dimensional:
 
-```pys
+```typhon
 int[][] grid = [[1, 2], [3, 4]]
 print(grid[1][0])
 ```
@@ -71,7 +71,7 @@ Output:
 
 ## Lists
 
-```pys
+```typhon
 list<int> scores = [10, 20, 30]
 scores.append(40)
 print(len(scores))

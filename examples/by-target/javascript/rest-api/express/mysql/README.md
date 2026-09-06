@@ -14,16 +14,16 @@ mysql -u pys -p shop < seed_boardgames.sql
 ## Run
 
 ```bash
-python -m transpiler run examples/by-target/javascript/rest-api/express/mysql/src/main.pys
+python -m transpiler run examples/by-target/javascript/rest-api/express/mysql/src/main.typhon
 ```
 
-Or **Run Project** on `pys.toml`.
+Or **Run Project** on `typhon.toml`.
 
 ## Layout
 
 | Path | Role |
 |------|------|
-| `src/db.pys` | `ShopDatabase` + mysql2 connection |
-| `src/mappers.pys` | SQL + row→entity (callbacks) |
-| `src/repositories.pys` / `store.pys` | Ports + composition |
-| `src/app.pys` | Express wiring |
+| `src/db.typhon` | `ShopDatabase` + mysql2 connection |
+| `src/mappers.typhon` | SQL + row→entity (callbacks) |
+| `src/repositories.typhon` / `store.typhon` | Ports + composition |
+| `src/app.typhon` | Express wiring |

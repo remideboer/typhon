@@ -10,10 +10,10 @@ change lands. Stale records are as bad as ignored ones.
 
 | Kind | Path | Level |
 | --- | --- | --- |
-| **CER** (code evolution) | `docs/evolution/` | Symbol / pre-post behavior |
-| **ADR** (architecture) | `docs/adr/` | System boundaries and contracts |
+| **CER** (code evolution) | `examples/docs/evolution/` | Symbol / pre-post behavior |
+| **ADR** (architecture) | `examples/docs/adr/` | System boundaries and contracts |
 
-Indexes: `docs/evolution/README.md`, `docs/adr/README.md`.
+Indexes: `examples/docs/evolution/README.md`, `examples/docs/adr/README.md`.
 
 ## Loop (every non-trivial change)
 
@@ -47,16 +47,16 @@ touching the matching CER/ADR is incomplete.
 ## Anti-devolution examples (unless a new record supersedes them)
 
 - IDE helpers: `python -I`, bundled path, no workspace `PYTHONPATH`;
-  Go to Definition into locked `pys.deps` only via opt-in
-  `pys.navigateLibrarySources` + `--library-sources` (trusted workspace);
+  Go to Definition into locked `typhon.deps` only via opt-in
+  `typhon.navigateLibrarySources` + `--library-sources` (trusted workspace);
   diagnostics stay fail-closed
 - Analysis/transpile: no pip-install / no third-party import for typing by default
-- `PYS_WORKSPACE_ROOT` → realpath containment; no `interpreter.path` in `pys.deps`.
-  When the env is unset, deps discovery also stops at the nearest `pys.toml`
-- Hashed fail-closed locks; no second `tokenize` in `compile_pys`
+- `TYPHON_WORKSPACE_ROOT` → realpath containment; no `interpreter.path` in `typhon.deps`.
+  When the env is unset, deps discovery also stops at the nearest `typhon.toml`
+- Hashed fail-closed locks; no second `tokenize` in `compile_typhon`
 - `run_source` tests for dep-free examples under this repo: set
-  `PYS_WORKSPACE_ROOT` to the example’s directory (CER-001 §4), or give the
-  example its own `pys.toml` — never inherit the root MySQL `pys.lock` (breaks
+  `TYPHON_WORKSPACE_ROOT` to the example’s directory (CER-001 §4), or give the
+  example its own `typhon.toml` — never inherit the root MySQL `typhon.lock` (breaks
   Linux CI with win-amd64 platform mismatch)
 - Keep parse memoization; do not re-`resolve()` already-resolved package parents without measurement + CER
 - Do not force PEG (`_BRACE_ENGINE = "peg"`) without a CER showing packrat ≤ RD on the gate corpus
@@ -64,9 +64,9 @@ touching the matching CER/ADR is incomplete.
 - Structs stay identity-free value types (ADR-005 / CER-004): no methods/inherits/`new`; fields always public (visibility on the struct); copy on assign/call/return; hash only when all fields fix / `fix struct`
 - `data` / `entity` stay separate from `struct` (ADR-011 / CER-011): `data` = frozen VO (all-fields equality); `entity` = identity keys only (`identity(...)` fix); no `uses` on either; do not fold entity identity into `struct`
 - Lambdas (ADR-012 / CER-012): capture by value at creation; read-only unless `shared` or `atomic`; foreach loop vars stay immutable per iteration; do not restore Python late-binding
-- Brace scopes (CER-015): `{ }` bodies nest `declared`; loop binders and brace-local decls do not leak; emit mangles to `_pys_bN_*` + `debug_names`; lambda capture defaults use the mangled outer name
-- Atomic (ADR-013 / CER-013): `atomic <primitive> name = expr` implies shared for capture; indivisible `+=`/`-=`/`++`/`--` / `get` / `compareAndSet`; reject `*=`/`/=`/`%=` and redundant `shared`; keep `_PysShared` unchanged; do not add memory-order knobs or float atomics without a new record
-- Debug stepping (ADR-014 / CER-014): launch generated program under debugpy (not `transpiler run` subprocess); emit `.pysmap.json` line maps + capture `names`; remap breakpoints (in+out), stack, Variables; halt at breakpoints only (`stopOnEntry: false`); Clear All Breakpoints UX; logpoints (`logMessage` + `{expr}` rewrite); `prepare_debug` PYTHONPATH = temp + `pys.deps` sites (parity with Run); inline values on `.pys` while paused; `remapVariables` applies `names` before `hidePrefixes` so `_pys_bN_*` brace locals show; do not weaken ADR-001; no scalar unwrap of shared/atomic; tasks/threads still deferred
+- Brace scopes (CER-015): `{ }` bodies nest `declared`; loop binders and brace-local decls do not leak; emit mangles to `_typhon_bN_*` + `debug_names`; lambda capture defaults use the mangled outer name
+- Atomic (ADR-013 / CER-013): `atomic <primitive> name = expr` implies shared for capture; indivisible `+=`/`-=`/`++`/`--` / `get` / `compareAndSet`; reject `*=`/`/=`/`%=` and redundant `shared`; keep `_TyphonShared` unchanged; do not add memory-order knobs or float atomics without a new record
+- Debug stepping (ADR-014 / CER-014): launch generated program under debugpy (not `transpiler run` subprocess); emit `.typhonmap.json` line maps + capture `names`; remap breakpoints (in+out), stack, Variables; halt at breakpoints only (`stopOnEntry: false`); Clear All Breakpoints UX; logpoints (`logMessage` + `{expr}` rewrite); `prepare_debug` PYTHONPATH = temp + `typhon.deps` sites (parity with Run); inline values on `.typhon` while paused; `remapVariables` applies `names` before `hidePrefixes` so `_typhon_bN_*` brace locals show; do not weaken ADR-001; no scalar unwrap of shared/atomic; tasks/threads still deferred
 - Find Usages (CER-016 / CER-018): ReferenceProvider + binding-aware refs (import graph + scopes); `--usages` with optional `--line`/`--column`; package-folder lexical scan is **not** the DoD path
 - IDE refactoring (ADR-016 / CER-018): educational core Rename / Extract / Inline / Safe Delete / Introduce Parameter via `RefactorPlan` + preview + WorkspaceEdit; trust stays ADR-001; full Fowler catalog is F-005 only
 - Member / import kind order (ADR-015 / CER-017): parse-phase section cursor; imports-only file prefix; class `const`→`fix`→field→ctor→method; struct fix→mutable; trait requires→methods; entity identity→fix→field→ctor→method; visibility unordered within a section; **not** inside `tasks { }`; educational FatalParseError (§5 messages) — do not reintroduce free-form bodies or a sem-only duplicate pass
@@ -92,7 +92,7 @@ touching the matching CER/ADR is incomplete.
   implementing class methods still need `public`
 - Library decorators (ADR-026 / CER-043 / CER-044): `@expr` may apply to
   `function` / `class` / methods for **library** callables (e.g. FastAPI). Do
-  **not** use `@` to invent missing PYS constructs (`@alias`, Lombok-style
+  **not** use `@` to invent missing Typhon constructs (`@alias`, Lombok-style
   `@Data`) — prefer a real keyword or form. Emit-only `@abstractmethod` stays
   an implementation detail. Emit keeps PascalCase param annotations
   (`Request`) for framework DI; FastAPI field research lives under

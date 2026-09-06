@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 loop (int i = 0; i < 3; i++) {
     print("#i{i}")
 }

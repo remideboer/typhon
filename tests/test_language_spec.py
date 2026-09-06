@@ -20,7 +20,7 @@ def test_translate_loop_general_with_trailing_space() -> None:
 
 
 def test_translate_import_from() -> None:
-    line = "import Car from example.pys"
+    line = "import Car from example.typhon"
     assert LANGUAGE.translate_line(line) == "from example import Car"
     assert (
         LANGUAGE.translate_line("import QApplication, QWidget from PyQt6.QtWidgets")
@@ -29,8 +29,8 @@ def test_translate_import_from() -> None:
 
 
 def test_translate_import_all_and_module() -> None:
-    assert LANGUAGE.translate_line("import all from funcs.pys") == "from funcs import *"
-    assert LANGUAGE.translate_line("import funcs.pys") == "from funcs import *"
+    assert LANGUAGE.translate_line("import all from funcs.typhon") == "from funcs import *"
+    assert LANGUAGE.translate_line("import funcs.typhon") == "from funcs import *"
     assert LANGUAGE.translate_line("import funcs") == "from funcs import *"
 
 
@@ -73,7 +73,7 @@ def test_translate_const_decl() -> None:
     assert LANGUAGE.translate_line("const int MAX = 100") == "MAX = 100"
     out = transpile("const int MAX = 10 + 5\nprint(MAX)\n")
     assert "MAX = 10 + 5" in out
-    assert "print(_pys_format(MAX))" in out
+    assert "print(_typhon_format(MAX))" in out
 
 
 def test_translate_fix_decl() -> None:
@@ -81,7 +81,7 @@ def test_translate_fix_decl() -> None:
     assert LANGUAGE.translate_line("global fix int n = 1 + 2") == "n = 1 + 2"
     out = transpile("fix int x = 4 + 5\nprint(x)\n")
     assert "x = 4 + 5" in out
-    assert "print(_pys_format(x))" in out
+    assert "print(_typhon_format(x))" in out
 
 
 def test_translate_array_loop() -> None:
@@ -104,14 +104,14 @@ if not (x > 100) {
 """
     )
     assert "if not (x > 100):" in out
-    assert 'print(_pys_format("ok"))' in out
+    assert 'print(_typhon_format("ok"))' in out
 
 
 def test_multiline_comment_stripped() -> None:
     source = "int x = 10\n## this is\na multiline\ncomment /#\nprint(x)\n"
     result = transpile(source)
     assert "x = 10" in result
-    assert "print(_pys_format(x))" in result
+    assert "print(_typhon_format(x))" in result
     assert "multiline" not in result
 
 
@@ -258,7 +258,7 @@ def test_typed_decl_translates_cast() -> None:
     out = transpile("float f = 3.14\nint a = (int) f\nprint(a)\n")
     assert "f = 3.14" in out
     assert "a = int(f)" in out
-    assert "print(_pys_format(a))" in out
+    assert "print(_typhon_format(a))" in out
 
 
 def test_print_plus_concat_runtime() -> None:

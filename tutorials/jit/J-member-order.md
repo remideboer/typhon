@@ -2,7 +2,7 @@
 
 ## Forms (canonical)
 
-```pys
+```typhon
 import math
 import greet from toolbox
 

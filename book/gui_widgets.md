@@ -7,7 +7,7 @@ widget alone does not make it appear.
 
 ## 1. Labels — displaying text
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()
@@ -30,7 +30,7 @@ call `.pack()` on them.
 
 ## 2. Buttons and layout ordering
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()
@@ -64,7 +64,7 @@ need a form-like layout — a label next to its input field, several rows
 of these, aligned. `.grid()` places each widget at an explicit row and
 column instead:
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()
@@ -100,7 +100,7 @@ A widget isn't just something to look at — it holds state you can read.
 `tk.Entry` has a `.get()` method returning whatever text is currently
 typed into it:
 
-```pys
+```typhon
 import tkinter as tk
 
 Tk window = tk.Tk()

@@ -1,68 +1,68 @@
-class _PysResult:
-    __slots__ = ("_pys_result_kind", "value", "sites")
+class _TyphonResult:
+    __slots__ = ("_typhon_result_kind", "value", "sites")
 
     def __init__(self, kind, value, sites=None):
-        self._pys_result_kind = kind
+        self._typhon_result_kind = kind
         self.value = value
         self.sites = list(sites or ())
 
     def __repr__(self):
-        return f"{self._pys_result_kind}({self.value!r})"
+        return f"{self._typhon_result_kind}({self.value!r})"
 
 
-class _PysPropagateSignal(BaseException):
+class _TyphonPropagateSignal(BaseException):
     __slots__ = ("result",)
 
     def __init__(self, result):
         self.result = result
 
 
-def _pys_ok(value=None):
-    return _PysResult("ok", value)
+def _typhon_ok(value=None):
+    return _TyphonResult("ok", value)
 
 
-def _pys_error(value):
-    return _PysResult("error", value)
+def _typhon_error(value):
+    return _TyphonResult("error", value)
 
 
-def _pys_propagate(result, file, line, function):
-    kind = getattr(result, "_pys_result_kind", None)
+def _typhon_propagate(result, file, line, function):
+    kind = getattr(result, "_typhon_result_kind", None)
     if kind == "ok":
         return result.value
     if kind != "error":
-        raise TypeError("propagate expected a PYS result value")
+        raise TypeError("propagate expected a Typhon result value")
     sites = [*result.sites, (file, line, function)]
-    raise _PysPropagateSignal(_PysResult("error", result.value, sites))
+    raise _TyphonPropagateSignal(_TyphonResult("error", result.value, sites))
 
 
-def _pys_panic(result):
-    import sys as _pys_sys
-    print(f"PYS panic: {result.value}", file=_pys_sys.stderr)
+def _typhon_panic(result):
+    import sys as _typhon_sys
+    print(f"Typhon panic: {result.value}", file=_typhon_sys.stderr)
     for file, line, function in result.sites:
-        print(f"  at {file}:{line} in {function}", file=_pys_sys.stderr)
+        print(f"  at {file}:{line} in {function}", file=_typhon_sys.stderr)
     raise SystemExit(1)
-def _pys_format(value):
+def _typhon_format(value):
     return "null" if value is None else str(value)
 def readNumber(valid):
     try:
         if valid == False:
-            return _pys_error("invalid")
-        return _pys_ok(4)
-    except _PysPropagateSignal as _pys_signal:
-        return _pys_signal.result
+            return _typhon_error("invalid")
+        return _typhon_ok(4)
+    except _TyphonPropagateSignal as _typhon_signal:
+        return _typhon_signal.result
 
 def addOne(valid):
     try:
-        value = _pys_propagate(readNumber(valid), '<memory>', 9, 'addOne')
-        return _pys_ok(value + 1)
-    except _PysPropagateSignal as _pys_signal:
-        return _pys_signal.result
+        value = _typhon_propagate(readNumber(valid), '<memory>', 9, 'addOne')
+        return _typhon_ok(value + 1)
+    except _TyphonPropagateSignal as _typhon_signal:
+        return _typhon_signal.result
 
 outcome = addOne(True)
-_pys_result_0 = outcome
-if _pys_result_0._pys_result_kind == 'ok':
-    _pys_b1_value = _pys_result_0.value
-    print(_pys_format(_pys_b1_value))
-elif _pys_result_0._pys_result_kind == 'error':
-    _pys_b2_message = _pys_result_0.value
-    print(_pys_format(_pys_b2_message))
+_typhon_result_0 = outcome
+if _typhon_result_0._typhon_result_kind == 'ok':
+    _typhon_b1_value = _typhon_result_0.value
+    print(_typhon_format(_typhon_b1_value))
+elif _typhon_result_0._typhon_result_kind == 'error':
+    _typhon_b2_message = _typhon_result_0.value
+    print(_typhon_format(_typhon_b2_message))

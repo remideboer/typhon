@@ -1,7 +1,7 @@
 # ABAC
 
 **Category:** Authorization  
-**Demo:** [abac.pys](abac.pys)  
+**Demo:** [abac.typhon](abac.typhon)  
 **Wikipedia / ref:** [ABAC](https://en.wikipedia.org/wiki/Attribute-based_access_control)
 
 ## Intent
@@ -19,5 +19,5 @@ Decide from attributes (owner, admin flag, action) via a policy.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/authorization/abac.pys
+python -m transpiler run examples/patterns/authorization/abac.typhon
 ```

@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2.9. Structuring code — PYS Development Classes</title>
+  <title>2.9. Structuring code — Typhon Development Classes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="layout">
     <nav class="toc">
-      <h1><a href="index.html">PYS Development Classes</a></h1>
+      <h1><a href="index.html">Typhon Development Classes</a></h1>
       <ul>
 <li><a href="preface.html">Preface</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <ul>
 <li><a href="chapter_7_session_tests.html">Session 6 — Tests you can trust</a></li>
 <li><a href="chapter_7_1_first_test.html">9.1. Writing a first test</a></li>
-<li><a href="chapter_7_2_tdd.html">9.2. Better PYS with TDD</a></li>
+<li><a href="chapter_7_2_tdd.html">9.2. Better Typhon with TDD</a></li>
 <li><a href="chapter_7_3_packages_source_roots.html">9.3. Packages and source roots</a></li>
 </ul>
 <span class="section">10. Session — Patterns you name to build (and to ask an AI)</span>
@@ -110,9 +110,9 @@
 <li><a href="chapter_9_7_data_paths.html">10.7. Data paths</a></li>
 <li><a href="chapter_9_8_prompting_ai.html">10.8. Prompting an AI</a></li>
 </ul>
-<span class="section">11. Session 7 — From PYS to C# and Java</span>
+<span class="section">11. Session 7 — From Typhon to C# and Java</span>
 <ul>
-<li><a href="chapter_8_session_csharp_java.html">Session 7 — From PYS to C# and Java</a></li>
+<li><a href="chapter_8_session_csharp_java.html">Session 7 — From Typhon to C# and Java</a></li>
 <li><a href="chapter_8_1_types_declarations.html">11.1. Types and declarations</a></li>
 <li><a href="chapter_8_2_classes_interfaces.html">11.2. Classes, interfaces, and members</a></li>
 <li><a href="chapter_8_3_control_flow_collections.html">11.3. Control flow and collections</a></li>
@@ -136,8 +136,8 @@
     </nav>
     <main>
 <h1>2.9. Structuring code</h1>
-<p>One giant file becomes hard to read. PYS lets you split code across
-<code>.pys</code> files and <strong>import</strong> names you mark as visible.</p>
+<p>One giant file becomes hard to read. Typhon lets you split code across
+<code>.typhon</code> files and <strong>import</strong> names you mark as visible.</p>
 <h2>Visibility in one sentence</h2>
 <table>
 <thead>
@@ -163,7 +163,7 @@
 </table>
 <blockquote>
 <p><strong>Sidebar — source roots (later)</strong></p>
-<p>Larger projects can mirror <code>src/</code> and <code>tests/</code> with a <code>pys.toml</code>
+<p>Larger projects can mirror <code>src/</code> and <code>tests/</code> with a <code>typhon.toml</code>
 <code>[source_roots]</code> table so the same package path exists in both trees.
 That is Session 6: <a href="chapter_7_3_packages_source_roots.html">Packages and source roots</a>.</p>
 <p><strong>Sidebar — <code>global</code> in one line</strong></p>
@@ -171,21 +171,21 @@ That is Session 6: <a href="chapter_7_3_packages_source_roots.html">Packages and
 Prefer <code>package</code> when only same-folder teammates should see the name.</p>
 </blockquote>
 <h2>Two files</h2>
-<p><code>greetings.pys</code>:</p>
-<pre><code class="language-pys"><span class="tok-mod">package</span> <span class="tok-kw">function</span> <span class="tok-type">void</span> <span class="tok-ident">greet</span>(<span class="tok-type">string</span> <span class="tok-ident">name</span>) {
+<p><code>greetings.typhon</code>:</p>
+<pre><code class="language-typhon"><span class="tok-mod">package</span> <span class="tok-kw">function</span> <span class="tok-type">void</span> <span class="tok-ident">greet</span>(<span class="tok-type">string</span> <span class="tok-ident">name</span>) {
     <span class="tok-builtin">print</span>(<span class="tok-string">&quot;</span><span class="tok-string">Hello, </span><span class="tok-string">&quot;</span> <span class="tok-op">+</span> <span class="tok-ident">name</span> <span class="tok-op">+</span> <span class="tok-string">&quot;</span><span class="tok-string">!</span><span class="tok-string">&quot;</span>)
 }</code></pre>
 <p><em>Compiles; no output.</em></p>
-<p><code>app.pys</code> in the <strong>same folder</strong>:</p>
-<pre><code class="language-pys"><span class="tok-kw">import</span> <span class="tok-ident">greet</span> <span class="tok-kw">from</span> <span class="tok-ident">greetings</span>
+<p><code>app.typhon</code> in the <strong>same folder</strong>:</p>
+<pre><code class="language-typhon"><span class="tok-kw">import</span> <span class="tok-ident">greet</span> <span class="tok-kw">from</span> <span class="tok-ident">greetings</span>
 
 <span class="tok-ident">greet</span>(<span class="tok-string">&quot;</span><span class="tok-string">Ada</span><span class="tok-string">&quot;</span>)</code></pre>
-<p><em>Needs the companion <code>.pys</code> file from the same section; then prints the call result.</em></p>
+<p><em>Needs the companion <code>.typhon</code> file from the same section; then prints the call result.</em></p>
 <p>Rules that bite beginners:</p>
 <ol>
 <li>Imports must be at the <strong>top</strong> of the file.</li>
 <li>You can only import names marked <code>package</code> or <code>global</code>.</li>
-<li>The module name in <code>from greetings</code> matches the file <code>greetings.pys</code>
+<li>The module name in <code>from greetings</code> matches the file <code>greetings.typhon</code>
    (without the extension), for same-folder imports.</li>
 </ol>
 <blockquote>
@@ -193,8 +193,8 @@ Prefer <code>package</code> when only same-folder teammates should see the name.
 </blockquote>
 <h3>Exercise</h3>
 <blockquote>
-<p>Create <code>mathUtils.pys</code> with <code>package function int double(int n)</code> that
-returns <code>n * 2</code>. From <code>app.pys</code> in the same folder, import and print
+<p>Create <code>mathUtils.typhon</code> with <code>package function int double(int n)</code> that
+returns <code>n * 2</code>. From <code>app.typhon</code> in the same folder, import and print
 <code>double(21)</code>.</p>
 </blockquote>
 <hr />

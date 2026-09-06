@@ -1,4 +1,4 @@
-"""PYS IDE refactoring: binding-aware refs, plans, and educational catalog."""
+"""Typhon IDE refactoring: binding-aware refs, plans, and educational catalog."""
 from __future__ import annotations
 
 from .catalog import CATALOG, catalog_entry

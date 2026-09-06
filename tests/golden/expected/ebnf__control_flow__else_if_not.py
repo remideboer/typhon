@@ -1,9 +1,9 @@
-def _pys_format(value):
+def _typhon_format(value):
     return "null" if value is None else str(value)
 x = 1
 if not (x == 0):
-    print(_pys_format("nz"))
+    print(_typhon_format("nz"))
 elif not (x > 10):
-    print(_pys_format("small"))
+    print(_typhon_format("small"))
 else:
-    print(_pys_format("other"))
+    print(_typhon_format("other"))

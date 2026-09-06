@@ -17,7 +17,7 @@ Three shapes:
   </figcaption>
 </figure>
 
-```pys
+```typhon
 # C-style
 loop (int i = 0; i < 3; i++) {
     print(i)
@@ -56,7 +56,7 @@ The variable after `in` must declare the **element** type of the collection
 (`int` for `int[]` / `list<int>`, `string` for `list<string>`, and so on).
 Omitting the type, or naming the wrong type, is a compile error:
 
-```pys
+```typhon
 int[] nums = {1, 2, 3}
 # loop (x in nums) { }           # error: type required
 # loop (string x in nums) { }    # error: elements are int, not string
@@ -74,11 +74,11 @@ Type mismatch: foreach binder 'x' has type string, but elements of 'nums' are in
 
 ## Why a C-style loop has one counter
 
-PYS deliberately keeps the C-style form narrow. The initializer, condition,
+Typhon deliberately keeps the C-style form narrow. The initializer, condition,
 and step must all name the same counter, and that counter is immutable in the
 body. This gives the reader one clear answer to: “what controls this loop?”
 
-Java and C++ allow this denser form (the following is **not PYS**):
+Java and C++ allow this denser form (the following is **not Typhon**):
 
 ```java
 for (int x = 0, y = 10; x < 3; x++, y++) {
@@ -118,10 +118,10 @@ The condition still checks only `x`; nothing guarantees that `y` stays in
 step. A different `y += 2` in the header would compile too. C++ expresses the
 update with its comma operator, while Java uses a comma-separated update list.
 
-PYS does not add comma-separated counters or a special `{x, y}` group. Use
+Typhon does not add comma-separated counters or a special `{x, y}` group. Use
 the existing while-style form when several ordinary mutable values take part:
 
-```pys
+```typhon
 int x = 0
 int y = 10
 
@@ -167,7 +167,7 @@ were looking for and further passes would waste work.
   </figcaption>
 </figure>
 
-```pys
+```typhon
 list<string> names = ["Ada", "Tom", "Lin", "Sam"]
 string target = "Lin"
 bool found = false
@@ -203,7 +203,7 @@ the loop’s closing `}`.
 (the next value, or the next C-style step). Use it to skip work you do not
 want for some items.
 
-```pys
+```typhon
 loop (int i = 1; i <= 6; i++) {
     if (i % 2 == 0) {
         continue
@@ -240,7 +240,7 @@ Even numbers hit `continue` and never reach `print`. Odd numbers print:
 Names declared inside a loop’s `{ … }` exist only until that closing
 brace. After the loop, they are gone — that is **block scope**.
 
-```pys
+```typhon
 loop (int i = 0; i < 1; i++) {
     int scratch = 10
     print(scratch)

@@ -1,7 +1,7 @@
 # Balking
 
 **Category:** Concurrency  
-**Demo:** [balking.pys](balking.pys)  
+**Demo:** [balking.typhon](balking.typhon)  
 **Wikipedia:** [Balking pattern](https://en.wikipedia.org/wiki/Balking_pattern) · [Concurrency pattern](https://en.wikipedia.org/wiki/Concurrency_pattern)
 
 ## Intent
@@ -26,7 +26,7 @@ classDiagram
 
 ## This demo
 
-`WashingMachine` is the guarded object for the sequential case. Concurrent balking uses module-level `atomic int busy` with `compareAndSet` (PYS has no monitor).
+`WashingMachine` is the guarded object for the sequential case. Concurrent balking uses module-level `atomic int busy` with `compareAndSet` (Typhon has no monitor).
 
 ```mermaid
 classDiagram
@@ -45,5 +45,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/concurrency/balking.pys
+python -m transpiler run examples/patterns/concurrency/balking.typhon
 ```

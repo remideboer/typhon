@@ -52,8 +52,8 @@ def test_result_teaching_snippets_stay_compilable() -> None:
 
     for name in ("basics_outcomes.md", "chapter_8_4_no_direct_twin.md"):
         text = (BOOK / name).read_text(encoding="utf-8")
-        blocks = re.findall(r"```pys\n(.*?)```", text, flags=re.DOTALL)
-        assert blocks, f"No PYS teaching blocks found in {name}"
+        blocks = re.findall(r"```typhon\n(.*?)```", text, flags=re.DOTALL)
+        assert blocks, f"No Typhon teaching blocks found in {name}"
         for source in blocks:
             transpile(
                 source,
@@ -65,9 +65,9 @@ def test_result_teaching_snippets_stay_compilable() -> None:
 def test_book_highlighter_recognizes_result_language_surface() -> None:
     sys.path.insert(0, str(BOOK))
     try:
-        from pys_highlight import highlight_pys
+        from typhon_highlight import highlight_typhon
 
-        highlighted = highlight_pys(
+        highlighted = highlight_typhon(
             "result<int, string> outcome = ok(1)\n"
             "int value = outcome propagate\n"
         )
@@ -96,8 +96,8 @@ def test_optional_computer_model_chapters_follow_the_core_course(capsys) -> None
         "under_the_hood_emit_targets.md",
     ):
         text = (BOOK / name).read_text(encoding="utf-8")
-        blocks = re.findall(r"```pys\n(.*?)```", text, flags=re.DOTALL)
-        assert blocks, f"No PYS teaching blocks found in {name}"
+        blocks = re.findall(r"```typhon\n(.*?)```", text, flags=re.DOTALL)
+        assert blocks, f"No Typhon teaching blocks found in {name}"
         for source in blocks:
             exec(transpile(source, source_path=BOOK / name), {})
 
@@ -132,7 +132,7 @@ def test_optional_computer_model_chapters_follow_the_core_course(capsys) -> None
     assert "Thread 1" in memory_html
     assert "Shared runtime data" in memory_html
     assert "javascript" in emit_html.lower()
-    assert "pys.emitTarget" in emit_html or "emitTarget" in emit_html
+    assert "typhon.emitTarget" in emit_html or "emitTarget" in emit_html
 
 
 def test_session_10_pattern_chapters_include_concept_diagrams() -> None:

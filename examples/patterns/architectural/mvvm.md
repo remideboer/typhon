@@ -1,7 +1,7 @@
 # Model–View–ViewModel (MVVM)
 
 **Category:** Architectural  
-**Demo:** [mvvm.pys](mvvm.pys)  
+**Demo:** [mvvm.typhon](mvvm.typhon)  
 **Wikipedia:** [Model–view–viewmodel](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel)
 
 ## Intent
@@ -44,5 +44,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/architectural/mvvm.pys
+python -m transpiler run examples/patterns/architectural/mvvm.typhon
 ```

@@ -14,7 +14,7 @@ credentials, …).
 ## Why stubbed
 
 Needs browser redirects, an IdP, and usually HTTPS callback URLs — beyond a
-small in-process PYS demo. Prefer linking a future teaching sample to a local
+small in-process Typhon demo. Prefer linking a future teaching sample to a local
 mock IdP rather than inventing a fake OAuth.
 
 ## Related

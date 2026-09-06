@@ -30,10 +30,10 @@ port so tests stay fast and focused.
 | **Spy** | Records calls for assertions |
 | **Mock** | Checks expectations (fail if wrong collaborator use) |
 
-Demo: [`test_doubles.pys`](../examples/patterns/testing/test_doubles.pys)
+Demo: [`test_doubles.typhon`](../examples/patterns/testing/test_doubles.typhon)
 
 ```text
-python -m transpiler run examples/patterns/testing/test_doubles.pys
+python -m transpiler run examples/patterns/testing/test_doubles.typhon
 ```
 
 **Output:**
@@ -66,8 +66,8 @@ mock-ok
   </figcaption>
 </figure>
 
-Demos: [`object_mother.pys`](../examples/patterns/testing/object_mother.pys),
-[`test_data_builder.pys`](../examples/patterns/testing/test_data_builder.pys)
+Demos: [`object_mother.typhon`](../examples/patterns/testing/object_mother.typhon),
+[`test_data_builder.typhon`](../examples/patterns/testing/test_data_builder.typhon)
 
 ### Prompt dialogue
 

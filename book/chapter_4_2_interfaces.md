@@ -18,7 +18,7 @@ public and abstract. Omit a return type when the method returns nothing
 returns a value, write the type before the name — builtins (`int`,
 `string`, …) **or** another type you defined (`Button`, `Shape`, …).
 
-```pys
+```typhon
 interface Greeter {
     greet(string name)
 }
@@ -61,7 +61,7 @@ Openings may name **what comes out** of the socket — including a type that
 is itself another interface. The factory below promises a `Button`; callers
 only need `GUIFactory`, not `WinFactory`.
 
-```pys
+```typhon
 interface Button {
     string label()
 }

@@ -1,7 +1,7 @@
 # Model–View–Presenter (MVP)
 
 **Category:** Architectural  
-**Demo:** [mvp.pys](mvp.pys)  
+**Demo:** [mvp.typhon](mvp.typhon)  
 **Wikipedia:** [Model–view–presenter](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
 
 ## Intent
@@ -50,5 +50,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/architectural/mvp.pys
+python -m transpiler run examples/patterns/architectural/mvp.typhon
 ```

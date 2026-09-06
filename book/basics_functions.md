@@ -6,7 +6,7 @@ you package a step and reuse it.
 
 ## A function that prints
 
-```pys
+```typhon
 function void greet(string name) {
     print("Hello, " + name + "!")
 }
@@ -25,7 +25,7 @@ Hello, Tom!
 You can also pass arguments **by name** when there are several parameters.
 Use **only** named or **only** positional in one call — never mix:
 
-```pys
+```typhon
 function void greetTwice(string name, int times) {
     print(name)
 }
@@ -84,14 +84,14 @@ as printing.
 </figure>
 
 Notice we **call** `greet` ourselves. Declaring a function does not run it.
-(There is no hidden auto-start `main` in PYS.)
+(There is no hidden auto-start `main` in Typhon.)
 
 ## A function that returns a value
 
 When a function computes something for the caller, put the return type
 after `function` and use `return`:
 
-```pys
+```typhon
 function int add(int a, int b) {
     return a + b
 }

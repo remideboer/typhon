@@ -1,7 +1,7 @@
 # Dependency Injection
 
 **Category:** General (not GoF)  
-**Demo:** [dependency_injection.pys](dependency_injection.pys)  
+**Demo:** [dependency_injection.typhon](dependency_injection.typhon)  
 **Wikipedia:** [Dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) · [Inversion of control](https://en.wikipedia.org/wiki/Inversion_of_control)
 
 ## Intent
@@ -18,7 +18,7 @@ never calls `getInstance()` or `new` on a concrete logger. That is Dependency
 Injection (DI); Inversion of Control (IoC) is the broader idea that control of
 wiring moves outward.
 
-Prefer this over [Singleton](../creational/singleton.pys) for application
+Prefer this over [Singleton](../creational/singleton.typhon) for application
 services: tests can inject a fake logger; production wires a real one once.
 
 ## Classic structure (UML)
@@ -71,5 +71,5 @@ look up a global logger.”
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/general/dependency_injection.pys
+python -m transpiler run examples/patterns/general/dependency_injection.typhon
 ```

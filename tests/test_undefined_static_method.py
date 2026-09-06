@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from transpiler.pipeline import compile_pys
+from transpiler.pipeline import compile_typhon
 from transpiler.refactor.apply import apply_plan_to_files
 from transpiler.refactor.create_static_method import plan_create_static_method
 from transpiler.transpiler import TranspileError
@@ -22,9 +22,9 @@ class Character {
 Character.greet()
 """
     with pytest.raises(TranspileError) as ei:
-        compile_pys(src)
+        compile_typhon(src)
     err = ei.value
-    assert err.code == "pys.undefined-static-method"
+    assert err.code == "typhon.undefined-static-method"
     assert "greet" in str(err)
     assert "Character" in str(err)
     assert err.suggested_fix == "create-static-method"
@@ -41,9 +41,9 @@ class Character {
 Character.greeting("Ada")
 """
     with pytest.raises(TranspileError) as ei:
-        compile_pys(src)
+        compile_typhon(src)
     err = ei.value
-    assert err.code == "pys.instance-member-via-type"
+    assert err.code == "typhon.instance-member-via-type"
     assert "greeting" in str(err)
 
 
@@ -58,7 +58,7 @@ class MathUtil {
 int x = MathUtil.twice(3)
 print(x)
 """
-    compile_pys(src)
+    compile_typhon(src)
 
 
 def test_create_static_method_void_no_args(tmp_path: Path) -> None:
@@ -73,14 +73,14 @@ def test_create_static_method_void_no_args(tmp_path: Path) -> None:
         "\n"
         "Character.greet()\n"
     )
-    path = tmp_path / "t.pys"
+    path = tmp_path / "t.typhon"
     path.write_text(src, encoding="utf-8")
     plan = plan_create_static_method(path, line=9, column=11, class_name="Character", method_name="greet")
     assert plan.ok is True
     after = apply_plan_to_files(plan, {str(path.resolve()): src})
     text = after[str(path.resolve())]
     assert "public static void greet()" in text
-    compile_pys(text)
+    compile_typhon(text)
 
 
 def test_create_static_method_infers_args_and_return(tmp_path: Path) -> None:
@@ -90,7 +90,7 @@ def test_create_static_method_infers_args_and_return(tmp_path: Path) -> None:
         "\n"
         'string s = Util.fmt("hi", 2)\n'
     )
-    path = tmp_path / "u.pys"
+    path = tmp_path / "u.typhon"
     path.write_text(src, encoding="utf-8")
     plan = plan_create_static_method(path, line=4, column=12)
     assert plan.ok is True
@@ -98,4 +98,4 @@ def test_create_static_method_infers_args_and_return(tmp_path: Path) -> None:
     text = after[str(path.resolve())]
     assert "public static string fmt(string text, int n)" in text
     assert 'return ""' in text
-    compile_pys(text)
+    compile_typhon(text)

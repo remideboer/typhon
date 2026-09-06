@@ -1,6 +1,6 @@
 # 10.3. Control flow and collections
 
-| PYS | C# | Java |
+| Typhon | C# | Java |
 |-----|----|------|
 | `if (c) { }` | `if (c) { }` | `if (c) { }` |
 | `unless (c)` | `if (!c)` | `if (!c)` |
@@ -12,7 +12,7 @@
 | `T[]` | `T[]` | `T[]` |
 | `enum` | `enum` | `enum` |
 
-String interpolation: PYS `{x}` / `#i{x}` vs C# `$"{x}"` vs Java
+String interpolation: Typhon `{x}` / `#i{x}` vs C# `$"{x}"` vs Java
 `"%s".formatted(...)` / string templates (newer).
 
 ## Transferring loops without copying every feature
@@ -33,10 +33,10 @@ Output:
 ```
 
 Those languages do not verify that both variables remain synchronized: one
-step can change, or the body can update one variable again. PYS therefore
+step can change, or the body can update one variable again. Typhon therefore
 transfers the **algorithm**, not this permissive header feature:
 
-```pys
+```typhon
 int left = 0
 int right = 4
 
@@ -54,13 +54,13 @@ Output:
 1, 3
 ```
 
-Use PYS's C-style form for one protected counter. Use while-style `loop` for
+Use Typhon's C-style form for one protected counter. Use while-style `loop` for
 several changing values. When moving to C# or Java, you may encounter a compact
 multi-variable `for`, but you do not need it to express the algorithm.
 
 ### Exercise
 
-> Translate a PYS foreach over `list<string>` into both C# `foreach` and
+> Translate a Typhon foreach over `list<string>` into both C# `foreach` and
 > Java enhanced for-loop on paper.
 
 ---

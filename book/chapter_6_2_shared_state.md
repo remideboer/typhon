@@ -16,7 +16,7 @@ not by itself make updates race-free.
   </figcaption>
 </figure>
 
-```pys
+```typhon
 shared int hits = 0
 
 tasks {

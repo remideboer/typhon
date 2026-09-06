@@ -7,22 +7,22 @@ transport is Express (no DIY HTTP stack).
 ## Run
 
 ```bash
-python -m transpiler run examples/by-target/javascript/rest-api/express/memory/src/main.pys
+python -m transpiler run examples/by-target/javascript/rest-api/express/memory/src/main.typhon
 ```
 
-Or right-click this folder’s `pys.toml` → **Run Project** (`target = "javascript"`).
+Or right-click this folder’s `typhon.toml` → **Run Project** (`target = "javascript"`).
 
 Do **not** run `deps lock` on this silo: it only has `[dependencies.npm]`.
-There is no `pys.lock`; Express installs on Run into `~/.pys/repository/npm/`.
+There is no `typhon.lock`; Express installs on Run into `~/.typhon/repository/npm/`.
 
 Listens on `127.0.0.1:8190`. Seeds three board-game products.
 
 ## Tests
 
 ```bash
-set PYS_WORKSPACE_ROOT=examples\by-target\javascript\rest-api\express\memory
-python -m transpiler run examples/by-target/javascript/rest-api/express/memory/tests/test_repos.pys --target javascript
-python -m transpiler run examples/by-target/javascript/rest-api/express/memory/tests/test_api.pys --target javascript
+set TYPHON_WORKSPACE_ROOT=examples\by-target\javascript\rest-api\express\memory
+python -m transpiler run examples/by-target/javascript/rest-api/express/memory/tests/test_repos.typhon --target javascript
+python -m transpiler run examples/by-target/javascript/rest-api/express/memory/tests/test_api.typhon --target javascript
 ```
 
 ## Curl cookbook
@@ -53,8 +53,8 @@ curl -s -X POST http://127.0.0.1:8190/api/orders/1/lines -H "Content-Type: appli
 
 | Path | Role |
 |------|------|
-| `src/main.pys` | Express `listen` |
-| `src/app.pys` | Route wiring |
-| `src/api_*.pys` | CRUD → `ApiResponse` |
-| `src/repositories.pys` | In-memory store |
-| `src/models.pys` | Entities |
+| `src/main.typhon` | Express `listen` |
+| `src/app.typhon` | Route wiring |
+| `src/api_*.typhon` | CRUD → `ApiResponse` |
+| `src/repositories.typhon` | In-memory store |
+| `src/models.typhon` | Entities |

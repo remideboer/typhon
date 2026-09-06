@@ -17,11 +17,11 @@ from transpiler.transpiler import TranspileError, run_source
 
 
 def test_manifest_main_is_contained_and_resolved(tmp_path: Path) -> None:
-    main = tmp_path / "src" / "app.pys"
+    main = tmp_path / "src" / "app.typhon"
     main.parent.mkdir()
     main.write_text('print("ready")\n', encoding="utf-8")
-    manifest = tmp_path / "pys.toml"
-    manifest.write_text('[project]\nmain = "src/app.pys"\n', encoding="utf-8")
+    manifest = tmp_path / "typhon.toml"
+    manifest.write_text('[project]\nmain = "src/app.typhon"\n', encoding="utf-8")
 
     assert load_project_main(manifest) == main.resolve()
     assert resolve_entrypoint(tmp_path) == main.resolve()
@@ -30,11 +30,11 @@ def test_manifest_main_is_contained_and_resolved(tmp_path: Path) -> None:
 
 
 def test_manifest_target_defaults_and_rejects_invalid(tmp_path: Path) -> None:
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text('print("ok")\n', encoding="utf-8")
-    manifest = tmp_path / "pys.toml"
+    manifest = tmp_path / "typhon.toml"
     manifest.write_text(
-        '[project]\nmain = "main.pys"\ntarget = "javascript"\n',
+        '[project]\nmain = "main.typhon"\ntarget = "javascript"\n',
         encoding="utf-8",
     )
     assert load_project_emit_target(manifest) == "javascript"
@@ -42,20 +42,20 @@ def test_manifest_target_defaults_and_rejects_invalid(tmp_path: Path) -> None:
 
     bad = tmp_path / "bad"
     bad.mkdir()
-    (bad / "main.pys").write_text('print("x")\n', encoding="utf-8")
-    (bad / "pys.toml").write_text(
-        '[project]\nmain = "main.pys"\ntarget = "ruby"\n',
+    (bad / "main.typhon").write_text('print("x")\n', encoding="utf-8")
+    (bad / "typhon.toml").write_text(
+        '[project]\nmain = "main.typhon"\ntarget = "ruby"\n',
         encoding="utf-8",
     )
     with pytest.raises(TranspileError, match=r"\[project\]\.target"):
-        load_project_emit_target(bad / "pys.toml")
+        load_project_emit_target(bad / "typhon.toml")
 
 
 def test_manifest_main_cannot_escape_project(tmp_path: Path) -> None:
     project = tmp_path / "project"
     project.mkdir()
-    manifest = project / "pys.toml"
-    manifest.write_text('[project]\nmain = "../outside.pys"\n', encoding="utf-8")
+    manifest = project / "typhon.toml"
+    manifest.write_text('[project]\nmain = "../outside.typhon"\n', encoding="utf-8")
 
     with pytest.raises(TranspileError, match="outside the project"):
         load_project_main(manifest)
@@ -65,7 +65,7 @@ def test_python_310_manifest_fallback_rejects_non_string_main(
     tmp_path: Path,
     monkeypatch,
 ) -> None:
-    manifest = tmp_path / "pys.toml"
+    manifest = tmp_path / "typhon.toml"
     manifest.write_text("[project]\nmain = 123\n", encoding="utf-8")
     monkeypatch.setattr(project_manifest.sys, "version_info", (3, 10))
 
@@ -74,12 +74,12 @@ def test_python_310_manifest_fallback_rejects_non_string_main(
 
 
 def test_configured_main_rejects_conflicting_selected_file(tmp_path: Path) -> None:
-    main = tmp_path / "main.pys"
-    other = tmp_path / "other.pys"
+    main = tmp_path / "main.typhon"
+    other = tmp_path / "other.typhon"
     main.write_text('print("main")\n', encoding="utf-8")
     other.write_text('print("other")\n', encoding="utf-8")
-    (tmp_path / "pys.toml").write_text(
-        '[project]\nmain = "main.pys"\n', encoding="utf-8"
+    (tmp_path / "typhon.toml").write_text(
+        '[project]\nmain = "main.typhon"\n', encoding="utf-8"
     )
 
     with pytest.raises(TranspileError, match="configured entrypoint"):
@@ -94,12 +94,12 @@ def test_test_source_root_file_may_run_beside_configured_main(
     tests = tmp_path / "tests"
     src.mkdir()
     tests.mkdir()
-    main = src / "main.pys"
-    suite = tests / "test_suite.pys"
+    main = src / "main.typhon"
+    suite = tests / "test_suite.typhon"
     main.write_text('print("main")\n', encoding="utf-8")
     suite.write_text('print("suite")\n', encoding="utf-8")
-    (tmp_path / "pys.toml").write_text(
-        '[project]\nmain = "src/main.pys"\n'
+    (tmp_path / "typhon.toml").write_text(
+        '[project]\nmain = "src/main.typhon"\n'
         '[source_roots]\nmain = "src"\ntest = "tests"\n',
         encoding="utf-8",
     )
@@ -111,7 +111,7 @@ def test_test_source_root_file_may_run_beside_configured_main(
 def test_directory_without_manifest_main_is_configuration_error(
     tmp_path: Path,
 ) -> None:
-    (tmp_path / "pys.toml").write_text("[project]\n", encoding="utf-8")
+    (tmp_path / "typhon.toml").write_text("[project]\n", encoding="utf-8")
 
     with pytest.raises(TranspileError, match=r"\[project\]\.main"):
         resolve_entrypoint(tmp_path)
@@ -120,7 +120,7 @@ def test_directory_without_manifest_main_is_configuration_error(
 def test_direct_file_top_level_propagate_panics(
     tmp_path: Path, capfd: pytest.CaptureFixture[str]
 ) -> None:
-    main = tmp_path / "main.pys"
+    main = tmp_path / "main.typhon"
     main.write_text(
         "function result<int, string> fail() {\n"
         '    return error("broken input")\n'
@@ -133,23 +133,23 @@ def test_direct_file_top_level_propagate_panics(
     assert run_source(main) != 0
     captured = capfd.readouterr()
     assert "unreachable" not in captured.out
-    assert "PYS panic: broken input" in captured.err
-    assert "main.pys:4" in captured.err
+    assert "Typhon panic: broken input" in captured.err
+    assert "main.typhon:4" in captured.err
 
 
 def test_manifest_directory_run_uses_main_and_preserves_import_chain(
     tmp_path: Path, capfd: pytest.CaptureFixture[str]
 ) -> None:
-    helper = tmp_path / "helper.pys"
+    helper = tmp_path / "helper.typhon"
     helper.write_text(
         "global function result<int, string> load() {\n"
         '    return error("missing config")\n'
         "}\n",
         encoding="utf-8",
     )
-    main = tmp_path / "app.pys"
+    main = tmp_path / "app.typhon"
     main.write_text(
-        "import load from helper.pys\n"
+        "import load from helper.typhon\n"
         "function result<int, string> start() {\n"
         "    int value = load() propagate\n"
         "    return ok(value)\n"
@@ -157,21 +157,21 @@ def test_manifest_directory_run_uses_main_and_preserves_import_chain(
         "int value = start() propagate\n",
         encoding="utf-8",
     )
-    (tmp_path / "pys.toml").write_text(
-        '[project]\nmain = "app.pys"\n', encoding="utf-8"
+    (tmp_path / "typhon.toml").write_text(
+        '[project]\nmain = "app.typhon"\n', encoding="utf-8"
     )
 
     assert run_source(tmp_path) != 0
     captured = capfd.readouterr()
-    assert "PYS panic: missing config" in captured.err
-    assert "app.pys:3" in captured.err
-    assert "app.pys:6" in captured.err
+    assert "Typhon panic: missing config" in captured.err
+    assert "app.typhon:3" in captured.err
+    assert "app.typhon:6" in captured.err
 
 
 def test_imported_top_level_propagate_never_gets_entrypoint_semantics(
     tmp_path: Path,
 ) -> None:
-    helper = tmp_path / "helper.pys"
+    helper = tmp_path / "helper.typhon"
     helper.write_text(
         "global function result<int, string> fail() {\n"
         '    return error("bad")\n'
@@ -179,8 +179,8 @@ def test_imported_top_level_propagate_never_gets_entrypoint_semantics(
         "int value = fail() propagate\n",
         encoding="utf-8",
     )
-    main = tmp_path / "main.pys"
-    main.write_text("import all from helper.pys\n", encoding="utf-8")
+    main = tmp_path / "main.typhon"
+    main.write_text("import all from helper.typhon\n", encoding="utf-8")
 
     with pytest.raises(TranspileError, match="enclosing function"):
         run_source(main)
@@ -189,11 +189,11 @@ def test_imported_top_level_propagate_never_gets_entrypoint_semantics(
 def test_debug_directory_uses_same_manifest_entrypoint(
     tmp_path: Path,
 ) -> None:
-    main = tmp_path / "src" / "app.pys"
+    main = tmp_path / "src" / "app.typhon"
     main.parent.mkdir()
     main.write_text('print("debug")\n', encoding="utf-8")
-    (tmp_path / "pys.toml").write_text(
-        '[project]\nmain = "src/app.pys"\n', encoding="utf-8"
+    (tmp_path / "typhon.toml").write_text(
+        '[project]\nmain = "src/app.typhon"\n', encoding="utf-8"
     )
 
     result = prepare_debug(tmp_path, tmp_path / "debug-out")
@@ -206,8 +206,8 @@ def test_debug_directory_uses_same_manifest_entrypoint(
 def test_ide_analysis_applies_top_level_propagate_only_to_manifest_main(
     tmp_path: Path,
 ) -> None:
-    main = tmp_path / "main.pys"
-    helper = tmp_path / "helper.pys"
+    main = tmp_path / "main.typhon"
+    helper = tmp_path / "helper.typhon"
     source = (
         "function result<int, string> fail() {\n"
         '    return error("bad")\n'
@@ -216,14 +216,14 @@ def test_ide_analysis_applies_top_level_propagate_only_to_manifest_main(
     )
     main.write_text(source, encoding="utf-8")
     helper.write_text(source, encoding="utf-8")
-    (tmp_path / "pys.toml").write_text(
-        '[project]\nmain = "main.pys"\n', encoding="utf-8"
+    (tmp_path / "typhon.toml").write_text(
+        '[project]\nmain = "main.typhon"\n', encoding="utf-8"
     )
 
     assert analyze_file(main)["ok"] is True
     helper_result = analyze_file(helper)
     assert helper_result["ok"] is False
-    assert helper_result["error"]["code"] == "pys.propagate-return"
+    assert helper_result["error"]["code"] == "typhon.propagate-return"
 
 
 def test_result_panic_teaching_project_has_documented_terminal_outcome(
@@ -231,15 +231,15 @@ def test_result_panic_teaching_project_has_documented_terminal_outcome(
     capfd,
 ) -> None:
     project = Path(__file__).parents[1] / "examples" / "result_panic"
-    monkeypatch.setenv("PYS_WORKSPACE_ROOT", str(project))
+    monkeypatch.setenv("TYPHON_WORKSPACE_ROOT", str(project))
 
     assert run_source(project) == 1
 
     captured = capfd.readouterr()
     assert captured.out == ""
-    assert "PYS panic: missing count" in captured.err
-    assert "app.pys:14 in start" in captured.err
-    assert "app.pys:18 in <entrypoint>" in captured.err
+    assert "Typhon panic: missing count" in captured.err
+    assert "app.typhon:14 in start" in captured.err
+    assert "app.typhon:18 in <entrypoint>" in captured.err
 
 
 def test_handled_propagation_does_not_pollute_a_later_panic_chain(
@@ -247,7 +247,7 @@ def test_handled_propagation_does_not_pollute_a_later_panic_chain(
     monkeypatch,
     capfd,
 ) -> None:
-    source = tmp_path / "main.pys"
+    source = tmp_path / "main.typhon"
     source.write_text(
         "function result<int, string> forward(result<int, string> input) {\n"
         "    int value = input propagate\n"
@@ -264,11 +264,11 @@ def test_handled_propagation_does_not_pollute_a_later_panic_chain(
         "int value = forward(failure) propagate\n",
         encoding="utf-8",
     )
-    monkeypatch.setenv("PYS_WORKSPACE_ROOT", str(tmp_path))
+    monkeypatch.setenv("TYPHON_WORKSPACE_ROOT", str(tmp_path))
 
     assert run_source(source) == 1
 
     captured = capfd.readouterr()
     assert captured.out.splitlines() == ["handled"]
-    assert captured.err.count("main.pys:2 in forward") == 1
-    assert "main.pys:13 in <entrypoint>" in captured.err
+    assert captured.err.count("main.typhon:2 in forward") == 1
+    assert "main.typhon:13 in <entrypoint>" in captured.err

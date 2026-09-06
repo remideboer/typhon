@@ -11,10 +11,10 @@ from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
 MEMORY = ROOT / "examples" / "by-target" / "javascript" / "rest-api" / "express" / "memory"
-MAIN = MEMORY / "src" / "main.pys"
+MAIN = MEMORY / "src" / "main.typhon"
 TESTS = [
-    MEMORY / "tests" / "test_repos.pys",
-    MEMORY / "tests" / "test_api.pys",
+    MEMORY / "tests" / "test_repos.typhon",
+    MEMORY / "tests" / "test_api.typhon",
 ]
 
 

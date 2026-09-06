@@ -1,7 +1,7 @@
 # Request–reply
 
 **Category:** Messaging  
-**Demo:** [request_reply.pys](request_reply.pys)  
+**Demo:** [request_reply.typhon](request_reply.typhon)  
 **Wikipedia / ref:** [Request–reply](https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html)
 
 ## Intent
@@ -19,5 +19,5 @@ Correlation id ties a reply to its request.
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/messaging/request_reply.pys
+python -m transpiler run examples/patterns/messaging/request_reply.typhon
 ```

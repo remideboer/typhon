@@ -1,4 +1,4 @@
-"""Dev helper: package and install the local PYS VS Code/Cursor extension."""
+"""Dev helper: package and install the local Typhon VS Code/Cursor extension."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-_VSIX_RE = re.compile(r"^pys-language-(\d+)\.(\d+)\.(\d+)\.vsix$", re.IGNORECASE)
+_VSIX_RE = re.compile(r"^typhon-language-(\d+)\.(\d+)\.(\d+)\.vsix$", re.IGNORECASE)
 
 
 def repo_root_from_package() -> Path:
@@ -18,11 +18,11 @@ def repo_root_from_package() -> Path:
 
 def find_extension_dir(repo_root: Path | None = None) -> Path:
     root = (repo_root or repo_root_from_package()).resolve()
-    ext = root / "pys-language"
+    ext = root / "typhon-language"
     if not (ext / "package.json").is_file():
         raise FileNotFoundError(
-            f"No pys-language/package.json under {root}. "
-            "Run from a PYS source checkout (editable install)."
+            f"No typhon-language/package.json under {root}. "
+            "Run from a Typhon source checkout (editable install)."
         )
     return ext
 
@@ -36,14 +36,14 @@ def parse_vsix_version(path: Path) -> tuple[int, int, int] | None:
 
 def latest_vsix(extension_dir: Path) -> Path:
     candidates: list[tuple[tuple[int, int, int], Path]] = []
-    for path in extension_dir.glob("pys-language-*.vsix"):
+    for path in extension_dir.glob("typhon-language-*.vsix"):
         version = parse_vsix_version(path)
         if version is not None:
             candidates.append((version, path))
     if not candidates:
         raise FileNotFoundError(
-            f"No pys-language-*.vsix in {extension_dir}. "
-            "Build one with: cd pys-language && npm run package"
+            f"No typhon-language-*.vsix in {extension_dir}. "
+            "Build one with: cd typhon-language && npm run package"
         )
     candidates.sort(key=lambda item: item[0], reverse=True)
     return candidates[0][1]
@@ -102,7 +102,7 @@ def install_extension(
     build: bool = True,
     editor: str = "auto",
 ) -> Path:
-    """Package (optional) and install the newest local ``pys-language-*.vsix``.
+    """Package (optional) and install the newest local ``typhon-language-*.vsix``.
 
     Returns the installed VSIX path. Does not auto-reload the editor.
     """

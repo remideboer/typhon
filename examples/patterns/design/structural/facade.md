@@ -1,7 +1,7 @@
 # Facade
 
 **Category:** Structural  
-**Demo:** [facade.pys](facade.pys)  
+**Demo:** [facade.typhon](facade.typhon)  
 **Wikipedia:** [Facade pattern](https://en.wikipedia.org/wiki/Facade_pattern) · [Design Patterns (book)](https://en.wikipedia.org/wiki/Design_Patterns)
 
 ## Intent
@@ -51,5 +51,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/design/structural/facade.pys
+python -m transpiler run examples/patterns/design/structural/facade.typhon
 ```

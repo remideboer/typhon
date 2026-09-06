@@ -1,7 +1,7 @@
 # DTO and Anti-Corruption Layer
 
 **Category:** Application  
-**Demo:** [dto_acl.pys](dto_acl.pys)  
+**Demo:** [dto_acl.typhon](dto_acl.typhon)  
 **Wikipedia:** [Data transfer object](https://en.wikipedia.org/wiki/Data_transfer_object) · [Anti-corruption layer](https://en.wikipedia.org/wiki/Anti-corruption_layer)
 
 ## Intent
@@ -28,5 +28,5 @@ and domain meaning).
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/application/dto_acl.pys
+python -m transpiler run examples/patterns/application/dto_acl.typhon
 ```

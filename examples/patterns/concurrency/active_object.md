@@ -1,7 +1,7 @@
 # Active object
 
 **Category:** Concurrency  
-**Demo:** [active_object.pys](active_object.pys)  
+**Demo:** [active_object.typhon](active_object.typhon)  
 **Wikipedia:** [Active object](https://en.wikipedia.org/wiki/Active_object) · [Concurrency pattern](https://en.wikipedia.org/wiki/Concurrency_pattern)
 
 ## Intent
@@ -10,7 +10,7 @@ Decouple method execution from method invocation so that the object runs in its 
 
 ## Explanation
 
-Clients call `say`, which **enqueues** a `MethodRequest`. A servant (`pump`) executes requests later in its own `task`. There is no condition-wait for an empty queue — this demo drains a known queue after enqueue. Full Active Object often adds a scheduler and futures; PYS stops short of wait/notify.
+Clients call `say`, which **enqueues** a `MethodRequest`. A servant (`pump`) executes requests later in its own `task`. There is no condition-wait for an empty queue — this demo drains a known queue after enqueue. Full Active Object often adds a scheduler and futures; Typhon stops short of wait/notify.
 
 ## Classic structure (UML)
 
@@ -54,5 +54,5 @@ classDiagram
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/concurrency/active_object.pys
+python -m transpiler run examples/patterns/concurrency/active_object.typhon
 ```

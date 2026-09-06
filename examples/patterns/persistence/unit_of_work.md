@@ -1,7 +1,7 @@
 # Unit of Work
 
 **Category:** Persistence  
-**Demo:** [unit_of_work.pys](unit_of_work.pys)  
+**Demo:** [unit_of_work.typhon](unit_of_work.typhon)  
 **Wikipedia:** [Unit of work](https://en.wikipedia.org/wiki/Unit_of_work)  
 **Related:** [repository](repository.md)
 
@@ -29,5 +29,5 @@ persists one aggregate API).
 ## Run
 
 ```text
-python -m transpiler run examples/patterns/persistence/unit_of_work.pys
+python -m transpiler run examples/patterns/persistence/unit_of_work.typhon
 ```

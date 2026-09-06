@@ -9,7 +9,7 @@ Lead with the race, then the fix.
 | `shared` | Mutation across tasks/lambdas is **declared** (visible) — not race-free |
 | `atomic` | Implies shared for capture **and** indivisible `+=` / `-=` / `++` / `--` |
 
-```pys
+```typhon
 # Teaching race: unlocked read + locked set can lose updates
 shared int shared_counter = 0
 tasks {
@@ -51,7 +51,7 @@ print(counter)  # always 2000
 
 Primitives: `int`, `int16`, `int32`, `int64`, `dword`, `bool`.
 
-```pys
+```typhon
 atomic int highScore = 0
 bool done = false
 loop (!done) {
@@ -64,4 +64,4 @@ loop (!done) {
 }
 ```
 
-Full sample: [`examples/atomic.pys`](../../examples/atomic.pys) · guide: [`CONCURRENCY.md`](../../docs/CONCURRENCY.md).
+Full sample: [`examples/atomic.typhon`](../../examples/atomic.typhon) · guide: [`CONCURRENCY.md`](../../docs/CONCURRENCY.md).

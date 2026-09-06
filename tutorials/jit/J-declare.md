@@ -2,7 +2,7 @@
 
 ## Forms
 
-```pys
+```typhon
 int n = 3
 float t = 20.5
 string label = "probe-A"
@@ -23,4 +23,4 @@ fix int locked = n + MAX
 
 ## Not here
 
-*Why* types matter → [S1](../supportive/S1-pys-as-contract.md)
+*Why* types matter → [S1](../supportive/S1-typhon-as-contract.md)

@@ -3,7 +3,7 @@
  *
  *   k6 run -e BASE_URL=http://127.0.0.1:8080 examples/webserver/load/k6/pool_exhaust.js
  *
- * Tip: lower poolSize in config.pys (e.g. 2) before starting main.pys to saturate faster.
+ * Tip: lower poolSize in config.typhon (e.g. 2) before starting main.typhon to saturate faster.
  */
 import http from "k6/http";
 import { check, sleep } from "k6";

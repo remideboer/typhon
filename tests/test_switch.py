@@ -16,9 +16,9 @@ from transpiler.transpiler import TranspileError, run_source, transpile
 from transpiler.workspace import WORKSPACE_ROOT_ENV
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "switch.pys"
+EXAMPLE = ROOT / "examples" / "switch.typhon"
 
-os.environ.setdefault("PYS_SUPPRESS_WARNINGS", "1")
+os.environ.setdefault("TYPHON_SUPPRESS_WARNINGS", "1")
 
 _DAY_ENUM = """
 enum Day {
@@ -217,5 +217,5 @@ switch (c) {
     mod = parse_program(source)
     analyze(mod)
     assert any(
-        getattr(w, "code", None) == "pys.switch-exhaustive" for w in mod.analysis_warnings
+        getattr(w, "code", None) == "typhon.switch-exhaustive" for w in mod.analysis_warnings
     )
