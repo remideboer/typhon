@@ -100,6 +100,7 @@ Each record then uses:
 | [CER-063](CER-063-reuse-run-terminal.md) | Reuse Run Typhon terminal on Run File/Project | IDE |
 | [CER-064](CER-064-rename-to-typhon.md) | Rename PYS → Typhon (full surface) | Brand / IDE |
 | [CER-065](CER-065-tpn-alias.md) | `.tpn` alias for `.typhon` | Brand / IDE |
+| [CER-066](CER-066-restore-root-docs.md) | Restore root `docs/` (undo mistaken relocate) | Docs |
 
 Related architecture overview: [`../ARCHITECTURE.md`](../ARCHITECTURE.md).
 

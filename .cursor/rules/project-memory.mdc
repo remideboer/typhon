@@ -10,10 +10,10 @@ change lands. Stale records are as bad as ignored ones.
 
 | Kind | Path | Level |
 | --- | --- | --- |
-| **CER** (code evolution) | `examples/docs/evolution/` | Symbol / pre-post behavior |
-| **ADR** (architecture) | `examples/docs/adr/` | System boundaries and contracts |
+| **CER** (code evolution) | `docs/evolution/` | Symbol / pre-post behavior |
+| **ADR** (architecture) | `docs/adr/` | System boundaries and contracts |
 
-Indexes: `examples/docs/evolution/README.md`, `examples/docs/adr/README.md`.
+Indexes: `docs/evolution/README.md`, `docs/adr/README.md`.
 
 ## Loop (every non-trivial change)
 

@@ -42,3 +42,5 @@ The teaching language was branded **PYS**. The name **Typhon** (anagram of Pytho
 
 - Python import package remains `transpiler` / dist `python_transpiler`
 - Icon asset filenames may still contain `pys-` until redesigned
+- Accidental relocate of root `docs/` → `examples/docs/` in this commit was
+  reversed in [CER-066](CER-066-restore-root-docs.md)
