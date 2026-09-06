@@ -1040,6 +1040,12 @@ def md_href_to_html(match: re.Match[str]) -> str:
         return match.group(0)
     if href.startswith("../"):
         path, frag = (href[3:].split("#", 1) + [""])[:2]
+        # Ship interactive HTML docs with the book (GitHub blob is raw source).
+        if path == "docs/language-railroad.html":
+            out = "language-railroad.html"
+            if frag:
+                out += "#" + frag
+            return f'href="{out}"'
         is_directory = path.endswith("/")
         kind = "tree" if is_directory else "blob"
         path = path.rstrip("/")
@@ -1180,6 +1186,11 @@ def convert() -> None:
 
     (OUT / "style.css").write_text(CSS, encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
+
+    railroad_src = ROOT.parent / "docs" / "language-railroad.html"
+    if railroad_src.is_file():
+        shutil.copy2(railroad_src, OUT / "language-railroad.html")
+        print("wrote language-railroad.html")
 
     summary_text = (SRC / "SUMMARY.md").read_text(encoding="utf-8")
     nav = parse_summary_nav(summary_text)

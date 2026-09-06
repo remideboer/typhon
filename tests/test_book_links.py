@@ -40,6 +40,21 @@ def test_repo_file_link_rewrites_to_github_blob() -> None:
     )
 
 
+def test_railroad_html_rewrites_to_book_local_page() -> None:
+    """Interactive railroad must not become a GitHub blob (raw source)."""
+    assert _rewrite("../docs/language-railroad.html") == (
+        'href="language-railroad.html"'
+    )
+    resources = (BOOK / "html" / "resources.html").read_text(encoding="utf-8")
+    assert 'href="language-railroad.html"' in resources
+    assert "blob/main/docs/language-railroad.html" not in resources
+    assert (BOOK / "html" / "language-railroad.html").is_file()
+    railroad = (BOOK / "html" / "language-railroad.html").read_text(
+        encoding="utf-8"
+    )
+    assert "railroad" in railroad.lower() or "EBNF" in railroad
+
+
 def test_repo_directory_link_rewrites_to_github_tree() -> None:
     assert _rewrite("../examples/source_roots/") == (
         "href="

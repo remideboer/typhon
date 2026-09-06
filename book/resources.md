@@ -4,10 +4,10 @@
 
 - Language reference: [`docs/LANGUAGE.md`](../docs/LANGUAGE.md)
 - Grammar (EBNF): [`docs/language.ebnf`](../docs/language.ebnf)
-- Railroad diagrams: [`docs/language-railroad.html`](../docs/language-railroad.html)
+- Railroad diagrams (interactive HTML): [`docs/language-railroad.html`](../docs/language-railroad.html)
 - Concurrency: [`docs/CONCURRENCY.md`](../docs/CONCURRENCY.md)
 - `data` / `entity`: [`docs/DATA_ENTITY.md`](../docs/DATA_ENTITY.md)
-- Casing decision: [`docs/pys-casing-convention-advisory.md`](../docs/pys-casing-convention-advisory.md)
+- Casing decision: [`docs/typhon-casing-convention-advisory.md`](../docs/typhon-casing-convention-advisory.md)
 - JIT tutorials: [`tutorials/`](../tutorials/)
 - Runnable examples: [`examples/`](../examples/)
 - Patterns corpus (GoF + architecture / resilience / …): [`examples/patterns/`](../examples/patterns/)
@@ -34,7 +34,7 @@ core language path:
 After Pages is set to **GitHub Actions** in the repo settings, the beginner
 book is published from `book/html` by `.github/workflows/pages-book.yml`:
 
-- https://remideboer.github.io/pys/
+- https://remideboer.github.io/typhon/
 
 ## Pedagogical model (credit)
 
