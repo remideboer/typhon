@@ -170,6 +170,13 @@ Or just the extension suite: `cd typhon-language && npm test`.
 | Prevent | Keep synthetic `else if` and non–line-leader spans from shifting nest base (CER-053). Update rejection fixtures to 4-space so the *intended* SA error remains first. Run `tests/test_indent.py` + full `pytest -q`. |
 | Related | CER-053; `tests/test_indent.py` |
 
+### 16. Extension ELO zip name drift (`typhon-student-*.zip`)
+
+| Symptom | `upload-artifact`: No files found at `dist/typhon-student-*.zip` (job can look like a 0s fail on the upload step) |
+| Cause | Workflow/publish paths expect `typhon-student-*` but `prepare_elo_zip.py` still wrote `pys-student-*` (or the reverse) |
+| Prevent | After brand/extension renames, keep `typhon-language/scripts/prepare_elo_zip.py` STAGE/ZIP_PATH/arcname in sync with `.github/workflows/extension.yml` and `publish-extension.yml`. Locally: `cd typhon-language && npm run package:elo` and confirm `dist/typhon-student-<version>.zip` exists |
+| Related | CER-064; `typhon-language/PUBLISH.md` |
+
 ---
 
 ## How to add a pattern
