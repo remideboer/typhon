@@ -43,7 +43,7 @@ bundled** in the VSIX — students do not `pip install` this repo.
 **Marketplace (preferred):** Extensions → **Typhon Language Support**  
 (`ext install remideboer.typhon-language`). Leave auto-update on.
 
-**ELO / offline:** unzip `pys-student-<version>.zip` → `install.cmd` / `install.sh` → reload.
+**ELO / offline:** unzip `typhon-student-<version>.zip` → `install.cmd` / `install.sh` → reload.
 
 Requires **system Python 3.10+** on PATH. The extension bundles the transpiler.
 

@@ -1,4 +1,4 @@
-"""Build dist/pys-student-<version>.zip for ELO / offline install.
+"""Build dist/typhon-student-<version>.zip for ELO / offline install.
 
 Expects typhon-language/typhon-language-<version>.vsix to exist (run npm run package first).
 """
@@ -16,8 +16,8 @@ PKG = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
 VERSION = PKG["version"]
 VSIX_NAME = f"typhon-language-{VERSION}.vsix"
 VSIX = ROOT / VSIX_NAME
-STAGE = DIST / f"pys-student-{VERSION}"
-ZIP_PATH = DIST / f"pys-student-{VERSION}.zip"
+STAGE = DIST / f"typhon-student-{VERSION}"
+ZIP_PATH = DIST / f"typhon-student-{VERSION}.zip"
 
 INSTALL_NL_EN = f"""Typhon student pack {VERSION}
 =======================
@@ -103,7 +103,7 @@ def main() -> None:
     with zipfile.ZipFile(ZIP_PATH, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for path in STAGE.rglob("*"):
             if path.is_file():
-                zf.write(path, arcname=f"pys-student-{VERSION}/{path.relative_to(STAGE).as_posix()}")
+                zf.write(path, arcname=f"typhon-student-{VERSION}/{path.relative_to(STAGE).as_posix()}")
 
     print(f"ELO zip -> {ZIP_PATH}")
 

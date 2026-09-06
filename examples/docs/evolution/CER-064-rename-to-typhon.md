@@ -29,6 +29,7 @@ The teaching language was branded **PYS**. The name **Typhon** (anagram of Pytho
 - Canonical constants in `transpiler/brand.py`
 - Hard cut: no dual `.pys` / `pys.toml` support; clear errors if old names appear
 - Marketplace id **`remideboer.typhon-language`** is a **new** extension (uninstall old `pys-language`)
+- ELO zip is **`dist/typhon-student-<version>.zip`** (`prepare_elo_zip.py`; workflows upload that glob)
 - Do not auto-migrate `~/.pys` caches — re-lock / delete old cache
 - GitHub repo URL may still say `remideboer/pys` until a separate remote rename
 

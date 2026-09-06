@@ -53,19 +53,19 @@ git push origin extension-v0.0.79
 ```
 
 4. Workflow [Publish extension](../.github/workflows/publish-extension.yml):
-   - tests + packages VSIX + **`dist/pys-student-<version>.zip`**
+   - tests + packages VSIX + **`dist/typhon-student-<version>.zip`**
    - creates a **GitHub Release** with curated notes (+ auto-generated commit
      list), VSIX, and ELO zip
    - publishes to Marketplace / Open VSX **only if** the matching secret is set
 
-Upload the Release asset `pys-student-<version>.zip` to your ELO / LMS.
+Upload the Release asset `typhon-student-<version>.zip` to your ELO / LMS.
 
 ### Local builds
 
 ```powershell
 cd typhon-language
 npm run package          # VSIX only
-npm run package:elo      # VSIX + dist/pys-student-<version>.zip
+npm run package:elo      # VSIX + dist/typhon-student-<version>.zip
 ```
 
 Contributor shortcut (from repo root, after `pip install -e .`):

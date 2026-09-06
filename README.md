@@ -462,7 +462,7 @@ and **JIT cards**. Teacher notes: [`tutorials/TEACHER.md`](tutorials/TEACHER.md)
 1. Install **Python 3.10+** and ensure `python` / `python3` is on your PATH.
 2. Prefer the Marketplace (auto-update):
    - VS Code **Extensions** → **Typhon Language Support**, or `ext install remideboer.typhon-language`
-3. **ELO / offline:** download `pys-student-<version>.zip` from your course site,
+3. **ELO / offline:** download `typhon-student-<version>.zip` from your course site,
    unzip, run `install.cmd` (Windows) or `./install.sh`, then reload VS Code.
 4. Open a folder with `.typhon` files and use **Typhon: Run File**.
 
